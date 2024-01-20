@@ -1,0 +1,183 @@
+<?php
+// +----------------------------------------------------------------------
+// | saiadmin [ saiadmin快速开发框架 ]
+// +----------------------------------------------------------------------
+// | Author: your name
+// +----------------------------------------------------------------------
+#whether[$package_name == ""]
+namespace ${namespace}\model;
+#/whether
+#whether[$package_name != ""]
+namespace ${namespace}\model\${package_name};
+#/whether
+
+use plugin\saiadmin\basic\BaseModel;
+
+/**
+ * ${menu_name}模型
+ */
+class ${class_name} extends BaseModel
+{
+
+    /**
+     * 数据表主键
+     * @var string
+     */
+    protected $pk = '${pk}';
+
+    /**
+     * 数据库表名称
+     * @var string
+     */
+    protected $table = '${table_name}';
+
+#foreach ($column in $columns)
+#if[($view_type == "upload" && $multiple == "true") || in_array($view_type, array("inputTag", "checkbox", "cityLinkage", "userSelect"))]
+
+    /**
+     * ${column_comment}保存数组转换
+     */
+    public function set${AttrName}Attr($value)
+    {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
+     /**
+     * ${column_comment}读取数组转换
+     */
+    public function get${AttrName}Attr($value)
+    {
+        return json_decode($value ?? '', true);
+    }
+#/if
+#/foreach
+#foreach ($column in $columns)
+#if[$query_type == "neq" && $is_query == "true"]
+    
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->where('${column_name}', '!=', $value);
+    }
+#/if
+#if[$query_type == "gt" && $is_query == "true"]
+    
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->where('${column_name}', '>', $value);
+    }
+#/if
+#if[$query_type == "gte" && $is_query == "true"]
+    
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->where('${column_name}', '>=', $value);
+    }
+#/if
+#if[$query_type == "lt" && $is_query == "true"]
+    
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->where('${column_name}', '<', $value);
+    }
+#/if
+#if[$query_type == "lte" && $is_query == "true"]
+    
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->where('${column_name}', '<=', $value);
+    }
+#/if
+#if[$query_type == "like" && $is_query == "true"]
+    
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->where('${column_name}', 'like', '%'.$value.'%');
+    }
+#/if
+#if[$query_type == "in" && $is_query == "true"]
+
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->where('${column_name}', 'in', $value);
+    }
+#/if
+#if[$query_type == "notin" && $is_query == "true"]
+
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->where('${column_name}', 'not in', $value);
+    }
+#/if
+#if[$is_query == "true" && $query_type == "between"]
+    
+    /**
+     * ${column_comment} 搜索
+     */
+    public function search${AttrName}Attr($query, $value)
+    {
+        $query->whereTime('${column_name}', 'between', $value);
+    }
+#/if
+#/foreach
+
+#foreach ($item in $relations)
+#if[$type == "belongsTo"]
+
+    /**
+     * 关联模型${name}
+     */
+    public function ${name}()
+    {
+        return $this->${type}(${model}::class, '${localKey}', '${foreignKey}');
+    }
+
+#/if
+#if[$type == "hasOne" || $type == "hasMany"]
+
+    /**
+     * 关联模型${name}
+     */
+    public function ${name}()
+    {
+        return $this->${type}(${model}::class, '${foreignKey}', '${localKey}');
+    }
+
+#/if
+#if[$type == "belongsToMany"]
+
+    /**
+     * 关联模型${name}
+     */
+    public function ${name}()
+    {
+        return $this->${type}(${model}::class, ${table}::class, '${localKey}', '${foreignKey}');
+    }
+
+#/if
+#/foreach
+
+}

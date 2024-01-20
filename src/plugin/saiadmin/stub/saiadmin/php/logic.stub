@@ -1,0 +1,52 @@
+<?php
+// +----------------------------------------------------------------------
+// | saiadmin [ saiadmin快速开发框架 ]
+// +----------------------------------------------------------------------
+// | Author: your name
+// +----------------------------------------------------------------------
+#whether[$package_name == ""]
+namespace ${namespace}\logic;
+#/whether
+#whether[$package_name != ""]
+namespace ${namespace}\logic\${package_name};
+#/whether
+
+use plugin\saiadmin\basic\BaseLogic;
+use plugin\saiadmin\exception\ApiException;
+use plugin\saiadmin\utils\Helper;
+#whether[$package_name == ""]
+use ${namespace}\model\${class_name}Logic;
+#/whether
+#whether[$package_name != ""]
+use ${namespace}\model\${package_name}\${class_name};
+#/whether
+
+/**
+ * ${menu_name}逻辑层
+ */
+class ${class_name}Logic extends BaseLogic
+{
+    /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+        $this->model = new ${class_name}();
+    }
+
+#whether[$tpl_category == "tree"]
+    /**
+     * 树形数据
+     */
+    public function tree($where)
+    {
+        $query = $this->search($where);
+        if (request()->input('tree', 'false') === 'true') {
+            $query->field('${tree_id}, ${tree_id} as value, ${tree_name} as label, ${tree_parent_id}');
+        }
+        $data = $this->getAll($query);
+        return Helper::makeTree($data);
+    }
+#/whether
+
+}

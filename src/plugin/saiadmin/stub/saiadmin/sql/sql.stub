@@ -1,0 +1,34 @@
+-- 数据库语句--
+
+#foreach ($column in $tables)
+#if[$package_name == ""]
+-- 菜单[${menu_name}] SQL
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (${belong_menu_id}, '0,${belong_menu_id}', '${menu_name}', '/${business_name}', 'icon-home', '${business_name}', '${business_name}/index', NULL, '2', 'M', 1, 0, NULL, now(), now(), NULL);
+
+SET @id := LAST_INSERT_ID();
+SET @level := CONCAT('${belong_menu_id}', ',', @id);
+
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '列表'), '/${business_name}/index', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '保存'), '/${business_name}/save', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '更新'), '/${business_name}/update', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '读取'), '/${business_name}/read', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '删除'), '/${business_name}/destroy', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '回收'), '/${business_name}/recycle', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '恢复'), '/${business_name}/recovery', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+#/if
+#if[$package_name != ""]
+-- 菜单[${menu_name}] SQL
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (${belong_menu_id}, '0,${belong_menu_id}', '${menu_name}', '/${package_name}/${business_name}', 'icon-home', '${package_name}/${business_name}', '${package_name}/${business_name}/index', NULL, '2', 'M', 1, 0, NULL, now(), now(), NULL);
+
+SET @id := LAST_INSERT_ID();
+SET @level := CONCAT('${belong_menu_id}', ',', @id);
+
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '列表'), '/${package_name}/${business_name}/index', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '保存'), '/${package_name}/${business_name}/save', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '更新'), '/${package_name}/${business_name}/update', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '读取'), '/${package_name}/${business_name}/read', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '删除'), '/${package_name}/${business_name}/destroy', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '回收'), '/${package_name}/${business_name}/recycle', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (@id, @level, CONCAT('${menu_name}', '恢复'), '/${package_name}/${business_name}/recovery', NULL, NULL, NULL, NULL, '2', 'B', '1', 0, NULL, now(), now(), NULL);
+#/if
+#/foreach

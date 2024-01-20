@@ -1,0 +1,167 @@
+<template>
+  <div class="ma-content-block lg:flex justify-between p-4">
+    <!-- CRUD 组件 -->
+    <ma-crud :options="crud" :columns="columns" ref="crudRef">
+#whether[in_array("changeStatus", $menus)]
+      <!-- 状态列 -->
+      <template #status="{ record }">
+        <a-switch
+          :checked-value="1"
+          unchecked-value="2"
+          @change="changeStatus($event, record.${pk})"
+          :default-checked="record.status == 1"
+        />
+      </template>
+#/whether
+    </ma-crud>
+  </div>
+</template>
+
+<script setup>
+  import { ref, reactive, computed } from 'vue'
+  import api from '@/api/${url_path}'
+  import { Message } from '@arco-design/web-vue'
+
+  const crudRef = ref()
+
+#whether[in_array("changeStatus", $menus)]
+  const changeStatus = async (status, ${pk}) => {
+    const response = await api.changeStatus({ ${pk}, status })
+    if (response.code === 200) {
+      Message.success(response.message)
+    }
+  }
+#/whether
+
+  const crud = reactive({
+    api: api.getPageList,
+#whether[in_array("recycle", $menus)]
+    recycleApi: api.getRecyclePageList,
+#/whether
+    showIndex: false,
+    searchColNumber: 3,
+    pageLayout: 'fixed',
+    rowSelection: { showCheckedAll: true },
+    operationColumn: true,
+    operationColumnWidth: 160,
+    add: { show: true, api: api.save, auth: ['/${url_path}/save'] },
+    edit: { show: true, api: api.update, auth: ['/${url_path}/update'] },
+    delete: { show: true, api: api.delete, auth: ['/${url_path}/destroy'] },
+#whether[in_array("recycle", $menus)]
+    recovery: { show: true, api: api.recovery, auth: ['/${url_path}/recovery']},
+#/whether
+#whether[$component_type == 1]
+    formOption: { width: 800 },
+#/whether
+#whether[$component_type == 2]
+    formOption: { viewType: 'drawer', width: 800 },
+#/whether
+#whether[$component_type == 3]
+    formOption: { viewType: 'tag', tagId: '${tag_id}', tagName: '${tag_name}' },
+#/whether
+  })
+
+  const columns = reactive([
+#foreach($column in $columns)
+#if[!in_array($view_type, array("select", "radio", "checkbox", "date", "upload", "treeSelect", "userSelect"))]
+    {
+      title: '${column_comment}',
+      dataIndex: '${column_name}',
+      width: 180,
+      search: ${is_query},
+      addDisplay: ${is_insert}, ${add_default}
+      editDisplay: ${is_edit},
+      hide: ${is_list},
+      formType: '${view_type}',
+      commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
+    },
+#/if
+#if[$view_type == "date"]
+    {
+      title: '${column_comment}',
+      dataIndex: '${column_name}',
+      width: 180,
+      search: ${is_query},
+      addDisplay: ${is_insert}, ${add_default}
+      editDisplay: ${is_edit},
+      hide: ${is_list},
+      searchFormType: '${search_type}',
+      showTime: ${show_time},
+      formType: '${view_type}',
+      commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
+    },
+#/if
+#if[$view_type == "upload"]
+    {
+      title: '${column_comment}',
+      dataIndex: '${column_name}',
+      width: 180,
+      search: ${is_query},
+      addDisplay: ${is_insert}, ${add_default}
+      editDisplay: ${is_edit},
+      hide: ${is_list},
+      formType: '${view_type}',
+      type: '${type}',
+      returnType: '${return_type}',
+      multiple: ${multiple},
+      commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
+    },
+#/if
+#if[$view_type == "treeSelect"]
+    {
+      title: '${column_comment}',
+      dataIndex: '${column_name}',
+      width: 180,
+      search: ${is_query},
+      addDisplay: ${is_insert}, ${add_default}
+      editDisplay: ${is_edit},
+      hide: ${is_list},
+      formType: '${view_type}',
+      dict: { url: '' },
+      commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
+    },
+#/if
+#if[$view_type == "userSelect"]
+    {
+      title: '${column_comment}',
+      dataIndex: '${column_name}',
+      width: 180,
+      search: ${is_query},
+      addDisplay: ${is_insert}, ${add_default}
+      editDisplay: ${is_edit},
+      formType: '${view_type}',
+      onlyId: ${only_id},
+      commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
+    },
+#/if
+#if[$view_type == "cityLinkage"]
+    {
+      title: '${column_comment}',
+      dataIndex: '${column_name}',
+      width: 180,
+      search: ${is_query},
+      addDisplay: ${is_insert}, ${add_default}
+      editDisplay: ${is_edit},
+      formType: '${view_type}',
+      type: '${type}',
+      name: '${name}',
+      commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
+    },
+#/if
+#if[in_array($view_type, array("select", "radio", "checkbox"))]
+    {
+      title: '${column_comment}',
+      dataIndex: '${column_name}',
+      width: 100,
+      search: ${is_query},
+      addDisplay: ${is_insert}, ${add_default}
+      editDisplay: ${is_edit},
+      hide: ${is_list},
+      ${dict_option}
+      formType: '${view_type}',
+      commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
+    },
+#/if
+#/foreach
+  ])
+</script>

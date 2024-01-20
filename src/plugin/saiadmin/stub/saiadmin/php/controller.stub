@@ -1,0 +1,62 @@
+<?php
+// +----------------------------------------------------------------------
+// | saiadmin [ saiadmin快速开发框架 ]
+// +----------------------------------------------------------------------
+// | Author: your name
+// +----------------------------------------------------------------------
+#whether[$package_name == ""]
+namespace ${namespace}\controller;
+#/whether
+#whether[$package_name != ""]
+namespace ${namespace}\controller\${package_name};
+#/whether
+
+use plugin\saiadmin\basic\BaseController;
+#whether[$package_name == ""]
+use ${namespace}\logic\${class_name}Logic;
+#/whether
+#whether[$package_name != ""]
+use ${namespace}\logic\${package_name}\${class_name}Logic;
+#/whether
+use support\Request;
+use support\Response;
+
+/**
+ * ${menu_name}控制器
+ */
+class ${class_name}Controller extends BaseController
+{
+    /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+        $this->logic = new ${class_name}Logic();
+        parent::__construct();
+    }
+
+    /**
+     * 数据列表
+     * @param Request $request
+     * @return Response
+     */
+    public function index(Request $request): Response
+    {
+        $where = $request->more([
+#foreach ($column in $columns)
+#if[$is_query == "true"]
+            ['${column_name}', ''],
+#/if
+#/foreach
+        ]);
+#whether[$tpl_category == "single"]
+        $query = $this->logic->search($where);
+        $data = $this->logic->getList($query);
+#/whether
+#whether[$tpl_category == "tree"]
+        $data = $this->logic->tree($where);
+#/whether
+        return $this->success($data);
+    }
+
+}
