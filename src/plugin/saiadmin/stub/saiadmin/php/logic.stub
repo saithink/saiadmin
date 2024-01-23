@@ -15,7 +15,7 @@ use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Helper;
 #whether[$package_name == ""]
-use ${namespace}\model\${class_name}Logic;
+use ${namespace}\model\${class_name};
 #/whether
 #whether[$package_name != ""]
 use ${namespace}\model\${package_name}\${class_name};
