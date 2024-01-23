@@ -55,7 +55,7 @@ class GenerateTablesLogic extends BaseLogic
      */
     public function loadTable($names)
     {
-        $config = config('thinkorm.connections')['plugin.saiadmin.mysql'];
+        $config = config('thinkorm.connections')['mysql'];
         $prefix = $config['prefix'];
         foreach ($names as $item) {
             $class_name = Helper::camel(Helper::str_replace_once($prefix, '', $item['name']));
