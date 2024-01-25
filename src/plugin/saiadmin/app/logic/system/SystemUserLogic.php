@@ -29,18 +29,24 @@ class SystemUserLogic extends BaseLogic
 
     public function add($data)
     {
+        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         $role_ids = $data['role_ids'] ?? [];
         $post_ids = $data['post_ids'] ?? '';
         $dept_ids = $data['dept_ids'] ?? '';
         $user = SystemUser::create($data);
         $user->roles()->saveAll($role_ids);
-        $user->posts()->save($post_ids);
-        $user->depts()->save($dept_ids);
+        if ($post_ids !== '') {
+            $user->posts()->save($post_ids);
+        }
+        if ($dept_ids !== '') {
+            $user->depts()->save($dept_ids);
+        }
         return $user->getKey();
     }
 
     public function edit($data, $id)
     {
+        unset($data['password']);
         $role_ids = $data['role_ids'] ?? [];
         $post_ids = $data['post_ids'] ?? '';
         $dept_ids = $data['dept_ids'] ?? '';
@@ -51,8 +57,12 @@ class SystemUserLogic extends BaseLogic
             $user->posts()->detach();
             $user->depts()->detach();
             $user->roles()->saveAll($role_ids);
-            $user->posts()->save($post_ids);
-            $user->depts()->save($dept_ids);
+            if ($post_ids !== '') {
+                $user->posts()->save($post_ids);
+            }
+            if ($dept_ids !== '') {
+                $user->depts()->save($dept_ids);
+            }
         }
         return $result;
     }
