@@ -38,6 +38,7 @@ class LoginController
     {
         $username = $request->post('username');
         $password = $request->post('password');
+        $type = $request->post('type', 'pc');
 
         $captcha = $request->post('code', '');
         if (strtolower($captcha) !== session('captcha-login')) {
@@ -46,7 +47,7 @@ class LoginController
         $request->session()->forget('captcha-login');
 
         $logic = new SystemUserLogic();
-        $data = $logic->login($username, $password, 'pc');
+        $data = $logic->login($username, $password, $type);
 
         return json(['code' => 200, 'data' => $data]);
     }

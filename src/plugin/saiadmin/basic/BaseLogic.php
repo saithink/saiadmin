@@ -19,7 +19,7 @@ use think\facade\Db;
  * @method static save($data) think-orm的save方法
  * @method static create($data) think-orm的create方法
  * @method static saveAll($data) think-orm的saveAll方法
- * @method static update($data, $where) think-orm的update方法
+ * @method static update($data, $where, $allow = []) think-orm的update方法
  * @method static destroy($id) think-orm的destroy方法
  * @method static select() think-orm的select方法
  * @method static count($data) think-orm的count方法

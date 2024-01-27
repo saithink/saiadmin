@@ -98,7 +98,7 @@ class SystemUserController extends BaseController
     public function updateInfo(Request $request) : Response
     {
         $data = $request->post();
-        $result = $this->logic->update($data, ['id' => $this->adminId]);
+        $result = $this->logic->update($data, ['id' => $this->adminId], ['nickname', 'phone', 'email', 'avatar', 'backend_setting']);
         if ($result) {
             return $this->success('操作成功');
         } else {

@@ -16,7 +16,7 @@ function getCurrentInfo()
         return false;
     }
     $token = trim(request()->header(config('plugin.saiadmin.saithink.cross.token_name', 'Authori-zation')));
-    if ($token !== 'null') {
+    if ($token !== 'null' && $token !== '') {
         $jwt = new JwtAuth();
         [$id, $username, $type] = $jwt->parseToken($token);
         return compact('id', 'username', 'type');
