@@ -11,7 +11,7 @@ use think\facade\Db;
 
 /**
  * 逻辑层基础类
- * @package plugin\saiadmin\basic
+ * @package app\service
  * @method static where($data) think-orm的where方法
  * @method static find($id) think-orm的find方法
  * @method static hidden($data) think-orm的hidden方法
@@ -43,6 +43,17 @@ class BaseLogic
      */
     protected $scope = false;
 
+    // 所有数据权限
+    public const ALL_SCOPE = 1;
+    // 自定义数据权限
+    public const CUSTOM_SCOPE = 2;
+    // 本部门数据权限
+    public const SELF_DEPT_SCOPE = 3;
+    // 本部门及子部门数据权限
+    public const DEPT_BELOW_SCOPE = 4;
+    // 本人数据权限
+    public const SELF_SCOPE = 5;
+
     /**
      * @var array 用户id
      */
@@ -51,6 +62,57 @@ class BaseLogic
     public function init($user)
     {
         $this->adminInfo = $user;
+    }
+
+    /**
+     * 数据权限处理
+     * @param $query
+     * @return mixed
+     */
+    public function userDataScope($query)
+    {
+        if (!$this->adminInfo) {
+            throw new ApiException('数据权限读取失败');
+        }
+        foreach ($this->adminInfo['roleList'] as $role) {
+            $data_scope = $role['data_scope'];
+            $role_id = $role['id'];
+            switch ($data_scope) {
+                case self::ALL_SCOPE:
+                    return $query;
+                case self::CUSTOM_SCOPE:
+                    $deptIds = Db::name('system_role_dept')->where('role_id', $role_id)->column('dept_id');
+                    $userIds = Db::name('system_user_dept')->where('dept_id', 'in', $deptIds)->column('user_id');
+                    $this->userIds = array_merge($this->userIds, $userIds);
+                    break;
+                case self::SELF_DEPT_SCOPE:
+                    $deptIds = Db::name('system_user_dept')->where('user_id', $this->adminInfo['id'])->column('dept_id');
+                    $userIds = Db::name('system_user_dept')->where('dept_id', 'in', $deptIds)->column('user_id');
+                    $this->userIds = array_merge($this->userIds, $userIds);
+                    break;
+                case self::DEPT_BELOW_SCOPE:
+                    $parentIds = Db::name('system_user_dept')->where('user_id', $this->adminInfo['id'])->column('dept_id');
+                    $ids = [];
+                    foreach ($parentIds as $deptId) {
+                        $ids[] = Db::name('system_dept')->where(function ($query) use($deptId) {
+                            $query->where('id', $deptId)
+                                ->whereOr('level', 'like', $deptId . ',%')
+                                ->whereOr('level', 'like', '%,' . $deptId)
+                                ->whereOr('level', 'like', '%,' . $deptId . ',%');
+                        })->column('id');
+                    }
+                    $deptIds = array_merge($parentIds, ...$ids);
+                    $userIds = Db::name('system_user_dept')->where('dept_id', 'in', $deptIds)->column('user_id');
+                    $this->userIds = array_merge($this->userIds, $userIds);
+                    break;
+                case self::SELF_SCOPE:
+                    $this->userIds = array_merge($this->userIds, [$this->adminInfo['id']]);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $query->where('created_by', 'in', array_unique($this->userIds));
     }
 
     /**
@@ -116,6 +178,9 @@ class BaseLogic
         $limit = request()->input('limit') ? request()->input('limit') : 10;
         $orderBy = request()->input('orderBy') ? request()->input('orderBy') : $this->model->getPk();
         $orderType = request()->input('orderType') ? request()->input('orderType') : 'ASC';
+        if ($this->scope) {
+            $query = $this->userDataScope($query);
+        }
         $query->order($orderBy, $orderType);
         if ($saiType === 'all') {
             return $query->select()->toArray();
@@ -132,6 +197,9 @@ class BaseLogic
     {
         $orderBy = request()->input('orderBy') ? request()->input('orderBy') : $this->model->getPk();
         $orderType = request()->input('orderType') ? request()->input('orderType') : 'ASC';
+        if ($this->scope) {
+            $query = $this->userDataScope($query);
+        }
         $query->order($orderBy, $orderType);
         return $query->select()->toArray();
     }
