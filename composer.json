@@ -11,8 +11,8 @@
 		"firebase/php-jwt": "^6.9",
 		"workerman/crontab": "^1.0",
 		"guzzlehttp/guzzle": "^7.8",
-		"illuminate/redis": "^9.52",
-		"illuminate/events": "^9.52",
+		"illuminate/redis": ">=9.0",
+		"illuminate/events": ">=9.0",
 		"phpoffice/phpspreadsheet": "1.25.2"
 	},
     "autoload": {
