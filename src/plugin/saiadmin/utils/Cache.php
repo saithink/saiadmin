@@ -100,6 +100,9 @@ class Cache
                 return is_string($content) ? unserialize($content) : null;
             }
         } elseif (is_null($value)) {
+			if (!file_exists($filename)) {
+                return false;
+            }
             // 删除缓存
             unlink($filename);
             return false;
