@@ -201,7 +201,7 @@ class ServerMonitor
             $result['total'] = round($total / 1024 / 1024 / 1024, 2);
             // 可用物理内存
             $free = shell_exec('wmic OS get FreePhysicalMemory | findstr /V "FreePhysicalMemory"');
-            $result['free'] = round($free / 1024 / 1024, 2);
+            $result['free'] = round(intval($free) / 1024 / 1024, 2);
             $result['usage'] = round($result['total'] - $result['free'], 2);
             $result['php'] = round(memory_get_usage() / 1024 / 1024, 2);
             $result['rate'] = sprintf(
