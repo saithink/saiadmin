@@ -11,6 +11,13 @@ composer环境的安装命令如下
 composer require saithink/saiadmin
 ```
 
+已经做了版本兼容，最低支持php7.3,已支持最新的php8.3
+php7.3安装
+
+``` bash
+composer require -W saithink/saiadmin
+```
+
 启动方式请查看webman官方文档
 
 <h1>学习</h1>
