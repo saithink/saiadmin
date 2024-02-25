@@ -12,7 +12,8 @@ composer require saithink/saiadmin
 ```
 
 已经做了版本兼容，最低支持php7.3,已支持最新的php8.3
-php7.3安装
+
+如果php7.3无法直接安装，采用下面的安装命令
 
 ``` bash
 composer require -W saithink/saiadmin
