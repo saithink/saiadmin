@@ -151,7 +151,7 @@ class Compile
             $dict_option = "dict: { name: '".$element['dict_type']."', props: { label: 'label', value: 'value' } },";
         } else {
             if(!empty($element['options']) && isset($element['options']['collection'])) {
-                $dict_option = "dict: { data: ".json_encode($element['options']['collection'], JSON_UNESCAPED_UNICODE)." },";
+                $dict_option = "dict: { data: ".json_encode($element['options']['collection'], JSON_UNESCAPED_UNICODE).", translation: true },";
             }
         }
         if (isset($element['column_name'])) {
