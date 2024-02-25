@@ -4,12 +4,11 @@
     "type": "project",
     "license": "MIT",
 	"require": {
-		"php": "^7.2||^8.0",
 		"webman/think-orm": "^1.1",
 		"webman/captcha": "^1.0",
 		"zoujingli/ip2region": "^2.0",
 		"webman/event": "^1.0",
-		"firebase/php-jwt": "^6.9",
+		"firebase/php-jwt": "^6.4",
 		"workerman/crontab": "^1.0",
 		"guzzlehttp/guzzle": "^7.8",
 		"illuminate/redis": ">=9.0",
