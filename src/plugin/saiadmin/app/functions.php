@@ -15,13 +15,18 @@ function getCurrentInfo()
     if (!request()) {
         return false;
     }
-    $token = trim(request()->header(config('plugin.saiadmin.saithink.cross.token_name', 'Authori-zation')));
-    if ($token !== 'null' && $token !== '') {
-        $jwt = new JwtAuth();
-        [$id, $username, $type] = $jwt->parseToken($token);
-        return compact('id', 'username', 'type');
+    $header = request()->header(config('plugin.saiadmin.saithink.cross.token_name', 'Authori-zation'));
+    if ($header) {
+        $token = trim($header);
+        if ($token !== 'null' && $token !== '') {
+            $jwt = new JwtAuth();
+            [$id, $username, $type] = $jwt->parseToken($token);
+            return compact('id', 'username', 'type');
+        } else {
+            return false;
+        }
     } else {
-        return false;
+        throw new ApiException('请通过正确的方式进行访问');
     }
 }
 

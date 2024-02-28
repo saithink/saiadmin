@@ -148,7 +148,7 @@ class Compile
         $current_file = $this->fileName;
         $dict_option = '';
         if (!empty($element['dict_type'])) {
-            $dict_option = "dict: { name: '".$element['dict_type']."', props: { label: 'label', value: 'value' } },";
+            $dict_option = "dict: { name: '".$element['dict_type']."', props: { label: 'label', value: 'value' }, translation: true },";
         } else {
             if(!empty($element['options']) && isset($element['options']['collection'])) {
                 $dict_option = "dict: { data: ".json_encode($element['options']['collection'], JSON_UNESCAPED_UNICODE).", translation: true },";
