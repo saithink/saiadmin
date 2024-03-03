@@ -26,7 +26,7 @@ function getCurrentInfo()
             return false;
         }
     } else {
-        throw new ApiException('请通过正确的方式进行访问');
+        return false;
     }
 }
 

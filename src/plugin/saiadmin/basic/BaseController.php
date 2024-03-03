@@ -82,6 +82,9 @@ class BaseController
     {
         $logic = new SystemUserLogic();
         $result = getCurrentInfo();
+		if (!$result) {
+            throw new ApiException('用户信息读取失败,请重新登录');
+        }
         $this->adminId = $result['id'];
         $this->adminName = $result['username'];
         $this->adminInfo = $logic->read($result['id']);
