@@ -66,6 +66,7 @@ Route::group('/core', function () {
     Route::delete('/crontab/deleteCrontabLog',[\plugin\saiadmin\app\controller\system\SystemCrontabController::class, 'deleteCrontabLog']);
 
     Route::get("/dataMaintain/index",[plugin\saiadmin\app\controller\tool\DataMaintainController::class, 'index']);
+    Route::get("/dataMaintain/dataSource",[plugin\saiadmin\app\controller\tool\DataMaintainController::class, 'source']);
     Route::get("/dataMaintain/detailed",[plugin\saiadmin\app\controller\tool\DataMaintainController::class, 'detailed']);
     Route::post("/dataMaintain/optimize",[plugin\saiadmin\app\controller\tool\DataMaintainController::class, 'optimize']);
     Route::post("/dataMaintain/fragment",[plugin\saiadmin\app\controller\tool\DataMaintainController::class, 'fragment']);

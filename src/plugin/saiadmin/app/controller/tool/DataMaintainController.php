@@ -34,9 +34,20 @@ class DataMaintainController extends BaseController
     {
         $where = $request->more([
             ['name', ''],
+            ['source', ''],
         ]);
         $data = $this->logic->getList($where);
         return $this->success($data);
+    }
+
+    public function source(): Response
+    {
+        $data = config('thinkorm.connections');
+        $list = [];
+        foreach ($data as $k => $v) {
+            $list[] = $k;
+        }
+        return $this->success($list);
     }
 
     /**

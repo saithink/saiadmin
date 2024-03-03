@@ -53,7 +53,7 @@ class GenerateTablesLogic extends BaseLogic
      * @param $names
      * @return void
      */
-    public function loadTable($names)
+    public function loadTable($names, $source)
     {
         $config = config('thinkorm.connections')['mysql'];
         $prefix = $config['prefix'];
@@ -72,7 +72,7 @@ class GenerateTablesLogic extends BaseLogic
                 'generate_menus' => 'save,update,read,delete,recycle,recovery',
             ];
             $model = GenerateTables::create($tableInfo);
-            $columns = $this->dataLogic->getColumnList($item['name']);
+            $columns = $this->dataLogic->getColumnList($item['name'], $source);
             foreach ($columns as &$column) {
                 $column['table_id'] = $model->id;
             }

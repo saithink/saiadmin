@@ -61,7 +61,8 @@ class GenerateTablesController extends BaseController
     public function loadTable(Request $request): Response
     {
         $names = $request->input('names', []);
-        $this->logic->loadTable($names);
+        $source = $request->input('source', '');
+        $this->logic->loadTable($names, $source);
         return $this->success('操作成功');
     }
 

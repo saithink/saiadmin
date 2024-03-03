@@ -29,12 +29,22 @@ class DataMaintainLogic extends BaseLogic
      */
     public function getTableList($query, $current_page = 1, $per_page = 10): array
     {
-        if (!empty($query['name'])) {
-            $sql = 'show table status where name=:name ';
-            $list = Db::query($sql, $query);
+        if (!empty($query['source'])) {
+            if (!empty($query['name'])) {
+                $sql = 'show table status where name=:name ';
+                $list = Db::connect($query['source'])->query($sql, ['name' => $query['name']]);
+            } else {
+                $list = Db::connect($query['source'])->query('show table status');
+            }
         } else {
-            $list = Db::query('show table status');
+            if (!empty($query['name'])) {
+                $sql = 'show table status where name=:name ';
+                $list = Db::query($sql, ['name' => $query['name']]);
+            } else {
+                $list = Db::query('show table status');
+            }
         }
+
         $data = [];
         foreach ($list as $item) {
             $data[] = [
@@ -65,11 +75,15 @@ class DataMaintainLogic extends BaseLogic
     /**
      * 获取列信息
      */
-    public function getColumnList($table): array
+    public function getColumnList($table, $source): array
     {
         $columnList = [];
         if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
-            $list = Db::query('SHOW FULL COLUMNS FROM `'.$table.'`');
+            if (!empty($source)) {
+                $list = Db::connect($source)->query('SHOW FULL COLUMNS FROM `'.$table.'`');
+            } else {
+                $list = Db::query('SHOW FULL COLUMNS FROM `'.$table.'`');
+            }
             foreach ($list as $column) {
                 preg_match('/^\w+/', $column['Type'], $matches);
                 $columnList[] = [
