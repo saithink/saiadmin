@@ -42,6 +42,11 @@ class BaseController
     protected $logic;
 
     /**
+     * 验证器注入
+     */
+    protected $validate;
+
+    /**
      * 构造方法
      * @access public
      */
@@ -133,6 +138,11 @@ class BaseController
     public function save(Request $request) : Response
     {
         $data = $request->post();
+        if ($this->validate) {
+            if (!$this->validate->scene('save')->check($data)) {
+                return $this->fail($this->validate->getError());
+            }
+        }
         $result = $this->logic->save($data);
         if ($result) {
             $this->afterChange('save');
@@ -151,6 +161,11 @@ class BaseController
     public function update(Request $request, $id) : Response
     {
         $data = $request->post();
+        if ($this->validate) {
+            if (!$this->validate->scene('update')->check($data)) {
+                return $this->fail($this->validate->getError());
+            }
+        }
         $result = $this->logic->update($data, ['id' => $id]);
         if ($result) {
             $this->afterChange('update');

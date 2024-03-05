@@ -67,6 +67,7 @@ class GenerateTablesLogic extends BaseLogic
                 'template' => 'saiadmin',
                 'namespace' => 'app\cms',
                 'package_name' => '',
+                'source' => $source,
                 'business_name' => Helper::get_business($item['name']),
                 'class_name' => $class_name,
                 'generate_menus' => 'save,update,read,delete,recycle,recovery',
@@ -91,7 +92,7 @@ class GenerateTablesLogic extends BaseLogic
         $this->columnLogic->destroy(function ($query) use ($id) {
             $query->where('table_id', $id);
         }, true);
-        $columns = $this->dataLogic->getColumnList($model->table_name);
+        $columns = $this->dataLogic->getColumnList($model->table_name, $model->source ?? '');
         foreach ($columns as &$column) {
             $column['table_id'] = $model->id;
         }

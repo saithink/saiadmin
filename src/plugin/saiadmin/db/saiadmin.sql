@@ -951,6 +951,7 @@ CREATE TABLE `eb_tool_generate_tables`  (
   `component_type` smallint(6) NULL DEFAULT 1 COMMENT '组件显示方式',
   `options` varchar(1500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '其他业务选项',
   `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `source` varchar(255) DEFAULT NULL COMMENT '数据源',
   `created_by` int(11) NULL DEFAULT NULL COMMENT '创建者',
   `updated_by` int(11) NULL DEFAULT NULL COMMENT '更新者',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
