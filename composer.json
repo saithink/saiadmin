@@ -14,7 +14,7 @@
 		"guzzlehttp/guzzle": "^7.8",
 		"illuminate/redis": ">=8.0",
 		"illuminate/events": ">=8.0",
-		"phpoffice/phpspreadsheet": "^1.25.0"
+		"phpoffice/phpspreadsheet": "^1.25.0",
 		"topthink/think-validate": "^2.0"
 	},
     "autoload": {
