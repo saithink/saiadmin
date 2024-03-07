@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemDictDataLogic;
+use plugin\saiadmin\app\validate\system\SystemDictDataValidate;
 use plugin\saiadmin\utils\Cache;
 use support\Request;
 use support\Response;
@@ -23,6 +24,7 @@ class SystemDictDataController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemDictDataLogic();
+        $this->validate = new SystemDictDataValidate;
         parent::__construct();
     }
 

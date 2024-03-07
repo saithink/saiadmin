@@ -10,7 +10,6 @@ use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemDept;
 use plugin\saiadmin\app\model\system\SystemDeptLeader;
-use plugin\saiadmin\app\logic\system\SystemUserLogic;
 use plugin\saiadmin\utils\Helper;
 use plugin\saiadmin\utils\Arr;
 
@@ -42,6 +41,9 @@ class SystemDeptLogic extends BaseLogic
     public function update($data, $where)
     {
         $data = $this->handleData($data);
+        if ($data['parent_id'] == $where['id']) {
+            throw new ApiException('不能设置父级为自身');
+        }
         return $this->model->update($data, $where);
     }
 
@@ -85,7 +87,7 @@ class SystemDeptLogic extends BaseLogic
         $logic = new SystemUserLogic();
         $query = $logic->search($where)->alias('user')->join('eb_system_dept_leader dept', 'user.id = dept.user_id')
             ->where('dept.dept_id', $dept_id);
-        return $this->getList($query);
+        return $logic->getList($query);
     }
 
     /**

@@ -58,7 +58,7 @@ class DataMaintainController extends BaseController
     public function detailed(Request $request): Response
     {
         $table = $request->input('table', '');
-        $data = $this->logic->getColumnList($table);
+        $data = $this->logic->getColumnList($table, '');
         return $this->success($data);
     }
 

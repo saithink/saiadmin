@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemPostLogic;
+use plugin\saiadmin\app\validate\system\SystemPostValidate;
 use support\Request;
 use support\Response;
 
@@ -22,6 +23,7 @@ class SystemPostController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemPostLogic();
+        $this->validate = new SystemPostValidate;
         parent::__construct();
     }
 

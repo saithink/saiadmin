@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemNoticeLogic;
+use plugin\saiadmin\app\validate\system\SystemNoticeValidate;
 use support\Request;
 use support\Response;
 
@@ -22,6 +23,7 @@ class SystemNoticeController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemNoticeLogic();
+        $this->validate = new SystemNoticeValidate;
         parent::__construct();
     }
 

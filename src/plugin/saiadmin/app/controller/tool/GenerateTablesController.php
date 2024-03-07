@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\controller\tool;
 
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\tool\GenerateTablesLogic;
+use plugin\saiadmin\app\validate\tool\GenerateTablesValidate;
 use support\Request;
 use support\Response;
 
@@ -22,6 +23,7 @@ class GenerateTablesController extends BaseController
     public function __construct()
     {
         $this->logic = new GenerateTablesLogic();
+        $this->validate = new GenerateTablesValidate;
         parent::__construct();
     }
 
@@ -49,6 +51,9 @@ class GenerateTablesController extends BaseController
     public function update(Request $request, $id) : Response
     {
         $data = $request->post();
+        if (!$this->validate->scene('update')->check($data)) {
+            return $this->fail($this->validate->getError());
+        }
         $this->logic->updateTableAndColumns($data);
         return $this->success('修改成功');
     }

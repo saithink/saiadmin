@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemUserLogic;
+use plugin\saiadmin\app\validate\system\SystemUserValidate;
 use support\Request;
 use support\Response;
 
@@ -22,6 +23,7 @@ class SystemUserController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemUserLogic();
+        $this->validate = new SystemUserValidate;
         parent::__construct();
     }
 
@@ -53,6 +55,9 @@ class SystemUserController extends BaseController
     public function save(Request $request) : Response
     {
         $data = $request->post();
+        if (!$this->validate->scene('save')->check($data)) {
+            return $this->fail($this->validate->getError());
+        }
         $result = $this->logic->add($data);
         if ($result) {
             return $this->success('操作成功');
@@ -70,6 +75,9 @@ class SystemUserController extends BaseController
     public function update(Request $request, $id) : Response
     {
         $data = $request->post();
+        if (!$this->validate->scene('update')->check($data)) {
+            return $this->fail($this->validate->getError());
+        }
         $result = $this->logic->edit($data, $id);
         if ($result) {
             return $this->success('操作成功');

@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemDictTypeLogic;
+use plugin\saiadmin\app\validate\system\SystemDictTypeValidate;
 use support\Request;
 use support\Response;
 
@@ -22,6 +23,7 @@ class SystemDictTypeController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemDictTypeLogic();
+        $this->validate = new SystemDictTypeValidate;
         parent::__construct();
     }
 

@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\model\system\SystemMenu;
 use plugin\saiadmin\basic\BaseLogic;
+use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Helper;
 
 /**
@@ -38,6 +39,9 @@ class SystemMenuLogic extends BaseLogic
     public function update($data, $where)
     {
         $data = $this->handleData($data);
+        if ($data['parent_id'] == $where['id']) {
+            throw new ApiException('不能设置父级为自身');
+        }
         return $this->model->update($data, $where);
     }
 

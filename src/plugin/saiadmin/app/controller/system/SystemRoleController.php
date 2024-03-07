@@ -6,6 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\controller\system;
 
+use plugin\saiadmin\app\validate\system\SystemRoleValidate;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemRoleLogic;
 use support\Request;
@@ -22,6 +23,7 @@ class SystemRoleController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemRoleLogic();
+        $this->validate = new SystemRoleValidate;
         parent::__construct();
     }
 

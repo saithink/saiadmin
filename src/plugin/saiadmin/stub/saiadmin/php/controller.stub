@@ -18,6 +18,12 @@ use ${namespace}\logic\${class_name}Logic;
 #whether[$package_name != ""]
 use ${namespace}\logic\${package_name}\${class_name}Logic;
 #/whether
+#whether[$package_name == ""]
+use ${namespace}\validate\${class_name}Validate;
+#/whether
+#whether[$package_name != ""]
+use ${namespace}\validate\${package_name}\${class_name}Validate;
+#/whether
 use support\Request;
 use support\Response;
 
@@ -32,6 +38,7 @@ class ${class_name}Controller extends BaseController
     public function __construct()
     {
         $this->logic = new ${class_name}Logic();
+        $this->validate = new ${class_name}Validate;
         parent::__construct();
     }
 

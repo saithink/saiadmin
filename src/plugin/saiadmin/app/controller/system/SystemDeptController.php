@@ -6,6 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\controller\system;
 
+use plugin\saiadmin\app\validate\system\SystemDeptValidate;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemDeptLogic;
 use support\Request;
@@ -22,6 +23,7 @@ class SystemDeptController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemDeptLogic();
+        $this->validate = new SystemDeptValidate;
         parent::__construct();
     }
 
@@ -50,6 +52,9 @@ class SystemDeptController extends BaseController
     public function save(Request $request) : Response
     {
         $data = $request->post();
+        if (!$this->validate->scene('save')->check($data)) {
+            return $this->fail($this->validate->getError());
+        }
         $result = $this->logic->save($data);
         if ($result) {
             return $this->success('操作成功');
@@ -67,6 +72,9 @@ class SystemDeptController extends BaseController
     public function update(Request $request, $id) : Response
     {
         $data = $request->post();
+        if (!$this->validate->scene('update')->check($data)) {
+            return $this->fail($this->validate->getError());
+        }
         $result = $this->logic->update($data, ['id' => $id]);
         if ($result) {
             return $this->success('操作成功');

@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemConfigGroupLogic;
+use plugin\saiadmin\app\validate\system\SystemConfigGroupValidate;
 use support\Request;
 use support\Response;
 
@@ -23,6 +24,7 @@ class SystemConfigGroupController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemConfigGroupLogic();
+        $this->validate = new SystemConfigGroupValidate;
         parent::__construct();
     }
 

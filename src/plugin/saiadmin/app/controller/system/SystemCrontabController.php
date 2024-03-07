@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\controller\system;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemCrontabLogic;
 use plugin\saiadmin\app\logic\system\SystemCrontabLogLogic;
+use plugin\saiadmin\app\validate\system\SystemCrontabValidate;
 use support\Request;
 use support\Response;
 
@@ -23,6 +24,7 @@ class SystemCrontabController extends BaseController
     public function __construct()
     {
         $this->logic = new SystemCrontabLogic();
+        $this->validate = new SystemCrontabValidate;
         parent::__construct();
     }
 
