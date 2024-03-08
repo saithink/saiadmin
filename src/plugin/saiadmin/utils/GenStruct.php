@@ -35,7 +35,7 @@ class GenStruct
         ];
         $struct[] = [
             'input' => 'php/validate.stub',
-            'output' => $table['namespace'].DS.'validate'.DS.$table['package_name'].DS.$table['class_name'].'.php'
+            'output' => $table['namespace'].DS.'validate'.DS.$table['package_name'].DS.$table['class_name'].'Validate.php'
         ];
         $struct[] = [
             'input' => 'php/route.stub',

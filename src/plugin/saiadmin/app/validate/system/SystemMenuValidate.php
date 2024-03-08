@@ -19,7 +19,6 @@ class SystemMenuValidate extends Validate
     protected $rule =   [
         'name' => 'require|max:16',
         'code' => 'require',
-        'parent_id' => 'require',
         'status' => 'require',
     ];
 
@@ -29,7 +28,6 @@ class SystemMenuValidate extends Validate
     protected $message  =   [
         'name.require' => '菜单名称必须填写',
         'name.max'     => '菜单名称最多不能超过16个字符',
-        'parent_id' => '上级菜单必须填写',
         'code' => '菜单标识必须填写',
         'status' => '状态必须填写',
     ];
@@ -41,13 +39,11 @@ class SystemMenuValidate extends Validate
         'save' => [
             'name',
             'code',
-            'parent_id',
             'status',
         ],
         'update' => [
             'name',
             'code',
-            'parent_id',
             'status',
         ],
     ];
