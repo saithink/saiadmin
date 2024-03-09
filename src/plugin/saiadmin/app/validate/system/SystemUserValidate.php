@@ -48,7 +48,6 @@ class SystemUserValidate extends Validate
         ],
         'update' => [
             'username',
-            'password',
             'dept_ids',
             'role_ids',
         ],

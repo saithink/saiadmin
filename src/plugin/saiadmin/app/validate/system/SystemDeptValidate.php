@@ -18,7 +18,6 @@ class SystemDeptValidate extends Validate
      */
     protected $rule =   [
         'name' => 'require|max:16',
-        'parent_id' => 'require',
         'status' => 'require',
     ];
 
@@ -28,7 +27,6 @@ class SystemDeptValidate extends Validate
     protected $message  =   [
         'name.require' => '部门名称必须填写',
         'name.max'     => '部门名称最多不能超过16个字符',
-        'parent_id' => '上级部门必须填写',
         'status' => '状态必须填写',
     ];
 
@@ -38,12 +36,10 @@ class SystemDeptValidate extends Validate
     protected $scene = [
         'save' => [
             'name',
-            'parent_id',
             'status',
         ],
         'update' => [
             'name',
-            'parent_id',
             'status',
         ],
     ];
