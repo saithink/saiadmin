@@ -104,85 +104,9 @@ class SystemUploadfileLogic extends BaseLogic
             $info['size_byte'] = $size;
             $info['size_info'] = formatBytes($size);
             $info['url'] = $relative_path;
-            $info['created_by'] = $adminId;
-            $info['updated_by'] = $adminId;
             $this->model->save($info);
             return $info;
         }
-    }
-
-    /**
-     * 获取上传数据
-     * @param Request $request
-     * @param string $type
-     * @return array
-     * @throws ApiException|Exception
-     */
-    public function uploadInfo(Request $request, string $type = 'image'): array
-    {
-        $file = current($request->file());
-        if (!$file || !$file->isValid()) {
-            throw new ApiException('未找到上传文件', 400);
-        }
-
-        $relative_dir = '/upload/'.$type.'/'.date('Ymd');
-        $full_dir = public_path() . $relative_dir;
-        if (!is_dir($full_dir)) {
-            mkdir($full_dir, 0777, true);
-        }
-
-        $ext = $file->getUploadExtension() ?: null;
-        $mime_type = $file->getUploadMimeType();
-        $file_name = $file->getUploadName();
-        $file_size = $file->getSize();
-
-        if (!$ext && $file_name === 'blob') {
-            [$___image, $ext] = explode('/', $mime_type);
-            unset($___image);
-        }
-        $ext = strtolower($ext);
-        $upload_config = getConfigGroup('upload_config');
-        $ext_forbidden_map = config('plugin.saiadmin.saithink.upload.fileExt');
-        $upload_max_size = config('plugin.saiadmin.saithink.upload.filesize');
-        if ($type == 'image') {
-            $config = Arr::getArrayByColumn($upload_config, 'key', 'upload_allow_image');
-            $ext_forbidden_map = explode(',', $config['value']);
-        }
-        if ($type == 'file') {
-            $config = Arr::getArrayByColumn($upload_config, 'key', 'upload_allow_file');
-            $ext_forbidden_map = explode(',', $config['value']);
-        }
-        if (!in_array($ext, $ext_forbidden_map)) {
-            throw new ApiException('不支持该格式的文件上传', 400);
-        }
-        $upload_column = Arr::getArrayByColumn($upload_config, 'key', 'upload_size');
-        if ($upload_column && count($upload_column) > 0) {
-            $upload_max_size = $upload_column['value'];
-        }
-        if ($file_size > $upload_max_size) {
-            throw new ApiException('文件大小超过限制', 400);
-        }
-        $object_name = bin2hex(pack('Nn',time(), random_int(1, 65535))) . ".$ext";
-        $relative_path = $relative_dir . '/' . $object_name;
-        $full_path = public_path() . $relative_path;
-        $file->move($full_path);
-        $image_with = $image_height = 0;
-        if ($img_info = getimagesize($full_path)) {
-            [$image_with, $image_height] = $img_info;
-            $mime_type = $img_info['mime'];
-        }
-        return [
-            'url'     => $relative_path,
-            'name'     => $file_name,
-            'object_name' => $object_name,
-            'realpath' => $full_path,
-            'storage_path' => $relative_dir,
-            'size'     => $file_size,
-            'mime_type' => $mime_type,
-            'image_with' => $image_with,
-            'image_height' => $image_height,
-            'ext' => $ext,
-        ];
     }
 
 }

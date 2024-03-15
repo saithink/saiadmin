@@ -24,15 +24,8 @@ return [
         // 开启缓存
         'enable' => true,
         // 驱动 redis或者file
-        'type' =>'redis',
+        'type' =>'file',
         // 缓存前缀
         'prefix' =>'saithink_',
-    ],
-    // 文件上传配置
-    'upload' => [
-        //上传文件大小
-        'filesize' => 5242880,
-        //上传文件后缀类型
-        'fileExt' => ['jpg', 'jpeg', 'png', 'gif', 'mp3', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip', 'rar', 'mp4', 'pem', 'key'],
     ]
 ];
