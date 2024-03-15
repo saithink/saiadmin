@@ -24,7 +24,7 @@ return [
         // 开启缓存
         'enable' => true,
         // 驱动 redis或者file
-        'type' =>'file',
+        'type' =>'redis',
         // 缓存前缀
         'prefix' =>'saithink_',
     ],

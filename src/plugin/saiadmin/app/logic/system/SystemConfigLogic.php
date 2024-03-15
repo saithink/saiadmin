@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\logic\system;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemConfig;
+use plugin\saiadmin\utils\Cache;
 use plugin\saiadmin\utils\Helper;
 
 /**
@@ -24,4 +25,18 @@ class SystemConfigLogic extends BaseLogic
         $this->model = new SystemConfig();
     }
 
+    /**
+     * 获取配置
+     */
+    public function getConfig($config)
+    {
+        $prefix = 'config_';
+        $data = Cache::get($prefix . $config);
+        if ($data) {
+            return $data;
+        }
+        $info = $this->model->where('key', $config)->find();
+        Cache::set($prefix . $config, $info);
+        return $info;
+    }
 }

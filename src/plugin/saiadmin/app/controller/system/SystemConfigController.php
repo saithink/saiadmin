@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\controller\system;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemConfigLogic;
 use plugin\saiadmin\app\validate\system\SystemConfigValidate;
+use plugin\saiadmin\utils\Cache;
 use support\Request;
 use support\Response;
 
@@ -55,6 +56,7 @@ class SystemConfigController extends BaseController
         foreach ($data as $key => $value) {
             $this->logic->where('key', $key)
                 ->update(['value' => is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $value]);
+            Cache::clear('config_'.$key);
         }
         return $this->success('操作成功');
     }

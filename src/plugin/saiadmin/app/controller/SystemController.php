@@ -15,11 +15,14 @@ use plugin\saiadmin\app\logic\system\SystemUserLogic;
 use plugin\saiadmin\app\logic\system\SystemNoticeLogic;
 use plugin\saiadmin\app\logic\system\SystemDictDataLogic;
 use plugin\saiadmin\app\logic\system\SystemUploadfileLogic;
+use plugin\saiadmin\app\logic\system\SystemConfigLogic;
 use plugin\saiadmin\utils\ServerMonitor;
+use plugin\saiadmin\exception\ApiException;
 use support\Request;
 use support\Response;
 use plugin\saiadmin\utils\Cache;
 use plugin\saiadmin\utils\Arr;
+use Tinywan\Storage\Storage;
 
 /**
  * 系统控制器
@@ -129,8 +132,9 @@ class SystemController extends BaseController
     public function saveNetworkImage(Request $request): Response
     {
         $url = $request->input('url', '');
+        $config = Storage::getConfig('local');
         $logic = new SystemUploadfileLogic();
-        $data = $logic->saveNetworkImage($url, '/upload/image/'.date('Ymd'), $this->adminId);
+        $data = $logic->saveNetworkImage($url, $config);
         return $this->success($data, '操作成功');
     }
 
@@ -139,8 +143,13 @@ class SystemController extends BaseController
      */
     public function uploadImage(Request $request): Response
     {
-        $result = $this->uploadBase($request, 'image');
-        return $this->success($result);
+        $type = $request->input('mode', 'system');
+        if ($type == 'local') {
+            return $this->success($this->uploadBase('image', 1));
+        }
+        $configLogic = new SystemConfigLogic();
+        $config = $configLogic->getConfig('upload_mode');
+        return $this->success($this->uploadBase('image', $config['value']));
     }
 
     /**
@@ -148,35 +157,69 @@ class SystemController extends BaseController
      */
     public function uploadFile(Request $request): Response
     {
-        $result = $this->uploadBase($request, 'file');
-        return $this->success($result);
+        $type = $request->input('mode', 'system');
+        if ($type == 'local') {
+            return $this->success($this->uploadBase('file', 1));
+        }
+        $configLogic = new SystemConfigLogic();
+        $config = $configLogic->getConfig('upload_mode');
+        return $this->success($this->uploadBase('file', $config['value']));
     }
 
-    public function uploadBase($request, $type)
+    public function uploadBase($upload = 'image', $type = 1)
     {
-        $file = current($request->file());
-        if (!$file || !$file->isValid()) {
-            return $this->fail('未找到上传文件');
+        $configLogic = new SystemConfigLogic();
+        $file = current(request()->file());
+        $ext = $file->getUploadExtension() ?: null;
+        $file_size = $file->getSize();
+        $upload_max_size = $configLogic->getConfig('upload_size');
+        if ($file_size > $upload_max_size['value']) {
+            throw new ApiException('文件大小超过限制');
         }
-        $hash = md5_file($file->getPath() . '/' . $file->getFilename());
+        $allow_file = $configLogic->getConfig('upload_allow_file');
+        $allow_image = $configLogic->getConfig('upload_allow_image');
+        if ($upload == 'image') {
+            if (!in_array($ext, explode(',', $allow_image['value']))) {
+                throw new ApiException('不支持该格式的文件上传');
+            }
+        } else {
+            if (!in_array($ext, explode(',', $allow_file['value']))) {
+                throw new ApiException('不支持该格式的文件上传');
+            }
+        }
+        switch ($type) {
+            case 1:
+                $result = Storage::disk('local')->uploadFile();
+                break;
+            case 2:
+                $result = Storage::disk('oss')->uploadFile();
+                break;
+            case 3:
+                $result = Storage::disk('qiniu')->uploadFile();
+                break;
+            case 4:
+                $result = Storage::disk('cos')->uploadFile();
+                break;
+            default:
+                throw new ApiException('该上传模式不存在');
+        }
+        $data = $result[0];
+        $hash = $data['unique_id'];
         $logic = new SystemUploadfileLogic();
         $model = $logic->where('hash', $hash)->find();
         if ($model) {
             return $model->toArray();
         } else {
-            $data = $logic->uploadInfo($request, $type);
-            $info['storage_mode'] = 1;
-            $info['origin_name'] = $data['name'];
-            $info['object_name'] = $data['object_name'];
-            $info['hash'] = $hash;
+            $info['storage_mode'] = $type;
+            $info['origin_name'] = $data['origin_name'];
+            $info['object_name'] = $data['save_name'];
+            $info['hash'] = $data['unique_id'];
             $info['mime_type'] = $data['mime_type'];
-            $info['storage_path'] = $data['storage_path'];
-            $info['suffix'] = $data['ext'];
+            $info['storage_path'] = $data['save_path'];
+            $info['suffix'] = $data['extension'];
             $info['size_byte'] = $data['size'];
             $info['size_info'] = formatBytes($data['size']);
             $info['url'] = $data['url'];
-            $info['created_by'] = $this->adminId;
-            $info['updated_by'] = $this->adminId;
             $logic->save($info);
             return $info;
         }
@@ -192,8 +235,7 @@ class SystemController extends BaseController
         $logic = new SystemUploadfileLogic();
         $model = $logic->find($id);
         $object_name = $model->object_name;
-        $base_dir = public_path();
-        return response()->download($base_dir . $model->storage_path . '/' .$object_name, $object_name);
+        return response()->download($model->storage_path, $object_name);
     }
 
     /**
@@ -206,8 +248,7 @@ class SystemController extends BaseController
         $logic = new SystemUploadfileLogic();
         $model = $logic->where('hash', $hash)->find();
         $object_name = $model->object_name;
-        $base_dir = public_path();
-        return response()->download($base_dir . $model->storage_path . '/' .$object_name, $object_name);
+        return response()->download($model->storage_path, $object_name);
     }
 
     /**
