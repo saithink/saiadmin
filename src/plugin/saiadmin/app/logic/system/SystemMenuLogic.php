@@ -46,6 +46,19 @@ class SystemMenuLogic extends BaseLogic
     }
 
     /**
+     * 数据删除
+     */
+    public function destroy($ids)
+    {
+        $num = $this->model->where('parent_id', 'in', $ids)->count();
+        if ($num > 0) {
+            throw new ApiException('该菜单下存在子菜单，请先删除子菜单');
+        } else {
+            return $this->model->destroy($ids);
+        }
+    }
+
+    /**
      * 数据处理
      */
     protected function handleData($data)

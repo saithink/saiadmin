@@ -48,6 +48,19 @@ class SystemDeptLogic extends BaseLogic
     }
 
     /**
+     * 数据删除
+     */
+    public function destroy($ids)
+    {
+        $num = $this->model->where('parent_id', 'in', $ids)->count();
+        if ($num > 0) {
+            throw new ApiException('该部门下存在子部门，请先删除子部门');
+        } else {
+            return $this->model->destroy($ids);
+        }
+    }
+
+    /**
      * 数据处理
      */
     protected function handleData($data)
