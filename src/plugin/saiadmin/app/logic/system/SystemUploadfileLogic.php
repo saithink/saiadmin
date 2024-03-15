@@ -30,12 +30,11 @@ class SystemUploadfileLogic extends BaseLogic
     /**
      * 保存网络图片
      * @param $url
-     * @param $relative_dir
-     * @param $adminId
+     * @param $config
      * @return array
      * @throws ApiException|Exception
      */
-    public function saveNetworkImage($url, $relative_dir, $adminId): array
+    public function saveNetworkImage($url, $config): array
     {
         $image_data = file_get_contents($url);
         if ($image_data === false) {
@@ -84,26 +83,28 @@ class SystemUploadfileLogic extends BaseLogic
             unlink($save_path);
             return $model->toArray();
         } else {
-            $full_dir = public_path() . $relative_dir;
+            $full_dir = $config['root'].date('Ymd').DIRECTORY_SEPARATOR;
             if (!is_dir($full_dir)) {
                 mkdir($full_dir, 0777, true);
             }
             $object_name = bin2hex(pack('Nn',time(), random_int(1, 65535))) . ".$file_extension";
-            $relative_path = $relative_dir . '/' . $object_name;
-            $newPath = $full_dir.'/' . $object_name;
+            $newPath = $full_dir . $object_name;
+
             copy($save_path, $newPath);
             unlink($save_path);
+
+            $baseUrl = $config['domain'].$config['uri'].str_replace(DIRECTORY_SEPARATOR, '/', date('Ymd')).DIRECTORY_SEPARATOR;
 
             $info['storage_mode'] = 1;
             $info['origin_name'] = $filename;
             $info['object_name'] = $object_name;
             $info['hash'] = $hash;
             $info['mime_type'] = $mime_type;
-            $info['storage_path'] = $relative_dir;
+            $info['storage_path'] = $newPath;
             $info['suffix'] = $file_extension;
             $info['size_byte'] = $size;
             $info['size_info'] = formatBytes($size);
-            $info['url'] = $relative_path;
+            $info['url'] = $baseUrl . $object_name;
             $this->model->save($info);
             return $info;
         }
