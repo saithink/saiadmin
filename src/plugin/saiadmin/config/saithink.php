@@ -27,5 +27,12 @@ return [
         'type' =>'file',
         // 缓存前缀
         'prefix' =>'saithink_',
+    ],
+	// 验证码存储模式
+    'captcha' => [
+        // 验证码存储模式 session或者redis
+        'mode' => 'session',
+        // 验证码过期时间 (秒)
+        'expire' => 300,
     ]
 ];
