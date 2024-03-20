@@ -26,6 +26,7 @@ class LoginController
     {
         $builder = new PhraseBuilder(4, 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ');
         $captcha = new CaptchaBuilder(null, $builder);
+        $captcha->setBackgroundColor(242,243,245);
         $captcha->build(120, 36);
 
         $uuid = Uuid::uuid4();
