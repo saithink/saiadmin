@@ -181,6 +181,10 @@ class Compile
                 $element['type'] = $element['options']['type'] ?? 'select';
                 $element['mode'] = $element['options']['mode'] ?? 'name';
             }
+			if ($element['view_type'] == 'switch') {
+                $element['checked_value'] = $element['options']['checkedValue'] ?? 'true';
+                $element['unchecked_value'] = $element['options']['uncheckedValue'] ?? 'false';
+            }
             $element['is_required'] = ($element['is_required'] == 2) ? 'true' : 'false';
             $element['is_query'] = ($element['is_query'] == 2) ? 'true' : 'false';
             $element['is_insert'] = ($element['is_insert'] == 2) ? 'true' : 'false';

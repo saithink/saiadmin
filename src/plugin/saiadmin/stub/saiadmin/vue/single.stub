@@ -7,7 +7,7 @@
       <template #status="{ record }">
         <a-switch
           :checked-value="1"
-          unchecked-value="2"
+          :unchecked-value="2"
           @change="changeStatus($event, record.${pk})"
           :default-checked="record.status == 1"
         />
@@ -63,7 +63,7 @@
 
   const columns = reactive([
 #foreach($column in $columns)
-#if[!in_array($view_type, array("select", "radio", "checkbox", "date", "upload", "treeSelect", "userSelect"))]
+#if[!in_array($view_type, array("select", "radio", "checkbox", "switch", "date", "upload", "treeSelect", "userSelect"))]
     {
       title: '${column_comment}',
       dataIndex: '${column_name}',
@@ -145,6 +145,21 @@
       formType: '${view_type}',
       type: '${type}',
       name: '${name}',
+      commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
+    },
+#/if
+#if[$view_type == "switch"]
+    {
+      title: '${column_comment}',
+      dataIndex: '${column_name}',
+      width: 180,
+      search: ${is_query},
+      addDisplay: ${is_insert}, ${add_default}
+      editDisplay: ${is_edit},
+      hide: ${is_list},
+      checkedValue: ${checked_value},
+      uncheckedValue: ${unchecked_value},
+      formType: '${view_type}',
       commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
     },
 #/if
