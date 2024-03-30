@@ -118,6 +118,7 @@
       hide: ${is_list},
       formType: '${view_type}',
       dict: { url: '' },
+      validateTrigger: 'focus',
       commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
     },
 #/if

@@ -7,7 +7,7 @@
       <template #status="{ record }">
         <a-switch
           :checked-value="1"
-          unchecked-value="2"
+          :unchecked-value="2"
           @change="changeStatus($event, record.${pk})"
           :default-checked="record.status == 1"
         />
@@ -123,6 +123,7 @@
       hide: ${is_list},
       formType: '${view_type}',
       dict: { url: '' },
+      validateTrigger: 'focus',
       commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
     },
 #/if

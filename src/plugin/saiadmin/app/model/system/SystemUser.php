@@ -29,15 +29,6 @@ class SystemUser extends BaseModel
     }
 
     /**
-     * 根据部门id进行搜索
-     */
-    public function searchDeptIdAttr($query, $value)
-    {
-        $query->join('eb_system_user_dept dept', 'eb_system_user.id = dept.user_id')
-            ->where('dept.dept_id', $value);
-    }
-
-    /**
      * 根据岗位id进行搜索
      */
     public function searchPostIdAttr($query, $value)
@@ -75,6 +66,6 @@ class SystemUser extends BaseModel
      */
     public function depts()
     {
-        return $this->belongsToMany(SystemDept::class, SystemUserDept::class, 'dept_id', 'user_id');
+        return $this->belongsTo(SystemDept::class, 'dept_id', 'id');
     }
 }

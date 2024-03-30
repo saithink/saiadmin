@@ -23,7 +23,7 @@ class SystemUserLogic extends BaseLogic
         $data = $admin->toArray();
         $data['roleList'] = $admin->roles->toArray() ?: [];
         $data['postList'] = $admin->posts->toArray() ?: [];
-        $data['deptList'] = $admin->depts->toArray() ?: [];
+        $data['deptList'] = $admin->depts;
         return $data;
     }
 
@@ -32,14 +32,10 @@ class SystemUserLogic extends BaseLogic
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         $role_ids = $data['role_ids'] ?? [];
         $post_ids = $data['post_ids'] ?? '';
-        $dept_ids = $data['dept_ids'] ?? '';
         $user = SystemUser::create($data);
         $user->roles()->saveAll($role_ids);
         if ($post_ids !== '') {
             $user->posts()->save($post_ids);
-        }
-        if ($dept_ids !== '') {
-            $user->depts()->save($dept_ids);
         }
         return $user->getKey();
     }
@@ -49,19 +45,14 @@ class SystemUserLogic extends BaseLogic
         unset($data['password']);
         $role_ids = $data['role_ids'] ?? [];
         $post_ids = $data['post_ids'] ?? '';
-        $dept_ids = $data['dept_ids'] ?? '';
         $result = $this->model->update($data,['id' => $id]);
         $user = $this->model->find($id);
         if ($result && $user) {
             $user->roles()->detach();
             $user->posts()->detach();
-            $user->depts()->detach();
             $user->roles()->saveAll($role_ids);
             if ($post_ids !== '') {
                 $user->posts()->save($post_ids);
-            }
-            if ($dept_ids !== '') {
-                $user->depts()->save($dept_ids);
             }
         }
         return $result;
