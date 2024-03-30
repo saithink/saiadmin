@@ -51,7 +51,7 @@ class SystemPostController extends BaseController
      */
     public function downloadTemplate() : Response
     {
-        $file_name = "导入模板.xls";
+        $file_name = "template.xls";
         return downloadFile($file_name);
     }
 
