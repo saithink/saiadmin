@@ -19,7 +19,6 @@ class SystemUserValidate extends Validate
     protected $rule =   [
         'username' => 'require|max:16',
         'password' => 'require|min:6|max:16',
-        'dept_ids' => 'require',
         'role_ids' => 'require',
     ];
 
@@ -32,7 +31,6 @@ class SystemUserValidate extends Validate
         'password.require' => '密码必须填写',
         'password.min' => '密码最少为6位',
         'password.max' => '密码长度不能超过16位',
-        'dept_ids' => '所属部门必须填写',
         'role_ids' => '角色必须填写',
     ];
 
@@ -43,12 +41,10 @@ class SystemUserValidate extends Validate
         'save' => [
             'username',
             'password',
-            'dept_ids',
             'role_ids',
         ],
         'update' => [
             'username',
-            'dept_ids',
             'role_ids',
         ],
     ];
