@@ -61,6 +61,11 @@ class BaseLogic
      */
     public $userIds = [];
 
+    /**
+     * 初始化
+     * @param $user
+     * @return void
+     */
     public function init($user)
     {
         $this->adminInfo = $user;
@@ -71,7 +76,7 @@ class BaseLogic
      * @param $query
      * @return mixed
      */
-    public function userDataScope($query): mixed
+    public function userDataScope($query)
     {
         if (!$this->adminInfo) {
             throw new ApiException('数据权限读取失败');
@@ -123,7 +128,7 @@ class BaseLogic
      * @param bool $isTran
      * @return mixed
      */
-    public function transaction(callable $closure, bool $isTran = true): mixed
+    public function transaction(callable $closure, bool $isTran = true)
     {
         return $isTran ? Db::transaction($closure) : $closure();
     }
@@ -143,7 +148,7 @@ class BaseLogic
      * @param $ids
      * @return void
      */
-    public function restore($ids): void
+    public function restore($ids)
     {
         $list = $this->model->onlyTrashed()->where($this->model->getPk(), 'in', $ids)->select();
         foreach ($list as $item) {
@@ -156,7 +161,7 @@ class BaseLogic
      * @param array $searchWhere
      * @return mixed
      */
-    public function search(array $searchWhere = []): mixed
+    public function search(array $searchWhere = [])
     {
         $withSearch = array_keys($searchWhere);
         $data = $searchWhere;
@@ -171,10 +176,9 @@ class BaseLogic
 
     /**
      * 分页查询数据
-     * @param $query
      * @return mixed
      */
-    public function getList($query): mixed
+    public function getList($query)
     {
         $saiType = request()->input('saiType') ? request()->input('saiType') : 'list';
         $page = request()->input('page') ? request()->input('page') : 1;
@@ -196,7 +200,7 @@ class BaseLogic
      * @param $query
      * @return mixed
      */
-    public function getAll($query): mixed
+    public function getAll($query)
     {
         $orderBy = request()->input('orderBy') ? request()->input('orderBy') : $this->model->getPk();
         $orderType = request()->input('orderType') ? request()->input('orderType') : 'ASC';
