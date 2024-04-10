@@ -47,6 +47,11 @@ class BaseController
     protected $validate;
 
     /**
+     * @var string 默认主键
+     */
+    protected string $pk = 'id';
+
+    /**
      * 构造方法
      * @access public
      */
@@ -166,7 +171,7 @@ class BaseController
                 return $this->fail($this->validate->getError());
             }
         }
-        $result = $this->logic->update($data, ['id' => $id]);
+        $result = $this->logic->update($data, [$this->pk => $id]);
         if ($result) {
             $this->afterChange('update');
             return $this->success('操作成功');
@@ -182,9 +187,9 @@ class BaseController
      */
     public function changeStatus(Request $request) : Response
     {
-        $id = $request->input('id', '');
+        $id = $request->input($this->pk, '');
         $status = $request->input('status', 1);
-        $result = $this->logic->where('id', $id)->update(['status' => $status]);
+        $result = $this->logic->where($this->pk, $id)->update(['status' => $status]);
         if ($result) {
             $this->afterChange('changeStatus');
             return $this->success('操作成功');

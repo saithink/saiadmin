@@ -31,11 +31,13 @@ use think\facade\Db;
 class BaseLogic
 {
     /**
-     * 模型注入
-     * @var object
+     * @var object 模型注入
      */
     protected $model;
 
+    /**
+     * @var object 管理员信息
+     */
     protected $adminInfo;
 
     /**
@@ -69,7 +71,7 @@ class BaseLogic
      * @param $query
      * @return mixed
      */
-    public function userDataScope($query)
+    public function userDataScope($query): mixed
     {
         if (!$this->adminInfo) {
             throw new ApiException('数据权限读取失败');
@@ -121,7 +123,7 @@ class BaseLogic
      * @param bool $isTran
      * @return mixed
      */
-    public function transaction(callable $closure, bool $isTran = true)
+    public function transaction(callable $closure, bool $isTran = true): mixed
     {
         return $isTran ? Db::transaction($closure) : $closure();
     }
@@ -141,9 +143,9 @@ class BaseLogic
      * @param $ids
      * @return void
      */
-    public function restore($ids)
+    public function restore($ids): void
     {
-        $list = $this->model->onlyTrashed()->where('id', 'in', $ids)->select();
+        $list = $this->model->onlyTrashed()->where($this->model->getPk(), 'in', $ids)->select();
         foreach ($list as $item) {
             $item->restore();
         }
@@ -154,7 +156,7 @@ class BaseLogic
      * @param array $searchWhere
      * @return mixed
      */
-    public function search(array $searchWhere = [])
+    public function search(array $searchWhere = []): mixed
     {
         $withSearch = array_keys($searchWhere);
         $data = $searchWhere;
@@ -169,9 +171,10 @@ class BaseLogic
 
     /**
      * 分页查询数据
+     * @param $query
      * @return mixed
      */
-    public function getList($query)
+    public function getList($query): mixed
     {
         $saiType = request()->input('saiType') ? request()->input('saiType') : 'list';
         $page = request()->input('page') ? request()->input('page') : 1;
@@ -193,7 +196,7 @@ class BaseLogic
      * @param $query
      * @return mixed
      */
-    public function getAll($query)
+    public function getAll($query): mixed
     {
         $orderBy = request()->input('orderBy') ? request()->input('orderBy') : $this->model->getPk();
         $orderType = request()->input('orderType') ? request()->input('orderType') : 'ASC';
@@ -204,6 +207,11 @@ class BaseLogic
         return $query->select()->toArray();
     }
 
+    /**
+     * 获取上传的导入文件
+     * @param $file
+     * @return string
+     */
     public function getImport($file): string
     {
         $full_dir = runtime_path() . '/resource/';
