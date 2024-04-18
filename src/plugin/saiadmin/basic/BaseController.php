@@ -239,8 +239,6 @@ class BaseController
     public function recycle(Request $request) : Response
     {
         $where = $request->more([
-            ['title', ''],
-            ['type', ''],
             ['create_time', ''],
         ]);
         $query = $this->logic->recycle()->search($where);
@@ -260,6 +258,23 @@ class BaseController
             $this->logic->restore($ids);
             $this->afterChange('recovery');
             return $this->success('恢复成功');
+        } else {
+            return $this->fail('参数错误，请检查');
+        }
+    }
+	
+	/**
+     * 数据销毁-真实删除
+     * @param Request $request
+     * @return Response
+     */
+    public function realDestroy(Request $request) : Response
+    {
+        $ids = $request->input('ids', '');
+        if (!empty($ids)) {
+            $this->logic->destroy($ids, true);
+            $this->afterChange('realDestroy');
+            return $this->success('操作成功');
         } else {
             return $this->fail('参数错误，请检查');
         }
