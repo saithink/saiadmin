@@ -94,7 +94,7 @@ class SystemMenuLogic extends BaseLogic
      */
     public function getAllMenus(): array
     {
-        $query = $this->search(['type' => 'M'])->order('sort', 'desc');
+        $query = $this->search(['type' => ['M','I','L']])->order('sort', 'desc');
         $data = $this->getAll($query);
         return Helper::makeArcoMenus($data);
     }

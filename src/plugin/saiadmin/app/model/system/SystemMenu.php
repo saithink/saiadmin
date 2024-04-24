@@ -25,5 +25,17 @@ class SystemMenu extends BaseModel
     {
         $query->whereIn('id', $value);
     }
+	
+	/**
+     * Type搜索
+     */
+    public function searchTypeAttr($query, $value)
+    {
+        if (is_array($value)){
+            $query->whereIn('type', $value);
+        }else{
+            $query->where('type', $value);
+        }
+    }
 
 }

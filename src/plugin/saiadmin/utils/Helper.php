@@ -112,6 +112,22 @@ class Helper
                 ];
                 $list[$value[$keyName]] = $temp;
             }
+			if ($value['type'] === 'I' || $value['type'] === 'L'){
+                $temp = [
+                    $keyName => $value[$keyName],
+                    $pidName => $value[$pidName],
+                    'name' => $value['code'],
+                    'path' => $value['route'],
+                    'meta' => [
+                        'title' => $value['name'],
+                        'type' => $value['type'],
+                        'hidden' => $value['is_hidden'] === 1,
+                        'hiddenBreadcrumb' => false,
+                        'icon' => $value['icon'],
+                    ],
+                ];
+                $list[$value[$keyName]] = $temp;
+            }
         }
         $tree = []; //格式化好的树
         foreach ($list as $item) {
