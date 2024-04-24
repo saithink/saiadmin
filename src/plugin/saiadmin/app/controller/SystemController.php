@@ -318,4 +318,13 @@ class SystemController extends BaseController
             'phpenv' => $service->getPhpAndEnvInfo(),
         ]);
     }
+	
+	/**
+     * 清除缓存
+     * @return Response
+     */
+    public function clearAllCache() : Response
+    {
+        return $this->success([], '清除缓存成功!');
+    }
 }
