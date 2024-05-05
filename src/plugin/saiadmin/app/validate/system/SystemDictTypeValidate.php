@@ -18,7 +18,7 @@ class SystemDictTypeValidate extends Validate
      */
     protected $rule =   [
         'name' => 'require|max:16',
-        'code' => 'require|alpha',
+        'code' => 'require|alphaDash',
         'status' => 'require',
     ];
 
@@ -29,7 +29,7 @@ class SystemDictTypeValidate extends Validate
         'name.require' => '字典名称必须填写',
         'name.max'     => '字典名称最多不能超过16个字符',
         'code.require' => '字典标识必须填写',
-        'code.alpha' => '字典标识只能由英文字母组成',
+        'code.alphaDash' => '字典标识只能由英文字母组成',
         'status' => '状态必须填写',
     ];
 

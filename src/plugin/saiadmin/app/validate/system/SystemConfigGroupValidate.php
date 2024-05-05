@@ -18,7 +18,7 @@ class SystemConfigGroupValidate extends Validate
      */
     protected $rule =   [
         'name' => 'require|max:16|chs',
-        'code' => 'require|alpha',
+        'code' => 'require|alphaDash',
     ];
 
     /**
@@ -29,7 +29,7 @@ class SystemConfigGroupValidate extends Validate
         'name.max'     => '组名称最多不能超过16个字符',
         'name.chs'     => '组名称必须是中文',
         'code.require' => '组标识必须填写',
-        'code.alpha' => '组标识只能由英文字母组成',
+        'code.alphaDash' => '组标识只能由英文字母组成',
     ];
 
     /**
