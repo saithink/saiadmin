@@ -6,13 +6,13 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\BaseModel;
+use plugin\saiadmin\basic\BaseNormalModel;
 /**
  * 字典类型模型
  * Class SystemDict
  * @package app\model
  */
-class SystemDictData extends BaseModel
+class SystemDictData extends BaseNormalModel
 {
     /**
      * 数据表主键

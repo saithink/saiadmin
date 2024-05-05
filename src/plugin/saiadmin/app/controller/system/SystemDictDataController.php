@@ -66,7 +66,7 @@ class SystemDictDataController extends BaseController
             $ids = request()->input('ids', '');
             if (is_array($ids)) {
                 $id = $ids[0];
-                $info = $this->logic->withTrashed()->find($id);
+                $info = $this->logic->find($id);
                 if ($info) {
                     Cache::clear($info->code);
                 }
