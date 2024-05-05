@@ -1,0 +1,9 @@
+INSERT INTO `eb_system_menu` VALUES (NULL, 4612, '0,4602,4612', '文章分类销毁', '/news/category/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
+INSERT INTO `eb_system_menu` VALUES (NULL, 4604, '0,4602,4604', '文章管理销毁', '/news/article/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
+INSERT INTO `eb_system_menu` VALUES (NULL, 1100, '0,1000,1100', '用户销毁', '/core/user/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
+INSERT INTO `eb_system_menu` VALUES (NULL, 1200, '0,1000,1200', '菜单销毁', '/core/menu/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
+INSERT INTO `eb_system_menu` VALUES (NULL, 1300, '0,1000,1300', '部门销毁', '/core/dept/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
+INSERT INTO `eb_system_menu` VALUES (NULL, 1400, '0,1000,1400', '角色销毁', '/core/role/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
+INSERT INTO `eb_system_menu` VALUES (NULL, 1500, '0,1000,1500', '岗位销毁', '/core/post/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
+INSERT INTO `eb_system_menu` VALUES (NULL, 2200, '0,2000,2200', '附件销毁', '/core/attachment/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
+INSERT INTO `eb_system_menu` VALUES (NULL, 2700, '0,2000,2700', '系统公告销毁', '/core/notice/realDestroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2024-04-30 16:30:00', '2023-04-30 16:30:00', NULL);
