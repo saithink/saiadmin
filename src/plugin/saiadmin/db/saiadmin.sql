@@ -477,21 +477,21 @@ INSERT INTO `eb_system_menu` VALUES (4506, 4500, '0,4500', '删除配置', '/cor
 INSERT INTO `eb_system_menu` VALUES (4507, 4500, '0,4500', '清除配置缓存', '/core/config/clearCache', '', NULL, '', NULL, 1, 'B', 1, 0, NULL, 1, 1, '2021-08-10 13:13:59', '2021-08-10 13:13:59', NULL);
 INSERT INTO `eb_system_menu` VALUES (4602, 0, '0', '信息管理', 'cms', 'IconApps', 'cms', NULL, NULL, 2, 'M', 1, 1, NULL, 1, 1, '2023-11-29 17:36:37', '2023-11-29 17:36:37', NULL);
 INSERT INTO `eb_system_menu` VALUES (4604, 4602, '0,4602', '文章管理', '/news/article', 'icon-home', 'article', 'news/article/index', NULL, 2, 'M', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
-INSERT INTO `eb_system_menu` VALUES (4605, 4604, '4602,4604', '文章管理列表', '/news/article/index', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
-INSERT INTO `eb_system_menu` VALUES (4606, 4604, '4602,4604', '文章管理保存', '/news/article/save', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
-INSERT INTO `eb_system_menu` VALUES (4607, 4604, '4602,4604', '文章管理更新', '/news/article/update', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
-INSERT INTO `eb_system_menu` VALUES (4608, 4604, '4602,4604', '文章管理读取', '/news/article/read', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
-INSERT INTO `eb_system_menu` VALUES (4609, 4604, '4602,4604', '文章管理删除', '/news/article/destroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
-INSERT INTO `eb_system_menu` VALUES (4610, 4604, '4602,4604', '文章管理回收', '/news/article/recycle', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
-INSERT INTO `eb_system_menu` VALUES (4611, 4604, '4602,4604', '文章管理恢复', '/news/article/recovery', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
+INSERT INTO `eb_system_menu` VALUES (4605, 4604, '0,4602,4604', '文章管理列表', '/news/article/index', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
+INSERT INTO `eb_system_menu` VALUES (4606, 4604, '0,4602,4604', '文章管理保存', '/news/article/save', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
+INSERT INTO `eb_system_menu` VALUES (4607, 4604, '0,4602,4604', '文章管理更新', '/news/article/update', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
+INSERT INTO `eb_system_menu` VALUES (4608, 4604, '0,4602,4604', '文章管理读取', '/news/article/read', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
+INSERT INTO `eb_system_menu` VALUES (4609, 4604, '0,4602,4604', '文章管理删除', '/news/article/destroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
+INSERT INTO `eb_system_menu` VALUES (4610, 4604, '0,4602,4604', '文章管理回收', '/news/article/recycle', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
+INSERT INTO `eb_system_menu` VALUES (4611, 4604, '0,4602,4604', '文章管理恢复', '/news/article/recovery', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:08:38', '2023-11-30 23:08:38', NULL);
 INSERT INTO `eb_system_menu` VALUES (4612, 4602, '0,4602', '文章分类', '/news/category', 'icon-home', 'category', 'news/category/index', NULL, 2, 'M', 1, 0, NULL, 1, 1, '2023-11-30 23:27:03', '2023-11-30 23:27:03', NULL);
-INSERT INTO `eb_system_menu` VALUES (4613, 4612, '4602,4612', '文章分类列表', '/news/category/index', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:03', '2023-11-30 23:27:03', NULL);
-INSERT INTO `eb_system_menu` VALUES (4614, 4612, '4602,4612', '文章分类保存', '/news/category/save', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:03', '2023-11-30 23:27:03', NULL);
-INSERT INTO `eb_system_menu` VALUES (4615, 4612, '4602,4612', '文章分类更新', '/news/category/update', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
-INSERT INTO `eb_system_menu` VALUES (4616, 4612, '4602,4612', '文章分类读取', '/news/category/read', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
-INSERT INTO `eb_system_menu` VALUES (4617, 4612, '4602,4612', '文章分类删除', '/news/category/destroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
-INSERT INTO `eb_system_menu` VALUES (4618, 4612, '4602,4612', '文章分类回收', '/news/category/recycle', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
-INSERT INTO `eb_system_menu` VALUES (4619, 4612, '4602,4612', '文章分类恢复', '/news/category/recovery', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
+INSERT INTO `eb_system_menu` VALUES (4613, 4612, '0,4602,4612', '文章分类列表', '/news/category/index', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:03', '2023-11-30 23:27:03', NULL);
+INSERT INTO `eb_system_menu` VALUES (4614, 4612, '0,4602,4612', '文章分类保存', '/news/category/save', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:03', '2023-11-30 23:27:03', NULL);
+INSERT INTO `eb_system_menu` VALUES (4615, 4612, '0,4602,4612', '文章分类更新', '/news/category/update', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
+INSERT INTO `eb_system_menu` VALUES (4616, 4612, '0,4602,4612', '文章分类读取', '/news/category/read', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
+INSERT INTO `eb_system_menu` VALUES (4617, 4612, '0,4602,4612', '文章分类删除', '/news/category/destroy', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
+INSERT INTO `eb_system_menu` VALUES (4618, 4612, '0,4602,4612', '文章分类回收', '/news/category/recycle', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
+INSERT INTO `eb_system_menu` VALUES (4619, 4612, '0,4602,4612', '文章分类恢复', '/news/category/recovery', NULL, NULL, NULL, NULL, 2, 'B', 1, 0, NULL, 1, 1, '2023-11-30 23:27:04', '2023-11-30 23:27:04', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_notice
