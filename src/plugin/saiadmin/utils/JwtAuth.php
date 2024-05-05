@@ -43,7 +43,7 @@ class JwtAuth
             'aud' => $host,
             'iat' => $time,
             'nbf' => $time,
-            'exp' => strtotime('+ '.$hour.'hour'),
+            'exp' => strtotime('+ '.$hour.' hour'),
         ];
         $params['jti'] = compact('id','username', 'type');
         $token = JWT::encode($params, $this->key, 'HS256');
@@ -63,7 +63,7 @@ class JwtAuth
             $json = json_decode(json_encode($decoded), true);
             return [$json['jti']['id'], $json['jti']['username'], $json['jti']['type']];
         } catch (\Exception $e) {
-            throw new ApiException('登录状态已过期，需要重新登录');
+            throw new ApiException('登录状态已过期，需要重新登录', 401);
         }
     }
 
