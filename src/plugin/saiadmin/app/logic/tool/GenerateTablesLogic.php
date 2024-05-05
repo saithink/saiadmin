@@ -38,13 +38,15 @@ class GenerateTablesLogic extends BaseLogic
      * @param $ids
      * @return void
      */
-    public function destroy($ids)
+    public function destroy($ids, $force = false)
     {
-        $this->transaction(function () use ($ids) {
-            $this->model->destroy($ids);
-            GenerateColumns::destroy(function ($query) use ($ids) {
-                $query->where('table_id', 'in', $ids);
-            });
+        $this->transaction(function () use ($ids, $force) {
+            $this->model->destroy($ids, $force);
+            if ($force) {
+                GenerateColumns::destroy(function ($query) use ($ids) {
+                    $query->where('table_id', 'in', $ids);
+                }, $force);
+            }
         });
     }
 
