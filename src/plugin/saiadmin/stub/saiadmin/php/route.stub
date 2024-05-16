@@ -7,12 +7,12 @@
 use Webman\Route;
 
 #foreach ($column in $tables)
-#if[$package_name == ""]
-// 注册${menu_name}路由
-fastRoute('/${business_name}',\${namespace}\controller\${class_name}Controller::class);
-#/if
 #if[$package_name != ""]
 // 注册${menu_name}路由
-fastRoute('/${package_name}/${business_name}',\${namespace}\controller\${package_name}\${class_name}Controller::class);
+fastRoute('/${namespace}/${package_name}/${business_name}',\${namespace_start}controller${namespace_end}\${class_name}Controller::class);
+#/if
+#if[$package_name == ""]
+// 注册${menu_name}路由
+fastRoute('/${namespace}/${business_name}',\${namespace_start}controller${namespace_end}\${class_name}Controller::class);
 #/if
 #/foreach

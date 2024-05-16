@@ -19,8 +19,12 @@
 
 <script setup>
   import { ref, reactive, computed } from 'vue'
-  import api from '@/api/${url_path}'
-  import { Message } from '@arco-design/web-vue'
+#whether[$package_name == ""]
+  import api from '../api/${business_name}'
+#/whether
+#whether[$package_name != ""]
+  import api from '../../api/${package_name}/${business_name}'
+#/whether
 
   const crudRef = ref()
 

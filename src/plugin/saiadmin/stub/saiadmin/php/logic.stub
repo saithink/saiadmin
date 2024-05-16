@@ -4,22 +4,12 @@
 // +----------------------------------------------------------------------
 // | Author: your name
 // +----------------------------------------------------------------------
-#whether[$package_name == ""]
-namespace ${namespace}\logic;
-#/whether
-#whether[$package_name != ""]
-namespace ${namespace}\logic\${package_name};
-#/whether
+namespace ${namespace_start}logic${namespace_end};
 
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Helper;
-#whether[$package_name == ""]
-use ${namespace}\model\${class_name};
-#/whether
-#whether[$package_name != ""]
-use ${namespace}\model\${package_name}\${class_name};
-#/whether
+use ${namespace_start}model${namespace_end}\${class_name};
 
 /**
  * ${menu_name}逻辑层
@@ -35,6 +25,33 @@ class ${class_name}Logic extends BaseLogic
     }
 
 #whether[$tpl_category == "tree"]
+    /**
+     * 数据修改
+     */
+    public function update($data, $where)
+    {
+        if (!isset($data['${tree_parent_id}'])) {
+            $data['${tree_parent_id}'] = 0;
+        }
+        if ($data['${tree_parent_id}'] == $where['${tree_id}']) {
+            throw new ApiException('不能设置父级为自身');
+        }
+        return $this->model->update($data, $where);
+    }
+
+    /**
+     * 数据删除
+     */
+    public function destroy($ids, $force = false)
+    {
+        $num = $this->model->where('${tree_parent_id}', 'in', $ids)->count();
+        if ($num > 0) {
+            throw new ApiException('该分类下存在子分类，请先删除子分类');
+        } else {
+            return $this->model->destroy($ids, $force);
+        }
+    }
+
     /**
      * 树形数据
      */

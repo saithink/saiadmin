@@ -4,12 +4,7 @@
 // +----------------------------------------------------------------------
 // | Author: your name
 // +----------------------------------------------------------------------
-#whether[$package_name == ""]
-namespace ${namespace}\validate;
-#/whether
-#whether[$package_name != ""]
-namespace ${namespace}\validate\${package_name};
-#/whether
+namespace ${namespace_start}validate${namespace_end};
 
 use think\Validate;
 

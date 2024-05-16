@@ -4,12 +4,7 @@
 // +----------------------------------------------------------------------
 // | Author: your name
 // +----------------------------------------------------------------------
-#whether[$package_name == ""]
-namespace ${namespace}\model;
-#/whether
-#whether[$package_name != ""]
-namespace ${namespace}\model\${package_name};
-#/whether
+namespace ${namespace_start}model${namespace_end};
 
 use plugin\saiadmin\basic\BaseModel;
 

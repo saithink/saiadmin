@@ -4,26 +4,11 @@
 // +----------------------------------------------------------------------
 // | Author: your name
 // +----------------------------------------------------------------------
-#whether[$package_name == ""]
-namespace ${namespace}\controller;
-#/whether
-#whether[$package_name != ""]
-namespace ${namespace}\controller\${package_name};
-#/whether
+namespace ${namespace_start}controller${namespace_end};
 
 use plugin\saiadmin\basic\BaseController;
-#whether[$package_name == ""]
-use ${namespace}\logic\${class_name}Logic;
-#/whether
-#whether[$package_name != ""]
-use ${namespace}\logic\${package_name}\${class_name}Logic;
-#/whether
-#whether[$package_name == ""]
-use ${namespace}\validate\${class_name}Validate;
-#/whether
-#whether[$package_name != ""]
-use ${namespace}\validate\${package_name}\${class_name}Validate;
-#/whether
+use ${namespace_start}logic${namespace_end}\${class_name}Logic;
+use ${namespace_start}validate${namespace_end}\${class_name}Validate;
 use support\Request;
 use support\Response;
 
