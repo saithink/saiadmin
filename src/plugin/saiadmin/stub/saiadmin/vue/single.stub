@@ -50,7 +50,7 @@
     operationColumnWidth: 160,
     add: { show: true, api: api.save, auth: ['/${url_path}/save'] },
     edit: { show: true, api: api.update, auth: ['/${url_path}/update'] },
-    delete: { show: true, api: api.delete, auth: ['/${url_path}/destroy'] },
+    delete: { show: true, api: api.delete, auth: ['/${url_path}/destroy'], realApi: api.realDestroy, realAuth: ['/${url_path}/realDestroy'] },
 #whether[in_array("recycle", $menus)]
     recovery: { show: true, api: api.recovery, auth: ['/${url_path}/recovery']},
 #/whether
