@@ -3,7 +3,7 @@
 #foreach ($column in $tables)
 #if[$package_name != ""]
 -- 菜单[${menu_name}] SQL
-INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (${belong_menu_id}, '0,${belong_menu_id}', '${menu_name}', '${namespace}/${package_name}/${business_name}', 'icon-home', '/${namespace}/${package_name}/${business_name}', '/${namespace}/${package_name}/${business_name}/index', NULL, '2', 'M', 1, 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (${belong_menu_id}, '0,${belong_menu_id}', '${menu_name}', '${namespace}/${package_name}/${business_name}', 'icon-home', '${namespace}/${package_name}/${business_name}', '${namespace}/${package_name}/${business_name}/index', NULL, '2', 'M', 1, 0, NULL, now(), now(), NULL);
 
 SET @id := LAST_INSERT_ID();
 SET @level := CONCAT('${belong_menu_id}', ',', @id);
@@ -18,7 +18,7 @@ INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `rout
 #/if
 #if[$package_name == ""]
 -- 菜单[${menu_name}] SQL
-INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (${belong_menu_id}, '0,${belong_menu_id}', '${menu_name}', '${namespace}/${business_name}', 'icon-home', '/${namespace}/${business_name}', '/${namespace}/${business_name}/index', NULL, '2', 'M', 1, 0, NULL, now(), now(), NULL);
+INSERT INTO `eb_system_menu`(`parent_id`, `level`, `name`, `code`, `icon`, `route`, `component`, `redirect`, `is_hidden`, `type`, `status`, `sort`, `remark`, `create_time`, `update_time`, `delete_time`) VALUES (${belong_menu_id}, '0,${belong_menu_id}', '${menu_name}', '${namespace}/${business_name}', 'icon-home', '${namespace}/${business_name}', '${namespace}/${business_name}/index', NULL, '2', 'M', 1, 0, NULL, now(), now(), NULL);
 
 SET @id := LAST_INSERT_ID();
 SET @level := CONCAT('${belong_menu_id}', ',', @id);
