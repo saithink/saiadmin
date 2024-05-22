@@ -109,6 +109,9 @@ class GenerateTablesLogic extends BaseLogic
     public function preview($id): array
     {
         $table = $this->find($id)->toArray();
+        if (!in_array($table['template'], ["plugin", "app"])) {
+            throw new ApiException('模板必须为plugin或者app');
+        }
         $columns = $this->columnLogic->where('table_id', $id)->select()->toArray();
         $pk = 'id';
         foreach ($columns as &$column) {
@@ -120,7 +123,7 @@ class GenerateTablesLogic extends BaseLogic
             }
         }
 
-        $template_name = '/plugin/saiadmin/stub/'.$table['template'];
+        $template_name = '/plugin/saiadmin/stub/saiadmin';
         $tpl = new Template($template_name);
         $tpl->assign('pk', $pk);
         $tpl->assignArray($table);
@@ -134,15 +137,21 @@ class GenerateTablesLogic extends BaseLogic
             $tpl->assign('tree_parent_id', $tree_parent_id);
             $tpl->assign('tree_name', $tree_name);
         }
-        if ($table['package_name'] != "") {
-            $url_path = $table['package_name'] . '/' . $table['business_name'];
+        if ($table['template'] == 'plugin') {
+            $namespace_start = "plugin\\".$table['namespace']."\\app\\";
+            $namespace_end =  $table['package_name'] !="" ? "\\".$table['package_name'] : "";
+            $url_path = $table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['business_name'];
         } else {
-            $url_path = $table['business_name'];
+            $namespace_start = "app\\".$table['namespace']."\\";
+            $namespace_end =  $table['package_name'] !="" ? "\\".$table['package_name'] : "";
+            $url_path = $table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['business_name'];
         }
         if ($table['component_type'] == 3) {
             $tpl->assign('tag_id', $table['options']['tag_id'] ?? mt_rand(10000, 99999));
             $tpl->assign('tag_name', $table['options']['tag_name'] ?? $table['menu_name']);
         }
+        $tpl->assign('namespace_start', $namespace_start);
+        $tpl->assign('namespace_end', $namespace_end);
         $tpl->assign('url_path', $url_path);
 
         $relations = [];
@@ -211,6 +220,9 @@ class GenerateTablesLogic extends BaseLogic
     public function genUnit($table_id, $tables)
     {
         $table = $this->find($table_id)->toArray();
+        if (!in_array($table['template'], ["plugin", "app"])) {
+            throw new ApiException('模板必须为plugin或者app');
+        }
         $columns = $this->columnLogic->where('table_id', $table_id)->select()->toArray();
         $pk = 'id';
         foreach ($columns as &$column) {
@@ -222,7 +234,7 @@ class GenerateTablesLogic extends BaseLogic
             }
         }
 
-        $template_name = '/plugin/saiadmin/stub/'.$table['template'];
+        $template_name = '/plugin/saiadmin/stub/saiadmin';
         $tpl = new Template($template_name);
         $tpl->assign('pk', $pk);
         $tpl->assignArray($table);
@@ -236,15 +248,21 @@ class GenerateTablesLogic extends BaseLogic
             $tpl->assign('tree_parent_id', $tree_parent_id);
             $tpl->assign('tree_name', $tree_name);
         }
-        if ($table['package_name'] != "") {
-            $url_path = $table['package_name'] . '/' . $table['business_name'];
+        if ($table['template'] == 'plugin') {
+            $namespace_start = "plugin\\".$table['namespace']."\\app\\";
+            $namespace_end =  $table['package_name'] !="" ? "\\".$table['package_name'] : "";
+            $url_path = $table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['business_name'];
         } else {
-            $url_path = $table['business_name'];
+            $namespace_start = "app\\".$table['namespace']."\\";
+            $namespace_end =  $table['package_name'] !="" ? "\\".$table['package_name'] : "";
+            $url_path = $table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['business_name'];
         }
         if ($table['component_type'] == 3) {
             $tpl->assign('tag_id', $table['options']['tag_id'] ?? mt_rand(10000, 99999));
             $tpl->assign('tag_name', $table['options']['tag_name'] ?? $table['menu_name']);
         }
+        $tpl->assign('namespace_start', $namespace_start);
+        $tpl->assign('namespace_end', $namespace_end);
         $tpl->assign('url_path', $url_path);
 
         $relations = [];
