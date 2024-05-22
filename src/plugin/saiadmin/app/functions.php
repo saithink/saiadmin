@@ -82,13 +82,12 @@ function formatBytes($bytes): string
 }
 
 /**
- * 读取配置
+ * 读取配置组
  * @param $group
  * @return bool|mixed
  */
 function getConfigGroup($group)
 {
-    $logic = new SystemConfigGroupLogic();
-    $model = $logic->where('code', $group)->find();
-    return $model->configs->toArray();
+    $logic = new SystemConfigLogic();
+    return $logic->getGroup($group);
 }
