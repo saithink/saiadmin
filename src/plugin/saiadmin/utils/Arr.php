@@ -186,4 +186,20 @@ class Arr
         return $result;
     }
 
+    /**
+     * 数组中根据key值获取value
+     * @param $array
+     * @param $key
+     * @return mixed|string
+     */
+    public static function getConfigValue($array, $key)
+    {
+        foreach ($array as $item) {
+            if ($item['key'] === $key) {
+                return $item['value'];
+            }
+        }
+        return '';
+    }
+
 }
