@@ -12,10 +12,8 @@ use plugin\saiadmin\app\logic\system\SystemRoleLogic;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemMenuLogic;
 use plugin\saiadmin\app\logic\system\SystemUserLogic;
-use plugin\saiadmin\app\logic\system\SystemNoticeLogic;
 use plugin\saiadmin\app\logic\system\SystemDictDataLogic;
 use plugin\saiadmin\app\logic\system\SystemUploadfileLogic;
-use plugin\saiadmin\app\logic\system\SystemConfigLogic;
 use plugin\saiadmin\utils\ServerMonitor;
 use plugin\saiadmin\exception\ApiException;
 use support\Request;
@@ -143,13 +141,12 @@ class SystemController extends BaseController
      */
     public function uploadImage(Request $request): Response
     {
+        $logic = new SystemUploadfileLogic();
         $type = $request->input('mode', 'system');
         if ($type == 'local') {
-            return $this->success($this->uploadBase('image', 1));
+            return $this->success($logic->uploadBase('image', true));
         }
-        $configLogic = new SystemConfigLogic();
-        $config = $configLogic->getConfig('upload_mode');
-        return $this->success($this->uploadBase('image', $config['value']));
+        return $this->success($logic->uploadBase('image'));
     }
 
     /**
@@ -157,72 +154,12 @@ class SystemController extends BaseController
      */
     public function uploadFile(Request $request): Response
     {
+        $logic = new SystemUploadfileLogic();
         $type = $request->input('mode', 'system');
         if ($type == 'local') {
-            return $this->success($this->uploadBase('file', 1));
+            return $this->success($logic->uploadBase('file', true));
         }
-        $configLogic = new SystemConfigLogic();
-        $config = $configLogic->getConfig('upload_mode');
-        return $this->success($this->uploadBase('file', $config['value']));
-    }
-
-    public function uploadBase($upload = 'image', $type = 1)
-    {
-        $configLogic = new SystemConfigLogic();
-        $file = current(request()->file());
-        $ext = $file->getUploadExtension() ?: null;
-        $file_size = $file->getSize();
-        $upload_max_size = $configLogic->getConfig('upload_size');
-        if ($file_size > $upload_max_size['value']) {
-            throw new ApiException('文件大小超过限制');
-        }
-        $allow_file = $configLogic->getConfig('upload_allow_file');
-        $allow_image = $configLogic->getConfig('upload_allow_image');
-        if ($upload == 'image') {
-            if (!in_array($ext, explode(',', $allow_image['value']))) {
-                throw new ApiException('不支持该格式的文件上传');
-            }
-        } else {
-            if (!in_array($ext, explode(',', $allow_file['value']))) {
-                throw new ApiException('不支持该格式的文件上传');
-            }
-        }
-        switch ($type) {
-            case 1:
-                $result = Storage::disk('local')->uploadFile();
-                break;
-            case 2:
-                $result = Storage::disk('oss')->uploadFile();
-                break;
-            case 3:
-                $result = Storage::disk('qiniu')->uploadFile();
-                break;
-            case 4:
-                $result = Storage::disk('cos')->uploadFile();
-                break;
-            default:
-                throw new ApiException('该上传模式不存在');
-        }
-        $data = $result[0];
-        $hash = $data['unique_id'];
-        $logic = new SystemUploadfileLogic();
-        $model = $logic->where('hash', $hash)->find();
-        if ($model) {
-            return $model->toArray();
-        } else {
-            $info['storage_mode'] = $type;
-            $info['origin_name'] = $data['origin_name'];
-            $info['object_name'] = $data['save_name'];
-            $info['hash'] = $data['unique_id'];
-            $info['mime_type'] = $data['mime_type'];
-            $info['storage_path'] = $data['save_path'];
-            $info['suffix'] = $data['extension'];
-            $info['size_byte'] = $data['size'];
-            $info['size_info'] = formatBytes($data['size']);
-            $info['url'] = $data['url'];
-            $logic->save($info);
-            return $info;
-        }
+        return $this->success($logic->uploadBase('file'));
     }
 
     /**
