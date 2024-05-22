@@ -28,15 +28,29 @@ composer require -W saithink/saiadmin
     <a href="https://saithink.top" target="_blank">主页 / Home page</a>
   </li>
   <li>
-    <a href="https://saithink.top/core" target="_blank">文档 / Document</a>
+    <a href="https://saithink.top/pages/52d5c3/" target="_blank">指南 / guide</a>
   </li>
   <li>
-    <a href="https://saithink.top/guide" target="_blank">安装 / Install</a>
-  </li>
-  <li>
-    <a href="https://saithink.top/donation" target="_blank">赞助 / Sponsors</a>
+    <a href="https://saithink.top/pages/a20ce8/" target="_blank">常见问题 / Question</a>
   </li>
 </ul>
+
+<br>
+
+<h1>演示地址</h1>
+<p>演示地址： <a href="http://admin.saithink.top">http://admin.saithink.top</a></p>
+<p>演示账号：admin</p>
+<p>演示密码：123456</p>
+
+<h1>支持项目</h1>
+
+如果您正在使用这个项目并感觉良好，或者是想支持我继续开发，您可以通过如下`任意`方式支持我：
+
+谢谢！ ❤️
+
+| 微信 | 支付宝 |
+| :---: | :---: |
+| <img src="https://saithink.top/img/qrcode/wechat.png" alt="Wechat QRcode" width=180>| <img src="https://saithink.top/img/qrcode/alipay.png" alt="Alipay QRcode" width=180> |
 
 <div style="clear: both">
 <h1>LICENSE</h1>
