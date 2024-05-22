@@ -42,6 +42,19 @@ composer require -W saithink/saiadmin
 <p>演示账号：admin</p>
 <p>演示密码：123456</p>
 
+<h1>共同交流</h1>
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="middle">
+        <img src="https://saithink.top/img/me.png" class="no-zoom" style="width:180px;margin: 10px;">
+        <p>saiadmin交流群(添加我微信备注"saiadmin")</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 <h1>支持项目</h1>
 
 如果您正在使用这个项目并感觉良好，或者是想支持我继续开发，您可以通过如下`任意`方式支持我：
