@@ -54,9 +54,18 @@ class SystemConfigController extends BaseController
     {
         $data = $request->post();
         foreach ($data as $key => $value) {
+            $group = $key;
             $this->logic->where('key', $key)
                 ->update(['value' => is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $value]);
             Cache::clear('config_'.$key);
+        }
+        if ($group != '') {
+            $model = $this->logic->where('key', $group)->findOrEmpty();
+            $groupLogic = new SystemConfigGroupLogic();
+            $groupModel = $groupLogic->where('id', $model->group_id)->findOrEmpty();
+            if (!$groupModel->isEmpty()) {
+                Cache::clear('cfg_'.$groupModel->code);
+            }
         }
         return $this->success('操作成功');
     }
