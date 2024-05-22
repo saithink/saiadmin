@@ -10,6 +10,7 @@ use Exception;
 use plugin\saiadmin\app\model\system\SystemUploadfile;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
+use plugin\saiadmin\service\storage\UploadService;
 use plugin\saiadmin\utils\Arr;
 use plugin\saiadmin\utils\Helper;
 use support\Request;
@@ -105,6 +106,44 @@ class SystemUploadfileLogic extends BaseLogic
             $info['size_byte'] = $size;
             $info['size_info'] = formatBytes($size);
             $info['url'] = $baseUrl . $object_name;
+            $this->model->save($info);
+            return $info;
+        }
+    }
+
+    /**
+     * 文件上传
+     * @param string $upload
+     * @param bool $local
+     * @return array
+     */
+    public function uploadBase($upload = 'image', $local = false)
+    {
+        $logic = new SystemConfigLogic();
+        $uploadConfig = $logic->getGroup('upload_config');
+        $type = Arr::getConfigValue($uploadConfig, 'upload_mode');
+        if ($local === true) {
+            $type = 1;
+        }
+        $result = UploadService::disk($type, $upload)->uploadFile();
+        $data = $result[0];
+        $hash = $data['unique_id'];
+        $model = $this->model->where('hash', $hash)->findOrEmpty();
+        if (!$model->isEmpty()) {
+            return $model->toArray();
+        } else {
+            $url = str_replace('\\', '/', $data['url']);
+            $savePath = str_replace('\\', '/', $data['save_path']);
+            $info['storage_mode'] = $type;
+            $info['origin_name'] = $data['origin_name'];
+            $info['object_name'] = $data['save_name'];
+            $info['hash'] = $data['unique_id'];
+            $info['mime_type'] = $data['mime_type'];
+            $info['storage_path'] = $savePath;
+            $info['suffix'] = $data['extension'];
+            $info['size_byte'] = $data['size'];
+            $info['size_info'] = formatBytes($data['size']);
+            $info['url'] = $url;
             $this->model->save($info);
             return $info;
         }
