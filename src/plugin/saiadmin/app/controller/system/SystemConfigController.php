@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemConfigLogic;
+use plugin\saiadmin\app\logic\system\SystemConfigGroupLogic;
 use plugin\saiadmin\app\validate\system\SystemConfigValidate;
 use plugin\saiadmin\utils\Cache;
 use support\Request;
