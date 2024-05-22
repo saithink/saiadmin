@@ -26,7 +26,7 @@ class SystemConfigLogic extends BaseLogic
     }
 
     /**
-     * 获取配置
+     * 获取单项配置
      */
     public function getConfig($config)
     {
@@ -35,8 +35,30 @@ class SystemConfigLogic extends BaseLogic
         if ($data) {
             return $data;
         }
-        $info = $this->model->where('key', $config)->find();
-        Cache::set($prefix . $config, $info);
+        $info = $this->model->where('key', $config)->findOrEmpty();
+        if ($info->isEmpty()) {
+            throw new ApiException('配置项不存在');
+        }
+        Cache::set($prefix . $config, $info->toArray());
+        return $info;
+    }
+
+    /**
+     * 获取配置组
+     */
+    public function getGroup($config)
+    {
+        $prefix = 'cfg_';
+        $data = Cache::get($prefix . $config);
+        if ($data) {
+            return $data;
+        }
+        $group = SystemConfigGroup::where('code', $config)->findOrEmpty();
+        if ($group->isEmpty()) {
+            throw new ApiException('配置组不存在');
+        }
+        $info = $this->model->where('group_id', $group->id)->select();
+        Cache::set($prefix . $config, $info->toArray());
         return $info;
     }
 }
