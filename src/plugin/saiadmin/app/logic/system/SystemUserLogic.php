@@ -31,10 +31,10 @@ class SystemUserLogic extends BaseLogic
     {
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         $role_ids = $data['role_ids'] ?? [];
-        $post_ids = $data['post_ids'] ?? '';
+        $post_ids = $data['post_ids'] ?? [];
         $user = SystemUser::create($data);
         $user->roles()->saveAll($role_ids);
-        if ($post_ids !== '') {
+        if ($post_ids !== []) {
             $user->posts()->save($post_ids);
         }
         return $user->getKey();
@@ -44,14 +44,14 @@ class SystemUserLogic extends BaseLogic
     {
         unset($data['password']);
         $role_ids = $data['role_ids'] ?? [];
-        $post_ids = $data['post_ids'] ?? '';
+        $post_ids = $data['post_ids'] ?? [];
         $result = $this->model->update($data,['id' => $id]);
         $user = $this->model->find($id);
         if ($result && $user) {
             $user->roles()->detach();
             $user->posts()->detach();
             $user->roles()->saveAll($role_ids);
-            if ($post_ids !== '') {
+            if ($post_ids !== []) {
                 $user->posts()->save($post_ids);
             }
         }
