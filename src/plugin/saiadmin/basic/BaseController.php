@@ -225,7 +225,8 @@ class BaseController
     {
         $model = $this->logic->find($id);
         if ($model) {
-            return $this->success($model->toArray());
+            $data = is_array($model) ? $model : $model->toArray();
+            return $this->success($data);
         } else {
             return $this->fail('未查找到信息');
         }
