@@ -34,7 +34,7 @@ class SystemUserLogic extends BaseLogic
         $post_ids = $data['post_ids'] ?? [];
         $user = SystemUser::create($data);
         $user->roles()->saveAll($role_ids);
-        if ($post_ids !== []) {
+        if (!empty($post_ids)) {
             $user->posts()->save($post_ids);
         }
         return $user->getKey();
@@ -51,7 +51,7 @@ class SystemUserLogic extends BaseLogic
             $user->roles()->detach();
             $user->posts()->detach();
             $user->roles()->saveAll($role_ids);
-            if ($post_ids !== []) {
+            if (!empty($post_ids)) {
                 $user->posts()->save($post_ids);
             }
         }
