@@ -180,11 +180,11 @@ class BaseLogic
      */
     public function getList($query)
     {
-        $saiType = request()->input('saiType') ? request()->input('saiType') : 'list';
-        $page = request()->input('page') ? request()->input('page') : 1;
-        $limit = request()->input('limit') ? request()->input('limit') : 10;
-        $orderBy = request()->input('orderBy') ? request()->input('orderBy') : $this->model->getPk();
-        $orderType = request()->input('orderType') ? request()->input('orderType') : 'ASC';
+        $saiType = request()->input('saiType', 'list');
+        $page = request()->input('page', 1);
+        $limit = request()->input('limit', 10);
+        $orderBy = request()->input('orderBy', $this->model->getPk());
+        $orderType = request()->input('orderType', 'ASC');
         if ($this->scope) {
             $query = $this->userDataScope($query);
         }
@@ -202,8 +202,8 @@ class BaseLogic
      */
     public function getAll($query)
     {
-        $orderBy = request()->input('orderBy') ? request()->input('orderBy') : $this->model->getPk();
-        $orderType = request()->input('orderType') ? request()->input('orderType') : 'ASC';
+        $orderBy = request()->input('orderBy', $this->model->getPk());
+        $orderType = request()->input('orderType', 'ASC');
         if ($this->scope) {
             $query = $this->userDataScope($query);
         }
