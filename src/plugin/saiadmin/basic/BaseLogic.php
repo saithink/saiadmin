@@ -89,27 +89,24 @@ class BaseLogic
                     return $query;
                 case self::CUSTOM_SCOPE:
                     $deptIds = Db::name('system_role_dept')->where('role_id', $role_id)->column('dept_id');
-                    $userIds = Db::name('system_user_dept')->where('dept_id', 'in', $deptIds)->column('user_id');
+                    $userIds = Db::name('system_user')->where('dept_id', 'in', $deptIds)->column('id');
                     $this->userIds = array_merge($this->userIds, $userIds);
                     break;
                 case self::SELF_DEPT_SCOPE:
-                    $deptIds = Db::name('system_user_dept')->where('user_id', $this->adminInfo['id'])->column('dept_id');
-                    $userIds = Db::name('system_user_dept')->where('dept_id', 'in', $deptIds)->column('user_id');
+                    $deptId = $this->adminInfo['dept_id'];
+                    $userIds = Db::name('system_user')->where('dept_id', $deptId)->column('id');
                     $this->userIds = array_merge($this->userIds, $userIds);
                     break;
                 case self::DEPT_BELOW_SCOPE:
-                    $parentIds = Db::name('system_user_dept')->where('user_id', $this->adminInfo['id'])->column('dept_id');
-                    $ids = [];
-                    foreach ($parentIds as $deptId) {
-                        $ids[] = Db::name('system_dept')->where(function ($query) use($deptId) {
-                            $query->where('id', $deptId)
-                                ->whereOr('level', 'like', $deptId . ',%')
-                                ->whereOr('level', 'like', '%,' . $deptId)
-                                ->whereOr('level', 'like', '%,' . $deptId . ',%');
-                        })->column('id');
-                    }
-                    $deptIds = array_merge($parentIds, ...$ids);
-                    $userIds = Db::name('system_user_dept')->where('dept_id', 'in', $deptIds)->column('user_id');
+                    $deptId = $this->adminInfo['dept_id'];
+                    $deptInfo = Db::name('system_dept')->where('id', $deptId)->find();
+                    $level = $deptInfo['level'].",".$deptId;
+                    $deptIds = Db::name('system_dept')->where(function ($query) use($level) {
+                        $query->where('level', $level)
+                            ->whereOr('level', 'like', $level . ',%');
+                    })->column('id');
+                    $deptIds[] = $deptId;
+                    $userIds = Db::name('system_user')->where('dept_id', 'in', $deptIds)->column('id');
                     $this->userIds = array_merge($this->userIds, $userIds);
                     break;
                 case self::SELF_SCOPE:
