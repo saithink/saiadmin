@@ -34,5 +34,7 @@ return [
         'mode' => 'session',
         // 验证码过期时间 (秒)
         'expire' => 300,
-    ]
+    ],
+    // excel模板下载路径
+    'template' => base_path(). '/plugin/saiadmin/public/template'
 ];

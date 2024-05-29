@@ -59,7 +59,7 @@ function fastRoute(string $name, string $controller)
  */
 function downloadFile($file_name)
 {
-    $base_dir = base_path(). '/plugin/saiadmin/public/template';
+    $base_dir = config('plugin.saiadmin.saithink.template',base_path().'/public/template');
     if (file_exists($base_dir. DIRECTORY_SEPARATOR.$file_name)) {
         return response()->download($base_dir. DIRECTORY_SEPARATOR.$file_name, urlencode($file_name));
     } else {
