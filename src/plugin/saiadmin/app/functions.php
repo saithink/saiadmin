@@ -3,7 +3,7 @@
 use plugin\saiadmin\utils\Cache;
 use plugin\saiadmin\utils\JwtAuth;
 use plugin\saiadmin\exception\ApiException;
-use plugin\saiadmin\app\logic\system\SystemConfigGroupLogic;
+use plugin\saiadmin\app\logic\system\SystemConfigLogic;
 use support\Response;
 use Webman\Route;
 
