@@ -40,10 +40,16 @@ class SystemDeptLogic extends BaseLogic
      */
     public function update($data, $where)
     {
+        $oldLevel = $data['level'].",".$where['id'];
         $data = $this->handleData($data);
         if ($data['parent_id'] == $where['id']) {
             throw new ApiException('不能设置父级为自身');
         }
+        $newLevel = $data['level'].",".$where['id'];
+        $deptIds = $this->model->where('level', $oldLevel)
+            ->whereOr('level', 'like', $oldLevel . ',%')
+            ->column('id');
+        $this->model->whereIn('id', $deptIds)->exp('level', "REPLACE(level, '$oldLevel', '$newLevel')")->update();
         return $this->model->update($data, $where);
     }
 
