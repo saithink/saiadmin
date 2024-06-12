@@ -15,8 +15,8 @@ Route::group('/core', function () {
     Route::post("/system/saveNetworkImage",[plugin\saiadmin\app\controller\SystemController::class, 'saveNetworkImage']);
     Route::post("/system/uploadImage",[plugin\saiadmin\app\controller\SystemController::class, 'uploadImage']);
     Route::post("/system/uploadFile",[plugin\saiadmin\app\controller\SystemController::class, 'uploadFile']);
-    Route::get("/system/downloadById/{id}",[plugin\saiadmin\app\controller\SystemController::class, 'downloadById']);
-    Route::get("/system/downloadByHash/{hash}",[plugin\saiadmin\app\controller\SystemController::class, 'downloadByHash']);
+    Route::get("/system/downloadById/{id}",[plugin\saiadmin\app\controller\WhiteController::class, 'downloadById']);
+    Route::get("/system/downloadByHash/{hash}",[plugin\saiadmin\app\controller\WhiteController::class, 'downloadByHash']);
     Route::get("/system/getFileInfoById/{id}",[plugin\saiadmin\app\controller\SystemController::class, 'getFileInfoById']);
     Route::get("/system/getFileInfoByHash/{hash}",[plugin\saiadmin\app\controller\SystemController::class, 'getFileInfoByHash']);
     Route::get("/system/getUserList",[plugin\saiadmin\app\controller\SystemController::class, 'getUserList']);
