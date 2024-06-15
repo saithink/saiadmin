@@ -22,4 +22,9 @@ class SystemDictType extends BaseModel
 
     protected $table = 'eb_system_dict_type';
 
+    public function dicts()
+    {
+        return $this->hasMany(SystemDictData::class, 'type_id', 'id');
+    }
+
 }
