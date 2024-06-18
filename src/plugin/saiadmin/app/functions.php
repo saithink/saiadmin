@@ -91,3 +91,22 @@ function getConfigGroup($group)
     $logic = new SystemConfigLogic();
     return $logic->getGroup($group);
 }
+
+/**
+ * 注册远程vue文件读取路由
+ * @param string $plugin 插件名称
+ * @param string $path 内部文件路径
+ * @param bool $is_group 是否在分组路由内部
+ * @return void
+ */
+function remoteVue(string $plugin, string $path, bool $is_group = true)
+{
+    Route::get(($is_group ? "" : "/$plugin") . $path, function () use ($plugin, $path) {
+        $path = base_path().'/plugin/'.$plugin.'/remote'.$path;
+        if (file_exists($path)) {
+            return response()->file($path);
+        } else {
+            return response('Not Found', 404);
+        }
+    });
+}
