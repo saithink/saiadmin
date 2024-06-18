@@ -24,6 +24,7 @@ Route::group('/core', function () {
     Route::get("/system/getLoginLogList",[plugin\saiadmin\app\controller\SystemController::class, 'getLoginLogList']);
     Route::get("/system/getOperationLogList",[plugin\saiadmin\app\controller\SystemController::class, 'getOperationLogList']);
     Route::get("/system/monitor",[plugin\saiadmin\app\controller\SystemController::class, 'getServerInfo']);
+    Route::get("/system/getPlugin",[plugin\saiadmin\app\controller\SystemController::class, 'getPlugin']);
 
     Route::get("/logs/getLoginLogPageList",[\plugin\saiadmin\app\controller\system\SystemLogController::class, 'getLoginLogPageList']);
     Route::delete("/logs/deleteLoginLog",[\plugin\saiadmin\app\controller\system\SystemLogController::class, 'deleteLoginLog']);
