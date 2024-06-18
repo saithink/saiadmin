@@ -264,4 +264,16 @@ class SystemController extends BaseController
     {
         return $this->success([], '清除缓存成功!');
     }
+
+    /**
+     * 获取插件信息
+     * @param Request $request
+     * @return Response
+     */
+    public function getPlugin(Request $request): Response
+    {
+        $plugin = $request->input('plugin', '');
+        $config = config("plugin.$plugin.app", []);
+        return $this->success($config);
+    }
 }
