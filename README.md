@@ -1,5 +1,5 @@
 <div style="padding:18px;max-width: 1024px;margin:0 auto;background-color:#fff;color:#333">
-<h1>SaiAdmin 2.0</h1>
+<h1>SaiAdmin 2.x</h1>
 
 基于<a href="https://www.workerman.net/doc/webman/" target="_blank">webman</a>开箱即用的高质量中后台管理系统
 

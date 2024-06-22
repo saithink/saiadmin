@@ -1,0 +1,33 @@
+{
+    "name": "saithink/saiadmin",
+    "description": "webman plugin",
+    "type": "project",
+    "license": "MIT",
+	"require": {
+		"php": "^7.3||^8.0",
+		"webman/think-orm": "^1.1",
+		"webman/captcha": "^1.0",
+		"zoujingli/ip2region": "^2.0",
+		"webman/event": "^1.0",
+		"firebase/php-jwt": "^6.4",
+		"workerman/crontab": "^1.0",
+		"guzzlehttp/guzzle": "^7.8",
+		"illuminate/redis": ">=8.0",
+		"illuminate/events": ">=8.0",
+		"phpoffice/phpspreadsheet": "^1.25.0",
+		"saithink/think-validate": "^2.0",
+		"tinywan/storage": "^1.0",
+		"ramsey/uuid": "^4.0"
+	},
+    "autoload": {
+        "psr-4": {
+            "Webman\\saiadmin\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "saithink",
+            "email": "1430792918@qq.com"
+        }
+    ]
+}
