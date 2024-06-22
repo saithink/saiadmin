@@ -43,7 +43,7 @@ class BaseLogic
     /**
      * @var bool 数据边界启用状态
      */
-    protected $scope = true;
+    protected $scope = false;
 
     // 所有数据权限
     public const ALL_SCOPE = 1;
