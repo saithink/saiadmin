@@ -25,6 +25,7 @@
 #whether[$package_name != ""]
   import api from '../../api/${package_name}/${business_name}'
 #/whether
+  import { Message } from '@arco-design/web-vue
 
   const crudRef = ref()
 
@@ -33,6 +34,7 @@
     const response = await api.changeStatus({ ${pk}, status })
     if (response.code === 200) {
       Message.success(response.message)
+      crudRef.value.refresh()
     }
   }
 #/whether
