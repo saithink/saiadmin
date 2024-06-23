@@ -113,7 +113,7 @@ class GenerateTablesLogic extends BaseLogic
         if (!in_array($table['template'], ["plugin", "app"])) {
             throw new ApiException('模板必须为plugin或者app');
         }
-        $columns = $this->columnLogic->where('table_id', $id)->select()->toArray();
+        $columns = $this->columnLogic->where('table_id', $id)->order('sort', 'desc')->select()->toArray();
         $pk = 'id';
         foreach ($columns as &$column) {
             if ($column['is_pk'] == 2) {
@@ -384,7 +384,7 @@ class GenerateTablesLogic extends BaseLogic
         if (!in_array($table['template'], ["plugin", "app"])) {
             throw new ApiException('模板必须为plugin或者app');
         }
-        $columns = $this->columnLogic->where('table_id', $table_id)->select()->toArray();
+        $columns = $this->columnLogic->where('table_id', $table_id)->order('sort', 'desc')->select()->toArray();
         $pk = 'id';
         foreach ($columns as &$column) {
             if ($column['is_pk'] == 2) {
