@@ -53,6 +53,28 @@ function fastRoute(string $name, string $controller)
 }
 
 /**
+ * 快速注册常规路由[index|save|update|read|changeStatus|destroy|recycle|recovery|import|export]
+ * @param string $name
+ * @param string $controller
+ * @return void
+ */
+function fastNormalRoute(string $name, string $controller)
+{
+    $name = trim($name, '/');
+    if (method_exists($controller, 'index')) Route::get("/$name/index", [$controller, 'index']);
+    if (method_exists($controller, 'save')) Route::post("/$name/save", [$controller, 'save']);
+    if (method_exists($controller, 'update')) Route::put("/$name/update", [$controller, 'update']);
+    if (method_exists($controller, 'read')) Route::get("/$name/read", [$controller, 'read']);
+    if (method_exists($controller, 'changeStatus')) Route::post("/$name/changeStatus", [$controller, 'changeStatus']);
+    if (method_exists($controller, 'destroy')) Route::delete("/$name/destroy", [$controller, 'destroy']);
+    if (method_exists($controller, 'recycle')) Route::get("/$name/recycle", [$controller, 'recycle']);
+    if (method_exists($controller, 'realDestroy')) Route::delete("/$name/realDestroy", [$controller, 'realDestroy']);
+    if (method_exists($controller, 'recovery')) Route::post("/$name/recovery", [$controller, 'recovery']);
+    if (method_exists($controller, 'import')) Route::post("/$name/import", [$controller, 'import']);
+    if (method_exists($controller, 'export')) Route::post("/$name/export", [$controller, 'export']);
+}
+
+/**
  * 下载模板
  * @param $file_name
  * @return Response|\Webman\Http\Response
