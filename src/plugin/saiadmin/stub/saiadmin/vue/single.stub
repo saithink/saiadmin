@@ -25,7 +25,7 @@
 #whether[$package_name != ""]
   import api from '../../api/${package_name}/${business_name}'
 #/whether
-  import { Message } from '@arco-design/web-vue
+  import { Message } from '@arco-design/web-vue'
 
   const crudRef = ref()
 
