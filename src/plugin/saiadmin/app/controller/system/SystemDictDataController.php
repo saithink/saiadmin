@@ -14,7 +14,7 @@ use support\Request;
 use support\Response;
 
 /**
- * 字典类型控制器
+ * 字典数据控制器
  */
 class SystemDictDataController extends BaseController
 {

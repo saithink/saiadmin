@@ -13,7 +13,7 @@ use support\Request;
 use support\Response;
 
 /**
- * 系统公告控制器
+ * 岗位信息控制器
  */
 class SystemPostController extends BaseController
 {
