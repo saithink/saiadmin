@@ -1,9 +1,11 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | saithink [ saithink快速开发框架 ]
 // +----------------------------------------------------------------------
 // | Author: sai <1430792918@qq.com>
 // +----------------------------------------------------------------------
+
 namespace plugin\saiadmin\app\logic\tool;
 
 use plugin\saiadmin\app\model\system\SystemMenu;
@@ -20,7 +22,6 @@ use plugin\saiadmin\utils\Zip;
  */
 class GenerateTablesLogic extends BaseLogic
 {
-
     protected $columnLogic = null;
     protected $dataLogic = null;
 
@@ -61,7 +62,7 @@ class GenerateTablesLogic extends BaseLogic
         $config = config('thinkorm.connections')[$source];
         $prefix = $config['prefix'];
         foreach ($names as $item) {
-            $class_name = Helper::camel(Helper::str_replace_once($prefix, '', $item['name']));
+            $class_name = !empty($prefix) ? Helper::camel(Helper::str_replace_once($prefix, '', $item['name'])) : $item['name'];
             $tableInfo = [
                 'table_name' => $item['name'],
                 'table_comment' => $item['comment'],
@@ -132,7 +133,7 @@ class GenerateTablesLogic extends BaseLogic
         $tpl->assign('pk', $pk);
         $tpl->assignArray($table);
         $tpl->assign('tables', [$table]);
-        $tpl->assign('columns',$columns);
+        $tpl->assign('columns', $columns);
         if ($table['tpl_category'] == 'tree') {
             $tree_id = $table['options']['tree_id'] ?? '';
             $tree_parent_id = $table['options']['tree_parent_id'] ?? '';
@@ -143,12 +144,12 @@ class GenerateTablesLogic extends BaseLogic
         }
         if ($table['template'] == 'plugin') {
             $namespace_start = "plugin\\".$table['namespace']."\\app\\";
-            $namespace_end =  $table['package_name'] !="" ? "\\".$table['package_name'] : "";
+            $namespace_end =  $table['package_name'] != "" ? "\\".$table['package_name'] : "";
             $url_path = 'app/'.$table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['class_name'];
             $route = 'app/';
         } else {
             $namespace_start = "app\\".$table['namespace']."\\";
-            $namespace_end =  $table['package_name'] !="" ? "\\".$table['package_name'] : "";
+            $namespace_end =  $table['package_name'] != "" ? "\\".$table['package_name'] : "";
             $url_path = $table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['class_name'];
             $route = '';
         }
@@ -342,7 +343,7 @@ class GenerateTablesLogic extends BaseLogic
             if (!empty($nodeData)) {
                 $childNodeData['id'] = $nodeData['id'];
                 $nodeData->save($childNodeData);
-            }else{
+            } else {
                 $menuModel = new SystemMenu();
                 $menuModel->save($childNodeData);
             }
@@ -403,7 +404,7 @@ class GenerateTablesLogic extends BaseLogic
         $tpl->assign('pk', $pk);
         $tpl->assignArray($table);
         $tpl->assign('tables', $tables);
-        $tpl->assign('columns',$columns);
+        $tpl->assign('columns', $columns);
         if ($table['tpl_category'] == 'tree') {
             $tree_id = $table['options']['tree_id'] ?? '';
             $tree_parent_id = $table['options']['tree_parent_id'] ?? '';
@@ -414,12 +415,12 @@ class GenerateTablesLogic extends BaseLogic
         }
         if ($table['template'] == 'plugin') {
             $namespace_start = "plugin\\".$table['namespace']."\\app\\";
-            $namespace_end =  $table['package_name'] !="" ? "\\".$table['package_name'] : "";
+            $namespace_end =  $table['package_name'] != "" ? "\\".$table['package_name'] : "";
             $url_path = 'app/'.$table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['class_name'];
             $route = '/app';
         } else {
             $namespace_start = "app\\".$table['namespace']."\\";
-            $namespace_end =  $table['package_name'] !="" ? "\\".$table['package_name'] : "";
+            $namespace_end =  $table['package_name'] != "" ? "\\".$table['package_name'] : "";
             $url_path = $table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['class_name'];
             $route = '';
         }
