@@ -160,6 +160,7 @@ class Excel
         }
         $writer = IOFactory::createWriter(self::instance(), ucfirst($format));
         $writer->save($file);
+        self::$instance = null;
         return $file;
     }
 
