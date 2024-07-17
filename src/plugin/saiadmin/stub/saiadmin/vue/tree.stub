@@ -128,7 +128,7 @@
       addDisplay: ${is_insert}, ${add_default}
       editDisplay: ${is_edit},
       hide: ${is_list},
-      formType: '${view_type}',
+      formType: 'tree-select',
       dict: { url: '${dict_url}' },
       validateTrigger: 'focus',
       commonRules: [{ required: ${is_required}, message: '${column_comment}必填' }],
