@@ -69,7 +69,7 @@
 
   const columns = reactive([
 #foreach($column in $columns)
-#if[!in_array($view_type, array("select", "radio", "checkbox", "switch", "date", "upload", "cascader", "treeSelect", "userSelect"))]
+#if[!in_array($view_type, array("select", "radio", "checkbox", "switch", "date", "upload", "cascader", "treeSelect", "userSelect", "cityLinkage"))]
     {
       title: '${column_comment}',
       dataIndex: '${column_name}',
