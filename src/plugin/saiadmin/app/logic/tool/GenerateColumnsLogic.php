@@ -61,6 +61,13 @@ class GenerateColumnsLogic extends BaseLogic
                     ]
                 );
             }
+             $keyList = array(
+                'is_insert', 'is_edit', 'is_list', 'is_query', 'query_type',
+                'view_type', 'dict_type', 'allow_roles', 'remark', 'options','is_cover','is_required','is_pk'
+            );
+            foreach ($keyList as $key) {
+                if (isset($item[$key])) $column[$key] = $item[$key];
+            }
             GenerateColumns::create($this->fieldDispose($column));
         }
     }
@@ -172,9 +179,10 @@ class GenerateColumnsLogic extends BaseLogic
                 }
             }
         };
-
-        $object->viewTypeDispose($column);
-        $object->columnName($column);
+        if(!$column['is_cover']) {
+            $object->viewTypeDispose($column);
+            $object->columnName($column);
+        }
         $column['options'] = json_encode($column['options'], JSON_UNESCAPED_UNICODE);
         return $column;
     }
