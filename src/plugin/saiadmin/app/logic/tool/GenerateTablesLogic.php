@@ -80,6 +80,7 @@ class GenerateTablesLogic extends BaseLogic
             $columns = $this->dataLogic->getColumnList($item['name'], $source);
             foreach ($columns as &$column) {
                 $column['table_id'] = $model->id;
+                $column['is_cover'] = false;
             }
             $this->columnLogic->saveExtra($columns);
         }
@@ -93,12 +94,35 @@ class GenerateTablesLogic extends BaseLogic
     public function sync($id)
     {
         $model = $this->find($id);
+         /*拉取已有的数据表信息*/
+        $queryModel = $this->columnLogic->model->where([['table_id', '=', $id]]);
+        $columnLogicData = $this->columnLogic->getAll($queryModel);
+        $columnLogicList = array();
+        foreach ($columnLogicData as $item) {
+            $columnLogicList[$item['column_name']] = $item;
+        }
         $this->columnLogic->destroy(function ($query) use ($id) {
             $query->where('table_id', $id);
         }, true);
         $columns = $this->dataLogic->getColumnList($model->table_name, $model->source ?? '');
         foreach ($columns as &$column) {
             $column['table_id'] = $model->id;
+            $column['is_cover'] = false;
+            if (isset($columnLogicList[$column['column_name']])) {
+                /*存在历史信息的情况下*/
+                $getcolumnLogicItem = $columnLogicList[$column['column_name']];
+                if ($getcolumnLogicItem['column_type'] == $column['column_type']) {
+                    $column['is_cover'] = true;
+                    foreach ($getcolumnLogicItem as $key => $item) {
+                        if (in_array($key, array(
+                            'column_comment', 'default_value', 'is_pk', 'is_required', 'is_insert', 'is_edit', 'is_list', 'is_query', 'query_type',
+                            'view_type', 'dict_type', 'allow_roles', 'remark','options'
+                        ))){
+                            $column[$key] = $item;
+                        }
+                    }
+                }
+            }
         }
         $this->columnLogic->saveExtra($columns);
     }
