@@ -1,0 +1,69 @@
+<?php
+// +----------------------------------------------------------------------
+// | saiadmin [ saiadmin快速开发框架 ]
+// +----------------------------------------------------------------------
+// | Author: your name
+// +----------------------------------------------------------------------
+namespace ${namespace_start}logic${namespace_end};
+
+use plugin\saiadmin\basic\BaseLogic;
+use plugin\saiadmin\exception\ApiException;
+use plugin\saiadmin\utils\Helper;
+use ${namespace_start}model${namespace_end}\${class_name};
+
+/**
+ * ${menu_name}逻辑层
+ */
+class ${class_name}Logic extends BaseLogic
+{
+    /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+        $this->model = new ${class_name}();
+    }
+
+#whether[$tpl_category == "tree"]
+    /**
+     * 数据修改
+     */
+    public function update($data, $where)
+    {
+        if (!isset($data['${tree_parent_id}'])) {
+            $data['${tree_parent_id}'] = 0;
+        }
+        if ($data['${tree_parent_id}'] == $where['${tree_id}']) {
+            throw new ApiException('不能设置父级为自身');
+        }
+        return $this->model->update($data, $where);
+    }
+
+    /**
+     * 数据删除
+     */
+    public function destroy($ids, $force = false)
+    {
+        $num = $this->model->where('${tree_parent_id}', 'in', $ids)->count();
+        if ($num > 0) {
+            throw new ApiException('该分类下存在子分类，请先删除子分类');
+        } else {
+            return $this->model->destroy($ids, $force);
+        }
+    }
+
+    /**
+     * 树形数据
+     */
+    public function tree($where)
+    {
+        $query = $this->search($where);
+        if (request()->input('tree', 'false') === 'true') {
+            $query->field('${tree_id}, ${tree_id} as value, ${tree_name} as label, ${tree_parent_id}');
+        }
+        $data = $this->getAll($query);
+        return Helper::makeTree($data);
+    }
+#/whether
+
+}

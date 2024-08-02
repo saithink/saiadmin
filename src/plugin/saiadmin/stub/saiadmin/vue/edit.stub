@@ -1,0 +1,266 @@
+<template>
+  <component
+#whether[$component_type == 1]
+    is="a-modal"
+#/whether
+#whether[$component_type == 2]
+    is="a-drawer"
+#/whether
+    v-model:visible="visible"
+#whether[$component_type == 2 && $is_full == 2]
+    width="100%"
+#/whether
+#whether[$component_type == 1 && $is_full == 2]
+    :fullscreen="true"
+#/whether
+#whether[$is_full == 1]
+    :width="${form_width}"
+#/whether
+    :title="title"
+    :mask-closable="false"
+    :ok-loading="loading"
+    @cancel="close"
+    @before-ok="submit">
+    <!-- 表单信息 start -->
+    <a-form ref="formRef" :model="formData" :rules="rules" :auto-label-width="true">
+#foreach($column in $columns)
+#if[$is_insert == "true" && $view_type == "input"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-input v-model="formData.${column_name}" placeholder="请输入${column_comment}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "password"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-password v-model="formData.${column_name}" placeholder="请输入${column_comment}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "textarea"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-textarea v-model="formData.${column_name}" placeholder="请输入${column_comment}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "inputNumber"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-input-number v-model="formData.${column_name}" placeholder="请输入${column_comment}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "inputTag"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-input-tag v-model="formData.${column_name}" placeholder="请输入${column_comment}" allow-clear />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "switch"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <sa-switch v-model="formData.${column_name}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "slider"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-slider v-model="formData.${column_name}" placeholder="请输入${column_comment}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "select"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-select v-model="formData.${column_name}" :options="[]" placeholder="请选择${column_comment}" allow-clear />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "saSelect"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <sa-select v-model="formData.${column_name}" dict="${dict}" placeholder="请选择${column_comment}" allow-clear />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "treeSelect" && $column_name == $tree_parent_id]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-tree-select
+          v-model="formData.${column_name}"
+          :data="treeData"
+          :field-names="{ key: '${tree_id}', title: '${tree_name}', icon: 'customIcon' }"
+          placeholder="请选择${column_comment}"
+          allow-clear />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "treeSelect" && $column_name != $tree_parent_id]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-tree-select v-model="formData.${column_name}" :data="[]" placeholder="请选择${column_comment}" allow-clear />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "radio"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <sa-radio v-model="formData.${column_name}" dict="${dict}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "checkbox"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <sa-checkbox v-model="formData.${column_name}" dict="${dict}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "date"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-date-picker v-model="formData.${column_name}" :show-time="${show_time}" mode="${mode}" placeholder="请选择${column_comment}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "time"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-time-picker v-model="formData.${column_name}" placeholder="请选择${column_comment}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "rate"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-rate v-model="formData.${column_name}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "cascader"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <a-cascader v-model="formData.${column_name}" :options="[]" placeholder="请选择${column_comment}" allow-clear />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "userSelect"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <sa-user v-model="formData.${column_name}" :isEcho="true" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "cityLinkage"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <ma-cityLinkage v-model="formData.${column_name}" type="${type}" mode="${mode}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "uploadImage"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <sa-upload-image v-model="formData.${column_name}" :limit="${limit}" :multiple="${multiple}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "uploadFile"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <sa-upload-file v-model="formData.${column_name}" :limit="${limit}" :multiple="${multiple}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "editor"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <ma-editor v-model="formData.${column_name}" :height="${height}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "wangEditor"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <ma-wangEditor v-model="formData.${column_name}" :height="${height}" />
+      </a-form-item>
+#/if
+#if[$is_insert == "true" && $view_type == "codeEditor"]
+      <a-form-item label="${column_comment}" field="${column_name}">
+        <ma-codeEditor v-model="formData.${column_name}" :height="${height}" />
+      </a-form-item>
+#/if
+#/foreach
+    </a-form>
+    <!-- 表单信息 end -->
+  </component>
+</template>
+
+<script setup>
+import { ref, reactive, computed } from 'vue'
+import { Message, Modal } from '@arco-design/web-vue'
+#whether[$package_name == ""]
+import api from '../api/${business_name}'
+#/whether
+#whether[$package_name != ""]
+import api from '../../api/${package_name}/${business_name}'
+#/whether
+
+const emit = defineEmits(['success'])
+// 引用定义
+const visible = ref(false)
+const loading = ref(false)
+const formRef = ref()
+const mode = ref('')
+#whether[$tpl_category == "tree"]
+const treeData = ref([])
+#/whether
+
+let title = computed(() => {
+  return '${menu_name}' + (mode == 'add' ? '-新增' : '-编辑')
+})
+
+// 表单信息
+const formData = reactive({
+#foreach($column in $columns)
+#if[$is_pk == 2]
+  ${column_name}: null,
+#/if
+#if[$is_insert == "true" && $is_pk == 1 && strpos($column_type, 'int') !== false]
+  ${column_name}: ${add_default},
+#/if
+#if[$is_insert == "true" && $is_pk == 1 && strpos($column_type, 'int') === false]
+  ${column_name}: '${add_default}',
+#/if
+#/foreach
+})
+
+// 验证规则
+const rules = {
+#foreach($column in $columns)
+#if[$is_required == "true" && $is_pk == 1]
+  ${column_name}: [{ required: true, message: '${column_comment}必需填写' }],
+#/if
+#/foreach
+}
+
+// 打开弹框
+const open = async (type = 'add') => {
+  mode.value = type
+  visible.value = true
+  formRef.value.resetFields()
+  await initPage()
+}
+
+// 初始化页面数据
+#whether[$tpl_category == "single"]
+const initPage = async () => {}
+#/whether
+#whether[$tpl_category == "tree"]
+const initPage = async () => {
+  const resp = await api.getPageList()
+  treeData.value = resp.data
+}
+#/whether
+
+// 设置数据
+const setFormData = async (data) => {
+  for (const key in formData) {
+    if (data[key] != null && data[key] != undefined) {
+      formData[key] = data[key]
+    }
+  }
+}
+
+// 数据保存
+const submit = async (done) => {
+  const validate = await formRef.value?.validate()
+  if (!validate) {
+    loading.value = true
+    let data = { ...formData }
+    let result = {}
+    if (mode.value === 'add') {
+      // 添加数据
+      data.id = undefined
+      result = await api.save(data)
+    } else {
+      // 修改数据
+      result = await api.update(data.id, data)
+    }
+    if (result.code === 200) {
+      Message.success('操作成功')
+      emit('success')
+      done(true)
+    }
+    // 防止连续点击提交
+    setTimeout(() => {
+      loading.value = false
+    }, 500)
+  }
+  done(false)
+}
+
+// 关闭弹窗
+const close = () => (visible.value = false)
+
+defineExpose({ open, setFormData })
+</script>

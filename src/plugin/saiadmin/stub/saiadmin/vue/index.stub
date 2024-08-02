@@ -1,0 +1,204 @@
+<template>
+  <div class="ma-content-block">
+    <sa-table ref="crudRef" :options="options" :columns="columns" :searchForm="searchForm">
+      <!-- 搜索区 tableSearch -->
+      <template #tableSearch>
+#foreach($column in $columns)
+#if[$is_query == "true" && $view_type == "select"]
+        <a-col :span="8">
+          <a-form-item label="${column_comment}" field="${column_name}">
+            <a-select v-model="searchForm.${column_name}" :options="[]" placeholder="请选择${column_comment}" allow-clear />
+          </a-form-item>
+        </a-col>
+#/if
+#if[$is_query == "true" && in_array($view_type, array("saSelect", "radio")) ]
+        <a-col :span="8">
+          <a-form-item label="${column_comment}" field="${column_name}">
+            <sa-select v-model="searchForm.${column_name}" dict="${dict}" placeholder="请选择${column_comment}" allow-clear />
+          </a-form-item>
+        </a-col>
+#/if
+#if[$is_query == "true" && $view_type == "treeSelect"]
+        <a-col :span="8">
+          <a-form-item label="${column_comment}" field="${column_name}">
+            <a-tree-select v-model="searchForm.${column_name}" :data="[]" placeholder="请选择${column_comment}" allow-clear />
+          </a-form-item>
+        </a-col>
+#/if
+#if[$is_query == "true" && $view_type == "cascader"]
+        <a-col :span="8">
+          <a-form-item label="${column_comment}" field="${column_name}">
+            <a-cascader v-model="searchForm.${column_name}" :options="[]" placeholder="请选择${column_comment}" allow-clear />
+          </a-form-item>
+        </a-col>
+#/if
+#if[$is_query == "true" && $view_type == "date" && $query_type == "between"]
+        <a-col :span="8">
+          <a-form-item label="${column_comment}" field="${column_name}">
+            <a-range-picker v-model="searchForm.${column_name}" :show-time="${show_time}" mode="${mode}" />
+          </a-form-item>
+        </a-col>
+#/if
+#if[$is_query == "true" && $view_type == "date" && $query_type != "between"]
+        <a-col :span="8">
+          <a-form-item label="${column_comment}" field="${column_name}">
+            <a-date-picker v-model="searchForm.${column_name}" :show-time="${show_time}" mode="${mode}" placeholder="请选择${column_comment}" />
+          </a-form-item>
+        </a-col>
+#/if
+#if[$is_query == "true" && !in_array($view_type, array("select", "saSelect", "radio", "treeSelect", "cascader", "date"))]
+        <a-col :span="8">
+          <a-form-item label="${column_comment}" field="${column_name}">
+            <a-input v-model="searchForm.${column_name}" placeholder="请输入${column_comment}" />
+          </a-form-item>
+        </a-col>
+#/if
+#/foreach
+      </template>
+
+      <!-- Table 自定义渲染 -->
+#whether[in_array("changeStatus", $menus)]
+      <template #status="{ record }">
+        <sa-switch v-model="record.status" @change="changeStatus($event, record.id)"></sa-switch>
+      </template>
+#/whether
+    </sa-table>
+
+    <!-- 编辑表单 -->
+    <edit-form ref="editRef" @success="refresh" />
+  </div>
+</template>
+
+<script setup>
+import { onMounted, ref, reactive } from 'vue'
+import { Message } from '@arco-design/web-vue'
+import EditForm from './edit.vue'
+#whether[$package_name == ""]
+import api from '../api/${business_name}'
+#/whether
+#whether[$package_name != ""]
+import api from '../../api/${package_name}/${business_name}'
+#/whether
+
+// 引用定义
+const crudRef = ref()
+const editRef = ref()
+
+// 搜索表单
+const searchForm = ref({
+#foreach($column in $columns)
+#if[$is_query == "true" && $query_type != "between"]
+  ${column_name}: '',
+#/if
+#if[$is_query == "true" && $query_type == "between"]
+  ${column_name}: [],
+#/if
+#/foreach
+})
+
+#whether[in_array("changeStatus", $menus)]
+const changeStatus = async (status, id) => {
+  const response = await api.changeStatus({ id, status })
+  if (response.code === 200) {
+    Message.success(response.message)
+    crudRef.value.refresh()
+  }
+}
+#/whether
+
+// SaTable 基础配置
+const options = reactive({
+  api: api.getPageList,
+#whether[$generate_model == 1]
+  recycleApi: api.getRecyclePageList,
+#/whether
+  rowSelection: { showCheckedAll: true },
+#whether[$tpl_category == "tree"]
+  isExpand: true,
+#/whether
+  add: {
+    show: true,
+    auth: ['/${url_path}/save'],
+    func: async () => {
+      editRef.value?.open()
+    },
+  },
+  edit: {
+    show: true,
+    auth: ['/${url_path}/update'],
+    func: async (record) => {
+      editRef.value?.open('edit')
+      editRef.value?.setFormData(record)
+    },
+  },
+  delete: {
+    show: true,
+    auth: ['/${url_path}/destroy'],
+    func: async (params) => {
+      const resp = await api.delete(params)
+      if (resp.code === 200) {
+        Message.success(`删除成功！`)
+        crudRef.value?.refresh()
+      }
+    },
+#whether[$generate_model == 1]
+    realAuth: ['/${url_path}/realDestroy'],
+    realFunc: async (params) => {
+      const resp = await api.realDestroy(params)
+      if (resp.code === 200) {
+        Message.success(`销毁成功！`)
+        crudRef.value?.refresh()
+      }
+    },
+#/whether
+  },
+#whether[$generate_model == 1]
+  recovery: {
+    show: true,
+    auth: ['/${url_path}/recovery'],
+    func: async (params) => {
+      const resp = await api.recovery(params)
+      if (resp.code === 200) {
+        Message.success(`恢复成功！`)
+        crudRef.value?.refresh()
+      }
+    },
+  },
+#/whether
+})
+
+// SaTable 列配置
+const columns = reactive([
+#foreach($column in $columns)
+#if[$is_list == "true" && $is_sort == "true" && !in_array($view_type, array("saSelect", "radio", "uploadImage"))]
+  { title: '${column_comment}', dataIndex: '${column_name}', width: 180, sortable: { sortDirections: ['ascend', 'descend'] } },
+#/if
+#if[$is_list == "true" && $is_sort != "true" && !in_array($view_type, array("saSelect", "radio", "uploadImage"))]
+  { title: '${column_comment}', dataIndex: '${column_name}', width: 180 },
+#/if
+#if[$is_list == "true" && $is_sort == "true" && in_array($view_type, array("saSelect", "radio"))]
+  { title: '${column_comment}', dataIndex: '${column_name}', dict: '${dict}', width: 120, sortable: { sortDirections: ['ascend', 'descend'] } },
+#/if
+#if[$is_list == "true" && $is_sort != "true" && in_array($view_type, array("saSelect", "radio"))]
+  { title: '${column_comment}', dataIndex: '${column_name}', dict: '${dict}', width: 120 },
+#/if
+#if[$is_list == "true" && $view_type == "uploadImage"]
+  { title: '${column_comment}', dataIndex: '${column_name}', type: 'image', width: 120 },
+#/if
+#/foreach
+])
+
+// 页面数据初始化
+const initPage = async () => {}
+
+// SaTable 数据请求
+const refresh = async () => {
+  crudRef.value?.refresh()
+}
+
+// 页面加载完成执行
+onMounted(async () => {
+  initPage()
+  refresh()
+})
+</script>
