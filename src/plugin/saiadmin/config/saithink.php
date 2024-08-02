@@ -9,6 +9,8 @@ return [
     'cross' => [
         // token信息
         'token_name' => 'Authori-zation',
+        // token秘钥
+        'jwt_key' => 'sai_think',
         // 过期时间 (小时)
         'token_expire' => 6,
     ],

@@ -23,7 +23,16 @@ class JwtAuth
      */
     protected $token;
 
-    public $key = 'saithink';
+    /**
+     * jwt密钥
+     * @var mixed|string
+     */
+    public $key;
+
+    public function __construct($key = 'sai_admin')
+    {
+        $this->key = $key;
+    }
 
     /**
      * 获取token

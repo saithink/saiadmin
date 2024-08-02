@@ -24,7 +24,8 @@ class WebSocket
             // 通过token进行用户认证
             try {
                 $token = $_GET['token'];
-                $jwt = new JwtAuth();
+                $key = config('plugin.saiadmin.saithink.cross.jwt_key', 'sai_admin');
+                $jwt = new JwtAuth($key);
                 $user = $jwt->parseToken($token);
             } catch (\Exception $e) {
                 var_dump($e->getMessage());

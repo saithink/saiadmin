@@ -60,7 +60,8 @@ class SystemUserLogic extends BaseLogic
 
     public function parseToken(string $token): array
     {
-        $jwt = new JwtAuth();
+        $key = config('plugin.saiadmin.saithink.cross.jwt_key', 'sai_admin');
+        $jwt = new JwtAuth($key);
         [$id, $username, $type] = $jwt->parseToken($token);
         return compact('id', 'username', 'type');
     }
@@ -99,7 +100,8 @@ class SystemUserLogic extends BaseLogic
         $adminInfo->login_ip = request()->getRealIp();
         $adminInfo->save();
 
-        $jwt = new JwtAuth();
+        $key = config('plugin.saiadmin.saithink.cross.jwt_key', 'sai_admin');
+        $jwt = new JwtAuth($key);
         $token = $jwt->createToken($adminInfo->id, $adminInfo->username, $type);
         // 登录事件
         Event::emit('user.login', compact('username','status','message'));
