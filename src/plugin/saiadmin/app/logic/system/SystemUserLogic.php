@@ -30,32 +30,38 @@ class SystemUserLogic extends BaseLogic
     public function add($data)
     {
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
-        $role_ids = $data['role_ids'] ?? [];
-        $post_ids = $data['post_ids'] ?? [];
-        $user = SystemUser::create($data);
-        $user->roles()->saveAll($role_ids);
-        if (!empty($post_ids)) {
-            $user->posts()->save($post_ids);
-        }
-        return $user->getKey();
-    }
-
-    public function edit($data, $id)
-    {
-        unset($data['password']);
-        $role_ids = $data['role_ids'] ?? [];
-        $post_ids = $data['post_ids'] ?? [];
-        $result = $this->model->update($data,['id' => $id]);
-        $user = $this->model->find($id);
-        if ($result && $user) {
+        return $this->transaction(function () use ($data) {
+            $role_ids = $data['role_ids'] ?? [];
+            $post_ids = $data['post_ids'] ?? [];
+            $user = SystemUser::create($data);
             $user->roles()->detach();
             $user->posts()->detach();
             $user->roles()->saveAll($role_ids);
             if (!empty($post_ids)) {
                 $user->posts()->save($post_ids);
             }
-        }
-        return $result;
+            return $user->getKey();
+        });
+    }
+
+    public function edit($data, $id)
+    {
+        unset($data['password']);
+        return $this->transaction(function () use ($data, $id) {
+            $role_ids = $data['role_ids'] ?? [];
+            $post_ids = $data['post_ids'] ?? [];
+            $result = $this->model->update($data,['id' => $id]);
+            $user = $this->model->find($id);
+            if ($result && $user) {
+                $user->roles()->detach();
+                $user->posts()->detach();
+                $user->roles()->saveAll($role_ids);
+                if (!empty($post_ids)) {
+                    $user->posts()->save($post_ids);
+                }
+            }
+            return $result;
+        });
     }
 
     /**
