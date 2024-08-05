@@ -19,7 +19,8 @@ function getCurrentInfo()
     if ($header) {
         $token = trim($header);
         if ($token !== 'null' && $token !== '') {
-            $jwt = new JwtAuth();
+            $key = config('plugin.saiadmin.saithink.cross.jwt_key', 'sai_admin');
+            $jwt = new JwtAuth($key);
             [$id, $username, $type] = $jwt->parseToken($token);
             return compact('id', 'username', 'type');
         } else {
