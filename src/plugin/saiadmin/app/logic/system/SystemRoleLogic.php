@@ -44,12 +44,14 @@ class SystemRoleLogic extends BaseLogic
 
     public function saveMenuPermission($id, $menu_ids)
     {
-        $role = $this->model->find($id);
-        if ($role) {
-            $role->menus()->detach();
-            $role->menus()->saveAll($menu_ids);
-        }
-        return $role;
+        return $this->transaction(function () use ($id, $menu_ids) {
+            $role = $this->model->find($id);
+            if ($role) {
+                $role->menus()->detach();
+                $role->menus()->saveAll($menu_ids);
+            }
+            return true;
+        });
     }
 
     public function getDeptByRole($id) : array
@@ -64,14 +66,16 @@ class SystemRoleLogic extends BaseLogic
 
     public function saveDeptPermission($id, $data)
     {
-        $role = $this->model->find($id);
-        $role->data_scope = $data['data_scope'];
-        $role->save();
-        if ($role) {
+        return $this->transaction(function () use ($id, $data) {
+            $role = $this->model->find($id);
+            $role->data_scope = $data['data_scope'];
+            $result = $role->save();
             $role->depts()->detach();
-            $role->depts()->saveAll($data['dept_ids']);
-        }
-        return $role;
+            if ($result && $data['data_scope'] == 2) {
+                $role->depts()->saveAll($data['dept_ids']);
+            }
+            return $result;
+        });
     }
 
 }
