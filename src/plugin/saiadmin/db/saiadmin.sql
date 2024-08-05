@@ -239,9 +239,12 @@ INSERT INTO `eb_system_dept` VALUES (7, 3, '0,1,3', '市场部门', NULL, NULL, 
 -- ----------------------------
 DROP TABLE IF EXISTS `eb_system_dept_leader`;
 CREATE TABLE `eb_system_dept_leader`  (
-  `dept_id` int(11) UNSIGNED NOT NULL COMMENT '部门主键',
-  `user_id` int(11) UNSIGNED NOT NULL COMMENT '角色主键',
-  PRIMARY KEY (`user_id`, `dept_id`) USING BTREE
+    `leader_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '编号',
+    `dept_id` int(11) unsigned NOT NULL COMMENT '部门主键',
+    `user_id` int(11) unsigned NOT NULL COMMENT '角色主键',
+    PRIMARY KEY (`leader_id`) USING BTREE,
+    KEY `idx_dept_id` (`dept_id`) USING BTREE,
+    KEY `idx_user_id` (`user_id`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '部门领导关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -623,26 +626,29 @@ INSERT INTO `eb_system_role` VALUES (6, '员工', 'staff', 5, 1, 1, NULL, 1, 1, 
 -- ----------------------------
 DROP TABLE IF EXISTS `eb_system_role_dept`;
 CREATE TABLE `eb_system_role_dept`  (
-  `role_id` int(11) UNSIGNED NOT NULL COMMENT '用户主键',
-  `dept_id` int(11) UNSIGNED NOT NULL COMMENT '角色主键',
-  PRIMARY KEY (`role_id`, `dept_id`) USING BTREE
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '编号',
+    `role_id` int(11) unsigned NOT NULL COMMENT '用户主键',
+    `dept_id` int(11) unsigned NOT NULL COMMENT '角色主键',
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY `idx_role_id` (`role_id`) USING BTREE,
+    KEY `idx_dept_id` (`dept_id`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '角色与部门关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of eb_system_role_dept
 -- ----------------------------
-INSERT INTO `eb_system_role_dept` VALUES (2, 2);
-INSERT INTO `eb_system_role_dept` VALUES (2, 4);
-INSERT INTO `eb_system_role_dept` VALUES (2, 5);
 
 -- ----------------------------
 -- Table structure for eb_system_role_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `eb_system_role_menu`;
 CREATE TABLE `eb_system_role_menu`  (
-  `role_id` int(11) UNSIGNED NOT NULL COMMENT '角色主键',
-  `menu_id` int(11) UNSIGNED NOT NULL COMMENT '菜单主键',
-  PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '编号',
+    `role_id` int(11) unsigned NOT NULL COMMENT '角色主键',
+    `menu_id` int(11) unsigned NOT NULL COMMENT '菜单主键',
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY `idx_role_id` (`role_id`) USING BTREE,
+    KEY `idx_menu_id` (`menu_id`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '角色与菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -719,33 +725,34 @@ INSERT INTO `eb_system_user` VALUES (3, 'test2', '', '100', '酱油党', '139777
 -- ----------------------------
 DROP TABLE IF EXISTS `eb_system_user_post`;
 CREATE TABLE `eb_system_user_post`  (
-  `user_id` int(11) UNSIGNED NOT NULL COMMENT '用户主键',
-  `post_id` int(11) UNSIGNED NOT NULL COMMENT '岗位主键',
-  PRIMARY KEY (`user_id`, `post_id`) USING BTREE
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `user_id` int(11) unsigned NOT NULL COMMENT '用户主键',
+    `post_id` int(11) unsigned NOT NULL COMMENT '岗位主键',
+    PRIMARY KEY (`id`,`user_id`) USING BTREE,
+    KEY `idx_user_id` (`user_id`) USING BTREE,
+    KEY `idx_post_id` (`post_id`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '用户与岗位关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of eb_system_user_post
 -- ----------------------------
-INSERT INTO `eb_system_user_post` VALUES (2, 3);
-INSERT INTO `eb_system_user_post` VALUES (3, 3);
 
 -- ----------------------------
 -- Table structure for eb_system_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `eb_system_user_role`;
 CREATE TABLE `eb_system_user_role`  (
-  `user_id` int(11) UNSIGNED NOT NULL COMMENT '用户主键',
-  `role_id` int(11) UNSIGNED NOT NULL COMMENT '角色主键',
-  PRIMARY KEY (`user_id`, `role_id`) USING BTREE
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '编号',
+    `user_id` int(11) unsigned NOT NULL COMMENT '用户主键',
+    `role_id` int(11) unsigned NOT NULL COMMENT '角色主键',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`) USING BTREE,
+    KEY `idx_role_id` (`role_id`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '用户与角色关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of eb_system_user_role
 -- ----------------------------
-INSERT INTO `eb_system_user_role` VALUES (1, 1);
-INSERT INTO `eb_system_user_role` VALUES (2, 2);
-INSERT INTO `eb_system_user_role` VALUES (3, 2);
 
 -- ----------------------------
 -- Table structure for eb_tool_generate_columns
