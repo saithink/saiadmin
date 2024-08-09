@@ -159,19 +159,19 @@ class Compile
             }
             $dict = $element['dict_type'] ?? '';
             if ($element['view_type'] == 'date') {
-                $element['show_time'] = $element['options']['showTime'] ? 'true' : 'false';
-                $element['mode'] = $element['options']['mode'] ?? 'date';
+                $element['show_time'] = empty($element['options']) ? 'false' : ($element['options']['showTime'] ? 'true' : 'false');
+                $element['mode'] = empty($element['options']) ? 'date' : ($element['options']['mode'] ?? 'date');
             }
             if ($element['view_type'] == 'uploadImage' || $element['view_type'] == 'uploadFile') {
-                $element['multiple'] = $element['options']['multiple'] ? 'true' : 'false';
-                $element['limit'] = $element['options']['limit'] ?? 3;
+                $element['multiple'] = empty($element['options']) ? 'false' : ($element['options']['multiple'] ? 'true' : 'false');
+                $element['limit'] = empty($element['options']) ? 3 : ($element['options']['limit'] ?? 3);
             }
             if ($element['view_type'] == 'cityLinkage') {
-                $element['type'] = $element['options']['type'] ?? 'select';
-                $element['mode'] = $element['options']['mode'] ?? 'name';
+                $element['type'] = empty($element['options']) ? 'select' : ($element['options']['type'] ?? 'select');
+                $element['mode'] = empty($element['options']) ? 'name' : ($element['options']['mode'] ?? 'name');
             }
             if (in_array($element['view_type'], ['editor', 'wangEditor', 'codeEditor'])) {
-                $element['height'] = $element['options']['height'] ?? 400;
+                $element['height'] = empty($element['options']) ? 400 : ($element['options']['height'] ?? 400);
             }
             $element['is_required'] = ($element['is_required'] == 2) ? 'true' : 'false';
             $element['is_query'] = ($element['is_query'] == 2) ? 'true' : 'false';
