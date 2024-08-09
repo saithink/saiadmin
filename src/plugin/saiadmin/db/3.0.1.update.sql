@@ -55,4 +55,4 @@ ADD COLUMN `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '编号' PRIMAR
 -- 3. 添加索引
 ALTER TABLE `eb_system_user_role`
 ADD KEY `idx_user_id` (`user_id`) USING BTREE,
-ADD KEY `idx_role_id` (`rol_id`) USING BTREE;
+ADD KEY `idx_role_id` (`role_id`) USING BTREE;
