@@ -52,7 +52,7 @@ class SystemUser
 
     protected function getServiceName() : string
     {
-        $path = request()->route->getPath();
+        $path = request()->route ? request()->route->getPath() : request()->path();
         if (preg_match("/\{[^}]+\}/", $path)) {
             $path = rtrim(preg_replace("/\{[^}]+\}/", '', $path), '/');
         }
