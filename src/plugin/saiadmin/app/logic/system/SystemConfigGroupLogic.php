@@ -26,20 +26,13 @@ class SystemConfigGroupLogic extends BaseLogic
         $this->model = new SystemConfigGroup();
     }
 
-    public function save($data): bool
-    {
-        $model = $this->model->where('code', $data['code'])->findOrEmpty();
-        if (!$model->isEmpty()) {
-            throw new ApiException('组标识已存在');
-        }
-        return $this->model->save($data);
-    }
-
     public function destroy($id)
     {
         $model = $this->model->where('id', $id)->findOrEmpty();
-        Cache::set('cfg_' . $model->code, null);
-        $model->delete();
-        SystemConfig::where('group_id', $id)->delete();
+        if (!$model->isEmpty()) {
+            Cache::set('cfg_' . $model->code, null);
+            $model->destroy($id, true);
+            SystemConfig::where('group_id', $id)->delete();
+        }
     }
 }
