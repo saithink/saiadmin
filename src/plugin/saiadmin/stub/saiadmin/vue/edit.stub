@@ -176,7 +176,7 @@ const treeData = ref([])
 #/whether
 
 let title = computed(() => {
-  return '${menu_name}' + (mode == 'add' ? '-新增' : '-编辑')
+  return '${menu_name}' + (mode.value == 'add' ? '-新增' : '-编辑')
 })
 
 // 表单信息
