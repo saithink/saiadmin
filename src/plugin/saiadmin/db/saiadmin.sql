@@ -168,6 +168,15 @@ INSERT INTO `eb_system_config` VALUES (27, 2, 'oss_bucket', '', '阿里bucket', 
 INSERT INTO `eb_system_config` VALUES (28, 2, 'oss_dirname', '', '阿里dirname', 'input', NULL, 0, '阿里云存储dirname');
 INSERT INTO `eb_system_config` VALUES (29, 2, 'oss_domain', '', '阿里domain', 'input', NULL, 0, '阿里云存储domain');
 INSERT INTO `eb_system_config` VALUES (30, 2, 'oss_endpoint', '', '阿里endpoint', 'input', NULL, 0, '阿里云存储endpoint');
+INSERT INTO `eb_system_config` VALUES (31, 3, 'Host', 'smtp.qq.com', 'SMTP服务器', 'input', '', 100, '');
+INSERT INTO `eb_system_config` VALUES (32, 3, 'Port', '465', 'SMTP端口', 'input', '', 100, '');
+INSERT INTO `eb_system_config` VALUES (33, 3, 'Username', '', 'SMTP用户名', 'input', '', 100, '');
+INSERT INTO `eb_system_config` VALUES (34, 3, 'Password', '', 'SMTP密码', 'input', '', 100, '');
+INSERT INTO `eb_system_config` VALUES (35, 3, 'SMTPSecure', 'ssl', 'SMTP验证方式', 'radio', '[\r\n    {\"label\":\"ssl\",\"value\":\"ssl\"},\r\n    {\"label\":\"tsl\",\"value\":\"tsl\"}\r\n]', 100, '');
+INSERT INTO `eb_system_config` VALUES (36, 3, 'From', '', '默认发件人', 'input', '', 100, '默认发件的邮箱地址');
+INSERT INTO `eb_system_config` VALUES (37, 3, 'FromName', '', '默认发件名称', 'input', '', 100, '');
+INSERT INTO `eb_system_config` VALUES (38, 3, 'CharSet', 'UTF-8', '编码', 'input', '', 100, '');
+INSERT INTO `eb_system_config` VALUES (39, 3, 'SMTPDebug', '0', '调试模式', 'radio', '[\r\n    {\"label\":\"关闭\",\"value\":\"0\"},\r\n    {\"label\":\"client\",\"value\":\"1\"},\r\n    {\"label\":\"server\",\"value\":\"2\"}\r\n]', 100, '');
 
 -- ----------------------------
 -- Table structure for eb_system_config_group
@@ -191,6 +200,7 @@ CREATE TABLE `eb_system_config_group`  (
 -- ----------------------------
 INSERT INTO `eb_system_config_group` VALUES (1, '站点配置', 'site_config', NULL, 1, 1, '2021-11-23 10:49:29', '2021-11-23 10:49:29', NULL);
 INSERT INTO `eb_system_config_group` VALUES (2, '上传配置', 'upload_config', NULL, 1, 1, '2021-11-23 10:49:29', '2021-11-23 10:49:29', NULL);
+INSERT INTO `eb_system_config_group` VALUES (3, '邮件服务', 'email_config', NULL, 1, 1, '2021-11-23 10:49:29', '2021-11-23 10:49:29', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_crontab
@@ -348,6 +358,11 @@ INSERT INTO `eb_system_dict_data` VALUES (51, 13, '外链', 'L', 'menu_type', 10
 INSERT INTO `eb_system_dict_data` VALUES (52, 13, 'iFrame', 'I', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:51', '2024-07-31 10:34:51', NULL);
 INSERT INTO `eb_system_dict_data` VALUES (53, 14, '是', '1', 'yes_or_no', 100, 1, '', 1, 1, '2024-07-31 10:35:17', '2024-07-31 10:35:17', NULL);
 INSERT INTO `eb_system_dict_data` VALUES (54, 14, '否', '2', 'yes_or_no', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (55, 14, '全部数据权限', '1', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (56, 14, '自定义数据权限', '2', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (57, 14, '本部门数据权限', '3', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (58, 14, '本部门及以下数据权限', '4', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (59, 14, '本人数据权限', '5', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_dict_type
@@ -379,6 +394,7 @@ INSERT INTO `eb_system_dict_type` VALUES (7, '后台公告类型', 'backend_noti
 INSERT INTO `eb_system_dict_type` VALUES (12, '附件类型', 'attachment_type', 1, NULL, 1, 1, '2021-06-27 13:33:29', '2022-03-17 14:49:23', NULL);
 INSERT INTO `eb_system_dict_type` VALUES (13, '菜单类型', 'menu_type', 1, '', 1, 1, '2024-07-31 10:33:37', '2024-07-31 10:33:37', NULL);
 INSERT INTO `eb_system_dict_type` VALUES (14, '是否', 'yes_or_no', 1, '', 1, 1, '2024-07-31 10:35:07', '2024-07-31 10:35:07', NULL);
+INSERT INTO `eb_system_dict_type` VALUES (15, '数据权限', 'data_scope', 1, '', 1, 1, '2024-07-31 10:35:07', '2024-07-31 10:35:07', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_login_log
@@ -639,6 +655,8 @@ INSERT INTO `eb_system_post` VALUES (6, '技术部', 'jishu', 100, 1, NULL, 1, 1
 DROP TABLE IF EXISTS `eb_system_role`;
 CREATE TABLE `eb_system_role`  (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `parent_id` int(11) UNSIGNED NULL DEFAULT NULL COMMENT '父ID',
+    `level` varchar(500) NULL DEFAULT NULL COMMENT '组级集合',
     `name` varchar(30) NULL DEFAULT NULL COMMENT '角色名称',
     `code` varchar(100) NULL DEFAULT NULL COMMENT '角色代码',
     `data_scope` smallint(6) NULL DEFAULT 1 COMMENT '数据范围(1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限 5:本人数据权限)',
@@ -651,17 +669,24 @@ CREATE TABLE `eb_system_role`  (
     `update_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
     `delete_time` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 COMMENT = '角色信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 COMMENT = '角色信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of eb_system_role
 -- ----------------------------
-INSERT INTO `eb_system_role` VALUES (1, '超级管理员（创始人）', 'superAdmin', 1, 1, 100, '系统内置角色，不可删除', 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_role` VALUES (2, '总管理员', 'maxAdmin', 5, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-11-22 23:06:36', NULL);
-INSERT INTO `eb_system_role` VALUES (3, '区域管理员', 'areaAdmin', 2, 1, 1, '', 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_role` VALUES (4, '部门领导', 'deptLeader', 3, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_role` VALUES (5, '机构管理员', 'companyAdmin', 4, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_role` VALUES (6, '员工', 'staff', 5, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-12-12 16:11:12', NULL);
+INSERT INTO `eb_system_role` VALUES (1, 0, '0', '超级管理员（创始人）', 'superAdmin', 1, 1, 100, '系统内置角色，不可删除', 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
+INSERT INTO `eb_system_role` VALUES (2, 1, '0,1', '总经理', 'zongjingli', 1, 1, 100, '', 1, 1, '2023-10-24 12:00:00', '2024-08-12 15:47:28', NULL);
+INSERT INTO `eb_system_role` VALUES (3, 2, '0,1,2', '销售总监', 'xiaoshouzongjian', 1, 1, 100, '', 1, 2, '2023-10-24 12:00:00', '2024-08-15 23:07:20', NULL);
+INSERT INTO `eb_system_role` VALUES (4, 2, '0,1,2', '财务总监', 'caiwuzongjian', 1, 1, 100, '', 1, 1, '2023-10-24 12:00:00', '2024-08-12 15:50:04', NULL);
+INSERT INTO `eb_system_role` VALUES (5, 2, '0,1,2', '技术总监', 'jishuzongjian', 1, 1, 100, '', 1, 1, '2023-10-24 12:00:00', '2024-08-12 15:38:42', NULL);
+INSERT INTO `eb_system_role` VALUES (6, 3, '0,1,2,3', '销售经理', 'xiaoshoujingli', 1, 1, 100, '', 1, 6, '2023-10-24 12:00:00', '2024-08-12 22:20:36', NULL);
+INSERT INTO `eb_system_role` VALUES (7, 6, '0,1,2,3,6', '销售专员', 'xiaoshouzhuanyuan', 1, 1, 100, '', 1, 1, '2024-08-12 15:40:39', '2024-08-12 15:49:49', NULL);
+INSERT INTO `eb_system_role` VALUES (8, 4, '0,1,2,4', '财务经理', 'caiwujingli', 1, 1, 100, '', 1, 1, '2024-08-12 15:41:33', '2024-08-12 15:50:11', NULL);
+INSERT INTO `eb_system_role` VALUES (9, 8, '0,1,2,4,8', '财务专员', 'caiwuzhuanyuan', 1, 1, 100, '', 1, 1, '2024-08-12 15:41:46', '2024-08-12 15:50:15', NULL);
+INSERT INTO `eb_system_role` VALUES (10, 5, '0,1,2,5', '开发部经理', 'kaifajingli', 1, 1, 100, '', 1, 1, '2024-08-12 15:42:40', '2024-08-12 15:50:26', NULL);
+INSERT INTO `eb_system_role` VALUES (11, 5, '0,1,2,5', '测试部经理', 'ceshijingli', 1, 1, 100, '', 1, 1, '2024-08-12 15:43:00', '2024-08-12 15:50:37', NULL);
+INSERT INTO `eb_system_role` VALUES (12, 10, '0,1,2,5,10', '程序员', 'chegnxuyuan', 1, 1, 100, '', 1, 1, '2024-08-12 15:43:21', '2024-08-12 15:50:31', NULL);
+INSERT INTO `eb_system_role` VALUES (13, 11, '0,1,2,5,11', '测试员', 'ceshiyuan', 1, 1, 100, '', 1, 1, '2024-08-12 15:43:38', '2024-08-12 15:50:41', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_role_dept
