@@ -60,6 +60,7 @@ Route::group('/core', function () {
     Route::post("/user/setHomePage",[\plugin\saiadmin\app\controller\system\SystemUserController::class, 'setHomePage']);
 
     fastRoute('configGroup',\plugin\saiadmin\app\controller\system\SystemConfigGroupController::class);
+    Route::post("/configGroup/email",[\plugin\saiadmin\app\controller\system\SystemConfigGroupController::class, 'email']);
     fastRoute('config',\plugin\saiadmin\app\controller\system\SystemConfigController::class);
     Route::post("/config/batchUpdate",[\plugin\saiadmin\app\controller\system\SystemConfigController::class, 'batchUpdate']);
 
