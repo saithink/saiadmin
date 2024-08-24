@@ -29,6 +29,20 @@ class SystemUser extends BaseModel
     }
 
     /**
+     * 权限范围
+     */
+    public function scopeAuth($query, $value)
+    {
+        $id = $value['id'];
+        $dept = $value['dept'];
+        if ($id > 1) {
+            $level = $dept['level'] . ',' . $dept['id'];
+            $ids = SystemDept::where('level', $level)->whereOr('level', 'like', $level . ',%')->column('id');
+            $query->whereIn('dept_id', $ids);
+        }
+    }
+
+    /**
      * 根据岗位id进行搜索
      */
     public function searchPostIdAttr($query, $value)

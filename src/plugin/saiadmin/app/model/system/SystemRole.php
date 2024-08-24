@@ -23,6 +23,21 @@ class SystemRole extends BaseModel
     protected $table = 'eb_system_role';
 
     /**
+     * 权限范围
+     */
+    public function scopeAuth($query, $value)
+    {
+        $id = $value['id'];
+        $roles = $value['roles'];
+        if ($id > 1) {
+            foreach ($roles as $item) {
+                $level = $item['level'] . ',' . $item['id'];
+                $query->where('id', $item['id'])->whereOr('level', $level)->whereOr('level', 'like', $level . ',%');
+            }
+        }
+    }
+
+    /**
      * 通过中间表获取菜单
      */
     public function menus()

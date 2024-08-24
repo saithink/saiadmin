@@ -43,6 +43,10 @@ class SystemUserController extends BaseController
             ['create_time', ''],
         ]);
         $query = $this->logic->search($where);
+        $query->auth([
+            'id' => $this->adminId,
+            'dept' => $this->adminInfo['deptList']
+        ]);
         $data = $this->logic->getList($query);
         return $this->success($data);
     }

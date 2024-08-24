@@ -22,6 +22,17 @@ class SystemDept extends BaseModel
 
     protected $table = 'eb_system_dept';
 
+    /**
+     * 权限范围
+     */
+    public function scopeAuth($query, $value)
+    {
+        if (!empty($value)) {
+            $level = $value['level'] . ',' . $value['id'];
+            $query->where('id', $value['id'])->whereOr('level', $level)->whereOr('level', 'like', $level . ',%');
+        }
+    }
+
     public function leader()
     {
         return $this->belongsToMany(SystemUser::class, SystemDeptLeader::class, 'user_id', 'dept_id');

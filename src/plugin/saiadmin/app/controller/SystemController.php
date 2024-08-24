@@ -137,6 +137,10 @@ class SystemController extends BaseController
             ['post_id', ''],
         ]);
         $query = $logic->search($where);
+        $query->auth([
+            'id' => $this->adminId,
+            'dept' => $this->adminInfo['deptList']
+        ]);
         $data = $logic->getList($query);
         return $this->success($data);
     }

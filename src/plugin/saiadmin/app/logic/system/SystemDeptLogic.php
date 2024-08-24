@@ -83,17 +83,52 @@ class SystemDeptLogic extends BaseLogic
 
     /**
      * 数据树形化
-     * @param $where
+     * @param array $where
      * @return array
      */
-    public function tree($where = []): array
+    public function tree(array $where = []): array
     {
         $query = $this->search($where);
         if (request()->input('tree', 'false') === 'true') {
             $query->field('id, id as value, name as label, parent_id');
         }
+        $query->auth($this->adminInfo['deptList']);
         $query->order('sort', 'desc');
         $data = $this->getAll($query);
+        $disabled = $this->adminInfo['dept_id'];
+        if (request()->input('filter', 'true') === 'true') {
+            if (!empty($disabled)) {
+                foreach ($data as &$item) {
+                    if ($item['id'] === $this->adminInfo['dept_id']) {
+                        $item['disabled'] = true;
+                    } else {
+                        $item['disabled'] = false;
+                    }
+                }
+            }
+        }
+        return Helper::makeTree($data);
+    }
+
+    /**
+     * 可操作部门
+     * @param array $where
+     * @return array
+     */
+    public function accessDept(array $where = []): array
+    {
+        $query = $this->search($where);
+        $query->auth($this->adminInfo['deptList']);
+        $query->field('id, id as value, name as label, parent_id');
+        $query->order('sort', 'desc');
+        $data = $this->getAll($query);
+        foreach ($data as &$item) {
+            if ($item['id'] === $this->adminInfo['dept_id']) {
+                $item['disabled'] = true;
+            } else {
+                $item['disabled'] = false;
+            }
+        }
         return Helper::makeTree($data);
     }
 

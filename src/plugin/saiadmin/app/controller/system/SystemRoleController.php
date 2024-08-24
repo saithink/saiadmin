@@ -39,13 +39,19 @@ class SystemRoleController extends BaseController
             ['code', ''],
             ['status', ''],
         ]);
-        $query = $this->logic->search($where);
-        $saiType = $request->input('saiType', '');
-        if ($saiType === 'all') {
-            $query->where('id', '>', 1);
-        }
-        $query->order('sort', 'desc');
-        $data = $this->logic->getList($query);
+        $data = $this->logic->tree($where);
+        return $this->success($data);
+    }
+
+    /**
+     * 可操作角色
+     * @param Request $request
+     * @return Response
+     */
+    public function accessRole(Request $request) : Response
+    {
+        $where = [];
+        $data = $this->logic->accessRole($where);
         return $this->success($data);
     }
 

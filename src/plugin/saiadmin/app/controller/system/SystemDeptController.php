@@ -45,6 +45,18 @@ class SystemDeptController extends BaseController
     }
 
     /**
+     * 可操作部门
+     * @param Request $request
+     * @return Response
+     */
+    public function accessDept(Request $request) : Response
+    {
+        $where = [];
+        $data = $this->logic->accessDept($where);
+        return $this->success($data);
+    }
+
+    /**
      * 部门领导列表
      * @param Request $request
      * @return Response

@@ -46,6 +46,18 @@ class SystemPostController extends BaseController
     }
 
     /**
+     * 可操作岗位
+     * @param Request $request
+     * @return Response
+     */
+    public function accessPost(Request $request) : Response
+    {
+        $where = [];
+        $data = $this->logic->accessPost($where);
+        return $this->success($data);
+    }
+
+    /**
      * 下载导入模板
      * @return Response
      */

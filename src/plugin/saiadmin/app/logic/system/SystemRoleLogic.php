@@ -8,6 +8,8 @@ namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\model\system\SystemRole;
 use plugin\saiadmin\basic\BaseLogic;
+use plugin\saiadmin\exception\ApiException;
+use plugin\saiadmin\utils\Helper;
 use think\db\Query;
 
 /**
@@ -21,6 +23,121 @@ class SystemRoleLogic extends BaseLogic
     public function __construct()
     {
         $this->model = new SystemRole();
+    }
+
+    /**
+     * 数据保存
+     */
+    public function save($data)
+    {
+        $data = $this->handleData($data);
+        return $this->model->save($data);
+    }
+
+    /**
+     * 数据修改
+     */
+    public function update($data, $where)
+    {
+        $oldLevel = $data['level'] . "," . $where['id'];
+        $data = $this->handleData($data);
+        if ($data['parent_id'] == $where['id']) {
+            throw new ApiException('不能设置父级为自身');
+        }
+        $newLevel = $data['level'].",".$where['id'];
+        $roleIds = $this->model->where('level', $oldLevel)
+            ->whereOr('level', 'like', $oldLevel . ',%')
+            ->column('id');
+        $this->model->whereIn('id', $roleIds)->exp('level', "REPLACE(level, '$oldLevel', '$newLevel')")->update();
+        return $this->model->update($data, $where);
+    }
+
+    /**
+     * 数据删除
+     */
+    public function destroy($ids, $force = false)
+    {
+        $num = $this->model->where('parent_id', 'in', $ids)->count();
+        if ($num > 0) {
+            throw new ApiException('该角色下存在子角色，请先删除子角色');
+        } else {
+            return $this->model->destroy($ids, $force);
+        }
+    }
+
+    /**
+     * 数据处理
+     */
+    protected function handleData($data)
+    {
+        if (empty($data['parent_id']) || $data['parent_id'] == 0) {
+            $data['level'] = '0';
+            $data['parent_id'] = 0;
+        } else {
+            $parentMenu = $this->model->find((int)$data['parent_id']);
+            $data['level'] = $parentMenu['level'] . ',' . $parentMenu['id'];
+        }
+        return $data;
+    }
+
+    /**
+     * 数据树形化
+     * @param array $where
+     * @return array
+     */
+    public function tree(array $where = []): array
+    {
+        $query = $this->search($where);
+        if (request()->input('tree', 'false') === 'true') {
+            $query->field('id, id as value, name as label, parent_id');
+        }
+        $query->auth([
+            'id' => $this->adminInfo['id'],
+            'roles' => $this->adminInfo['roleList']
+        ]);
+        $disabled = array_column($this->adminInfo['roleList'], 'id');
+        $query->order('sort', 'desc');
+        $data = $this->getAll($query);
+        if (request()->input('filter', 'true') === 'true') {
+            if (!empty($disabled)) {
+                foreach ($data as &$item) {
+                    if (in_array($item['id'], $disabled)) {
+                        $item['disabled'] = true;
+                    } else {
+                        $item['disabled'] = false;
+                    }
+                }
+            }
+        }
+        return Helper::makeTree($data);
+    }
+
+    /**
+     * 可操作角色
+     * @param array $where
+     * @return array
+     */
+    public function accessRole(array $where = []): array
+    {
+        $query = $this->search($where);
+        $query->field('id, id as value, name as label, parent_id');
+        $query->auth([
+            'id' => $this->adminInfo['id'],
+            'roles' => $this->adminInfo['roleList']
+        ]);
+        $disabled = array_column($this->adminInfo['roleList'], 'id');
+        $query->order('sort', 'desc');
+        $data = $this->getAll($query);
+        if (!empty($disabled)) {
+            foreach ($data as &$item) {
+                if (in_array($item['id'], $disabled)) {
+                    $item['disabled'] = true;
+                } else {
+                    $item['disabled'] = false;
+                }
+            }
+        }
+        return Helper::makeTree($data);
     }
 
     public function getMenuIdsByRoleIds($ids) : array

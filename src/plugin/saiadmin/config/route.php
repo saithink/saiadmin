@@ -34,6 +34,7 @@ Route::group('/core', function () {
 
     fastRoute('notice',\plugin\saiadmin\app\controller\system\SystemNoticeController::class);
     fastRoute('post',\plugin\saiadmin\app\controller\system\SystemPostController::class);
+    Route::get("/post/accessPost",[\plugin\saiadmin\app\controller\system\SystemPostController::class, 'accessPost']);
     Route::post("/post/downloadTemplate",[plugin\saiadmin\app\controller\system\SystemPostController::class, 'downloadTemplate']);
 
     fastRoute('menu',\plugin\saiadmin\app\controller\system\SystemMenuController::class);
@@ -42,12 +43,14 @@ Route::group('/core', function () {
     fastRoute('attachment',\plugin\saiadmin\app\controller\system\SystemUploadfileController::class);
 
     fastRoute('role',\plugin\saiadmin\app\controller\system\SystemRoleController::class);
+    Route::get("/role/accessRole",[\plugin\saiadmin\app\controller\system\SystemRoleController::class, 'accessRole']);
     Route::get("/role/getMenuByRole/{id}",[\plugin\saiadmin\app\controller\system\SystemRoleController::class,'getMenuByRole']);
     Route::get("/role/getDeptByRole/{id}",[\plugin\saiadmin\app\controller\system\SystemRoleController::class,'getDeptByRole']);
     Route::post("/role/menuPermission/{id}",[\plugin\saiadmin\app\controller\system\SystemRoleController::class,'menuPermission']);
     Route::post("/role/dataPermission/{id}",[\plugin\saiadmin\app\controller\system\SystemRoleController::class,'dataPermission']);
 
     fastRoute("dept", \plugin\saiadmin\app\controller\system\SystemDeptController::class);
+    Route::get("/dept/accessDept",[\plugin\saiadmin\app\controller\system\SystemDeptController::class, 'accessDept']);
     Route::get("/dept/leaders",[\plugin\saiadmin\app\controller\system\SystemDeptController::class, 'leaders']);
     Route::post("/dept/addLeader",[\plugin\saiadmin\app\controller\system\SystemDeptController::class, 'addLeader']);
     Route::delete("/dept/delLeader",[\plugin\saiadmin\app\controller\system\SystemDeptController::class, 'delLeader']);
