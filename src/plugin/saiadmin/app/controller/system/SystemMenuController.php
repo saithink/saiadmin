@@ -40,6 +40,12 @@ class SystemMenuController extends BaseController
             ['is_hidden', ''],
             ['status', ''],
         ]);
+        if ($this->adminId > 1) {
+            if (request()->input('auth', 'false') === 'true') {
+                $data = $this->logic->auth();
+                return $this->success($data);
+            }
+        }
         $data = $this->logic->tree($where);
         return $this->success($data);
     }
