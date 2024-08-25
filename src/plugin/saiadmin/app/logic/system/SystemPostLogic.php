@@ -27,6 +27,17 @@ class SystemPostLogic extends BaseLogic
     }
 
     /**
+     * 可操作岗位
+     * @param array $where
+     * @return array
+     */
+    public function accessPost(array $where = []): array
+    {
+        $query = $this->search($where);
+        return $this->getAll($query);
+    }
+
+    /**
      * 导入数据
      */
     public function import($file)
