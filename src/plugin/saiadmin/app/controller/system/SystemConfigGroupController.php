@@ -10,9 +10,11 @@ namespace plugin\saiadmin\app\controller\system;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemConfigGroupLogic;
 use plugin\saiadmin\app\validate\system\SystemConfigGroupValidate;
+use plugin\saiadmin\utils\Arr;
 use support\Request;
 use support\Response;
 use plugin\saiadmin\service\EmailService;
+use plugin\saiadmin\app\model\system\SystemMail;
 
 /**
  * 配置控制器
@@ -62,10 +64,29 @@ class SystemConfigGroupController extends BaseController
         $template = [
             'code' => $code
         ];
+        $config = EmailService::getConfig();
+        $model = SystemMail::create([
+            'gateway' => Arr::getConfigValue($config,'Host'),
+            'from' => Arr::getConfigValue($config,'From'),
+            'email' => $email,
+            'code' => $code,
+        ]);
         try {
-            EmailService::sendByTemplate($email, $subject, $content, $template);
-            return $this->success();
+            $result = EmailService::sendByTemplate($email, $subject, $content, $template);
+            if (!empty($result)) {
+                $model->status = 'failure';
+                $model->response = $result;
+                $model->save();
+                return $this->fail('发送失败，请查看日志');
+            } else {
+                $model->status = 'success';
+                $model->save();
+                return $this->success([], '发送成功');
+            }
         } catch (\Exception $e) {
+            $model->status = 'failure';
+            $model->response = $e->getMessage();
+            $model->save();
             return $this->fail($e->getMessage());
         }
     }

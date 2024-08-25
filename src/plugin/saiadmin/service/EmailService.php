@@ -56,10 +56,10 @@ class EmailService
      * @param $to
      * @param $subject
      * @param $content
-     * @return void
+     * @return string
      * @throws Exception
      */
-    public static function send($from, $to, $subject, $content)
+    public static function send($from, $to, $subject, $content): string
     {
         $mailer = static::getMailer();
         call_user_func_array([$mailer, 'setFrom'], (array)$from);
@@ -68,6 +68,7 @@ class EmailService
         $mailer->isHTML(true);
         $mailer->Body = $content;
         $mailer->send();
+        return $mailer->ErrorInfo;
     }
 
     /**
@@ -76,10 +77,10 @@ class EmailService
      * @param $subject
      * @param $content
      * @param array $templateData
-     * @return void
+     * @return string
      * @throws Exception
      */
-    public static function sendByTemplate($to, $subject, $content, array $templateData = [])
+    public static function sendByTemplate($to, $subject, $content, array $templateData = []): string
     {
         if ($templateData) {
             $search = [];
@@ -89,7 +90,7 @@ class EmailService
             $content = str_replace($search, array_values($templateData), $content);
         }
         $config = static::getConfig();
-        static::send([Arr::getConfigValue($config,'From'), Arr::getConfigValue($config,'FromName')], $to, $subject, $content);
+        return static::send([Arr::getConfigValue($config,'From'), Arr::getConfigValue($config,'FromName')], $to, $subject, $content);
     }
     
 }
