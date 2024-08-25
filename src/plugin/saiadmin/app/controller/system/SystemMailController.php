@@ -13,7 +13,7 @@ use support\Request;
 use support\Response;
 
 /**
- * 岗位信息控制器
+ * 邮件记录控制器
  */
 class SystemMailController extends BaseController
 {
