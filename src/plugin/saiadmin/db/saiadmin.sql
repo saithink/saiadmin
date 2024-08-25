@@ -358,11 +358,11 @@ INSERT INTO `eb_system_dict_data` VALUES (51, 13, '外链', 'L', 'menu_type', 10
 INSERT INTO `eb_system_dict_data` VALUES (52, 13, 'iFrame', 'I', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:51', '2024-07-31 10:34:51', NULL);
 INSERT INTO `eb_system_dict_data` VALUES (53, 14, '是', '1', 'yes_or_no', 100, 1, '', 1, 1, '2024-07-31 10:35:17', '2024-07-31 10:35:17', NULL);
 INSERT INTO `eb_system_dict_data` VALUES (54, 14, '否', '2', 'yes_or_no', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
-INSERT INTO `eb_system_dict_data` VALUES (55, 14, '全部数据权限', '1', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
-INSERT INTO `eb_system_dict_data` VALUES (56, 14, '自定义数据权限', '2', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
-INSERT INTO `eb_system_dict_data` VALUES (57, 14, '本部门数据权限', '3', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
-INSERT INTO `eb_system_dict_data` VALUES (58, 14, '本部门及以下数据权限', '4', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
-INSERT INTO `eb_system_dict_data` VALUES (59, 14, '本人数据权限', '5', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (55, 15, '全部数据权限', '1', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (56, 15, '自定义数据权限', '2', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (57, 15, '本部门数据权限', '3', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (58, 15, '本部门及以下数据权限', '4', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (59, 15, '本人数据权限', '5', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_dict_type
@@ -787,7 +787,7 @@ CREATE TABLE `eb_system_user`  (
 -- ----------------------------
 -- Records of eb_system_user
 -- ----------------------------
-INSERT INTO `eb_system_user` VALUES (1, 'admin', '$2y$10$Q70WC9RBqMSS72DmppsbIuQtyAydXSmeD.Ae6W8YhmE/w15uLLpiy', '100', '祭道之上', '13888888888', 'admin@admin.com', 'https://image.saithink.top/saiadmin/avatar.jpg', 'Today is very good！', 'statistics', 1, 1, '127.0.0.1', '2024-07-31 21:03:43', '{\"mode\":\"light\",\"tag\":true,\"menuCollapse\":false,\"menuWidth\":230,\"layout\":\"classic\",\"skin\":\"mine\",\"i18n\":true,\"language\":\"zh_CN\",\"animation\":\"ma-slide-down\",\"color\":\"#165DFF\"}', NULL, 1, 1, '2024-01-20 16:02:23', '2024-07-31 21:03:44', NULL);
+INSERT INTO `eb_system_user` VALUES (1, 'admin', '$2y$10$Q70WC9RBqMSS72DmppsbIuQtyAydXSmeD.Ae6W8YhmE/w15uLLpiy', '100', '祭道之上', '13888888888', 'admin@admin.com', 'https://image.saithink.top/saiadmin/avatar.jpg', 'Today is very good！', 'statistics', 0, 1, '127.0.0.1', '2024-07-31 21:03:43', '{\"mode\":\"light\",\"tag\":true,\"menuCollapse\":false,\"menuWidth\":230,\"layout\":\"classic\",\"skin\":\"mine\",\"i18n\":true,\"language\":\"zh_CN\",\"animation\":\"ma-slide-down\",\"color\":\"#165DFF\"}', NULL, 1, 1, '2024-01-20 16:02:23', '2024-07-31 21:03:44', NULL);
 INSERT INTO `eb_system_user` VALUES (2, 'test1', '$2y$10$Q70WC9RBqMSS72DmppsbIuQtyAydXSmeD.Ae6W8YhmE/w15uLLpiy', '100', '小小测试员', '15822222222', 'test1@saadmin.com', 'http://127.0.0.1:8787/storage/20240731/7971881d7e10a122e0f51ea188571dbe29d82229.jpg', NULL, 'work', 2, 1, '127.0.0.1', '2024-01-20 16:02:22', 'null', 'test', 1, 1, '2024-07-31 09:34:31', '2024-07-31 10:03:04', NULL);
 INSERT INTO `eb_system_user` VALUES (3, 'test2', '$2y$10$Q70WC9RBqMSS72DmppsbIuQtyAydXSmeD.Ae6W8YhmE/w15uLLpiy', '100', '酱油党', '13977777777', 'test2@saadmin.com', 'https://image.saithink.top/saiadmin/avatar.jpg', NULL, 'work', 3, 1, '127.0.0.1', '2024-01-20 16:02:22', 'null', 'test', 1, 1, '2024-07-31 09:34:31', '2024-07-31 09:37:10', NULL);
 
