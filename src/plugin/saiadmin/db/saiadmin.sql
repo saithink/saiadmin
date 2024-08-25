@@ -946,4 +946,23 @@ INSERT INTO `eb_tool_generate_tables` VALUES (1, 'eb_article', '文章表', 'sai
 INSERT INTO `eb_tool_generate_tables` VALUES (2, 'eb_article_banner', '文章轮播图', 'saiadmin', 'app', 'cms', '', 'banner', 'ArticleBanner', '文章轮播', 4000, 'single', 2, 'saiadmin-vue', 1, 'save,update,read,delete,recycle,recovery,realDestroy', 1, 1, '{\"relations\":[]}', 600, 1, NULL, 'mysql', 1, 1, '2024-07-31 17:15:23', '2024-07-31 17:28:11', NULL);
 INSERT INTO `eb_tool_generate_tables` VALUES (3, 'eb_article_category', '文章分类表', 'saiadmin', 'app', 'cms', '', 'category', 'ArticleCategory', '文章分类', 4000, 'tree', 2, 'saiadmin-vue', 1, 'save,update,read,delete,recycle,recovery,realDestroy', 1, 2, '{\"relations\":[],\"tree_id\":\"id\",\"tree_name\":\"category_name\",\"tree_parent_id\":\"parent_id\"}', 800, 1, NULL, 'mysql', 1, 1, '2024-07-31 17:15:23', '2024-07-31 17:47:35', NULL);
 
+-- ----------------------------
+-- Table structure for eb_tool_generate_tables
+-- ----------------------------
+DROP TABLE IF EXISTS `eb_system_mail`;
+CREATE TABLE `eb_system_mail` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `gateway` varchar(50) DEFAULT NULL COMMENT '网关',
+  `from` varchar(50) DEFAULT NULL COMMENT '发送人',
+  `email` varchar(50) DEFAULT NULL COMMENT '接收人',
+  `code` varchar(20) DEFAULT NULL COMMENT '验证码',
+  `content` varchar(500) DEFAULT NULL COMMENT '邮箱内容',
+  `status` varchar(20) DEFAULT NULL COMMENT '发送状态',
+  `response` varchar(500) DEFAULT NULL COMMENT '返回结果',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+  `delete_time` datetime DEFAULT NULL COMMENT '删除时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='邮件记录' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;

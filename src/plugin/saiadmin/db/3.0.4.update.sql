@@ -24,3 +24,19 @@ INSERT INTO `eb_system_config` VALUES (NULL, @id, 'From', '', '默认发件人',
 INSERT INTO `eb_system_config` VALUES (NULL, @id, 'FromName', '', '默认发件名称', 'input', '', 100, '');
 INSERT INTO `eb_system_config` VALUES (NULL, @id, 'CharSet', 'UTF-8', '编码', 'input', '', 100, '');
 INSERT INTO `eb_system_config` VALUES (NULL, @id, 'SMTPDebug', '0', '调试模式', 'radio', '[\r\n    {\"label\":\"关闭\",\"value\":\"0\"},\r\n    {\"label\":\"client\",\"value\":\"1\"},\r\n    {\"label\":\"server\",\"value\":\"2\"}\r\n]', 100, '');
+
+-- 3. 添加邮件记录表
+CREATE TABLE `eb_system_mail` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `gateway` varchar(50) DEFAULT NULL COMMENT '网关',
+  `from` varchar(50) DEFAULT NULL COMMENT '发送人',
+  `email` varchar(50) DEFAULT NULL COMMENT '接收人',
+  `code` varchar(20) DEFAULT NULL COMMENT '验证码',
+  `content` varchar(500) DEFAULT NULL COMMENT '邮箱内容',
+  `status` varchar(20) DEFAULT NULL COMMENT '发送状态',
+  `response` varchar(500) DEFAULT NULL COMMENT '返回结果',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+  `delete_time` datetime DEFAULT NULL COMMENT '删除时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='邮件记录' ROW_FORMAT = Dynamic;
