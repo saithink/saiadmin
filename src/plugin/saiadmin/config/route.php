@@ -31,6 +31,8 @@ Route::group('/core', function () {
     Route::delete("/logs/deleteLoginLog",[\plugin\saiadmin\app\controller\system\SystemLogController::class, 'deleteLoginLog']);
     Route::get("/logs/getOperLogPageList",[\plugin\saiadmin\app\controller\system\SystemLogController::class, 'getOperLogPageList']);
     Route::delete("/logs/deleteOperLog",[\plugin\saiadmin\app\controller\system\SystemLogController::class, 'deleteOperLog']);
+    Route::get("/email/index",[\plugin\saiadmin\app\controller\system\SystemMailController::class, 'index']);
+    Route::delete("/email/destroy",[\plugin\saiadmin\app\controller\system\SystemMailController::class, 'destroy']);
 
     fastRoute('notice',\plugin\saiadmin\app\controller\system\SystemNoticeController::class);
     fastRoute('post',\plugin\saiadmin\app\controller\system\SystemPostController::class);
