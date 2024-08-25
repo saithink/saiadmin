@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\logic\system;
 use plugin\saiadmin\app\model\system\SystemMenu;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
+use plugin\saiadmin\utils\Arr;
 use plugin\saiadmin\utils\Helper;
 
 /**
@@ -86,6 +87,25 @@ class SystemMenuLogic extends BaseLogic
             $query->field('id, id as value, name as label, parent_id');
         }
         $query->order('sort', 'desc');
+        $data = $this->getAll($query);
+        return Helper::makeTree($data);
+    }
+
+    /**
+     * 权限菜单
+     * @return array
+     */
+    public function auth(): array
+    {
+        $roleLogic = new SystemRoleLogic();
+        $role_ids = Arr::getArrayColumn($this->adminInfo['roleList'], 'id');
+        $roles = $roleLogic->getMenuIdsByRoleIds($role_ids);
+        $ids = $this->filterMenuIds($roles);
+        $query = $this->model
+            ->field('id, id as value, name as label, parent_id')
+            ->where('status', 1)
+            ->where('id', 'in', $ids)
+            ->order('sort', 'desc');
         $data = $this->getAll($query);
         return Helper::makeTree($data);
     }
