@@ -25,7 +25,10 @@ INSERT INTO `eb_system_config` VALUES (NULL, @id, 'FromName', '', '默认发件�
 INSERT INTO `eb_system_config` VALUES (NULL, @id, 'CharSet', 'UTF-8', '编码', 'input', '', 100, '');
 INSERT INTO `eb_system_config` VALUES (NULL, @id, 'SMTPDebug', '0', '调试模式', 'radio', '[\r\n    {\"label\":\"关闭\",\"value\":\"0\"},\r\n    {\"label\":\"client\",\"value\":\"1\"},\r\n    {\"label\":\"server\",\"value\":\"2\"}\r\n]', 100, '');
 
--- 3. 添加邮件记录表
+-- 3. 添加邮件记录和菜单
+INSERT INTO `eb_system_menu` VALUES (3600, 3000, '0,3000', '邮件记录', '/core/email/index', 'icon-calendar', 'emailLog', 'system/logs/emailLog', NULL, 2, 'M', 0, NULL, 1, 0, NULL, 1, 1, '2021-07-31 18:55:40', '2021-07-31 18:55:40', NULL);
+INSERT INTO `eb_system_menu` VALUES (3601, 3600, '0,3000,3600', '邮件记录删除', '/core/email/destroy', NULL, NULL, NULL, NULL, 2, 'B', 0, NULL, 1, 0, NULL, 1, 1, '2021-07-31 18:56:19', '2021-07-31 18:56:19', NULL);
+
 CREATE TABLE `eb_system_mail` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '编号',
   `gateway` varchar(50) DEFAULT NULL COMMENT '网关',
