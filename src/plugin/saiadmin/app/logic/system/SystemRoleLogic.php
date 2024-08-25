@@ -95,7 +95,11 @@ class SystemRoleLogic extends BaseLogic
             'id' => $this->adminInfo['id'],
             'roles' => $this->adminInfo['roleList']
         ]);
-        $disabled = array_column($this->adminInfo['roleList'], 'id');
+        if ($this->adminInfo['id'] === 1) {
+            $disabled = [1];
+        } else {
+            $disabled = array_column($this->adminInfo['roleList'], 'id');
+        }
         $query->order('sort', 'desc');
         $data = $this->getAll($query);
         if (request()->input('filter', 'true') === 'true') {
@@ -125,7 +129,11 @@ class SystemRoleLogic extends BaseLogic
             'id' => $this->adminInfo['id'],
             'roles' => $this->adminInfo['roleList']
         ]);
-        $disabled = array_column($this->adminInfo['roleList'], 'id');
+        if ($this->adminInfo['id'] === 1) {
+            $disabled = [1];
+        } else {
+            $disabled = array_column($this->adminInfo['roleList'], 'id');
+        }
         $query->order('sort', 'desc');
         $data = $this->getAll($query);
         if (!empty($disabled)) {
