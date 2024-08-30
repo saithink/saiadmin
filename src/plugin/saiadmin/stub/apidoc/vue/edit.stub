@@ -31,7 +31,7 @@
 #/if
 #if[$is_insert == "true" && $view_type == "password"]
       <a-form-item label="${column_comment}" field="${column_name}">
-        <a-password v-model="formData.${column_name}" placeholder="请输入${column_comment}" />
+        <a-input-password v-model="formData.${column_name}" placeholder="请输入${column_comment}" />
       </a-form-item>
 #/if
 #if[$is_insert == "true" && $view_type == "textarea"]
