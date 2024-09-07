@@ -14,6 +14,7 @@ use think\facade\Db;
  * @package app\service
  * @method static where($data) think-orm的where方法
  * @method static find($id) think-orm的find方法
+ * @method static findOrEmpty($id) think-orm的findOrEmpty方法
  * @method static hidden($data) think-orm的hidden方法
  * @method static order($data) think-orm的order方法
  * @method static save($data) think-orm的save方法
@@ -45,6 +46,18 @@ class BaseLogic
      */
     protected $scope = false;
 
+    /**
+     * 排序字段
+     * @var string
+     */
+    protected $orderField = '';
+
+    /**
+     * 排序方式
+     * @var string
+     */
+    protected $orderType = 'ASC';
+
     // 所有数据权限
     public const ALL_SCOPE = 1;
     // 自定义数据权限
@@ -69,6 +82,36 @@ class BaseLogic
     public function init($user)
     {
         $this->adminInfo = $user;
+    }
+
+    /**
+     * 设置数据边界
+     * @param $scope
+     * @return void
+     */
+    public function setScope($scope)
+    {
+        $this->scope = $scope;
+    }
+
+    /**
+     * 设置排序字段
+     * @param $field
+     * @return void
+     */
+    public function setOrderField($field)
+    {
+        $this->orderField = $field;
+    }
+
+    /**
+     * 设置排序方式
+     * @param $type
+     * @return void
+     */
+    public function setOrderType($type)
+    {
+        $this->orderType = $type;
     }
 
     /**
@@ -180,10 +223,13 @@ class BaseLogic
         $saiType = request()->input('saiType', 'list');
         $page = request()->input('page', 1);
         $limit = request()->input('limit', 10);
-        $orderBy = request()->input('orderBy', $this->model->getPk());
-        $orderType = request()->input('orderType', 'ASC');
+        $orderBy = request()->input('orderBy', '');
+        $orderType = request()->input('orderType', $this->orderType);
         if ($this->scope) {
             $query = $this->userDataScope($query);
+        }
+        if(empty($orderBy)) {
+            $orderBy = $this->orderField !== '' ? $this->orderField : $this->model->getPk();
         }
         $query->order($orderBy, $orderType);
         if ($saiType === 'all') {
@@ -199,10 +245,13 @@ class BaseLogic
      */
     public function getAll($query)
     {
-        $orderBy = request()->input('orderBy', $this->model->getPk());
-        $orderType = request()->input('orderType', 'ASC');
+        $orderBy = request()->input('orderBy', '');
+        $orderType = request()->input('orderType', $this->orderType);
         if ($this->scope) {
             $query = $this->userDataScope($query);
+        }
+        if(empty($orderBy)) {
+            $orderBy = $this->orderField !== '' ? $this->orderField : $this->model->getPk();
         }
         $query->order($orderBy, $orderType);
         return $query->select()->toArray();
