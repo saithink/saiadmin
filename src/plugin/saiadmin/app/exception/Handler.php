@@ -15,13 +15,26 @@ class Handler extends \support\exception\Handler
     {
         $debug = config('app.debug', true);
         $code = $exception->getCode();
-        if ($request->expectsJson()) {
-            $json = ['code' => $code ? $code : 500, 'message' => $debug ? $exception->getMessage() : 'Server internal error', 'type' => 'failed'];
-            $debug && $json['traces'] = (string)$exception;
-            return new Response(200, ['Content-Type' => 'application/json'],
-                \json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $json = [
+            'code' => $code ? $code : 500,
+            'message' => $debug ? $exception->getMessage() : 'Server internal error',
+            'type' => 'failed'
+        ];
+        if ($debug) {
+            $json['request_url'] = $request->method() . ' ' . $request->uri();
+            $json['timestamp'] = date('Y-m-d H:i:s');
+            $json['client_ip'] = $request->getRealIp();
+            $json['request_param'] = $request->all();
+            $json['exception_handle'] = get_class($exception);
+            $json['exception_info'] = [
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'trace' => $exception->getTrace()
+            ];
         }
-        $error = $debug ? \nl2br((string)$exception) : 'Server internal error';
-        return new Response(500, [], $error);
+        return new Response(200, ['Content-Type' => 'application/json'],
+            \json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 }
