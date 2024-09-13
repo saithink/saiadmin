@@ -14,7 +14,7 @@ use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Excel;
 
 /**
- * 系统公告逻辑层
+ * 岗位管理逻辑层
  */
 class SystemPostLogic extends BaseLogic
 {
