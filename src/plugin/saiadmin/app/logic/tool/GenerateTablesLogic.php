@@ -443,7 +443,7 @@ class GenerateTablesLogic extends BaseLogic
             $namespace_start = "plugin\\".$table['namespace']."\\app\\";
             $namespace_end =  $table['package_name'] != "" ? "\\".$table['package_name'] : "";
             $url_path = 'app/'.$table['namespace'] . ($table['package_name'] != "" ? "/".$table['package_name'] : "") .'/'.$table['class_name'];
-            $route = '/app';
+            $route = 'app/';
         } else {
             $namespace_start = "app\\".$table['namespace']."\\";
             $namespace_end =  $table['package_name'] != "" ? "\\".$table['package_name'] : "";
