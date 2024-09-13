@@ -240,11 +240,11 @@ const submit = async (done) => {
     let result = {}
     if (mode.value === 'add') {
       // 添加数据
-      data.id = undefined
+      data.${pk} = undefined
       result = await api.save(data)
     } else {
       // 修改数据
-      result = await api.update(data.id, data)
+      result = await api.update(data.${pk}, data)
     }
     if (result.code === 200) {
       Message.success('操作成功')
