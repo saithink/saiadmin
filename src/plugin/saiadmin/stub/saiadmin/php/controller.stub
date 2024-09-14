@@ -17,10 +17,12 @@ use support\Response;
  */
 class ${class_name}Controller extends BaseController
 {
+#whether[$pk != "id"]
     /**
      * 数据表主键
      */
     protected $pk = '${pk}';
+#/whether
     
     /**
      * 构造函数

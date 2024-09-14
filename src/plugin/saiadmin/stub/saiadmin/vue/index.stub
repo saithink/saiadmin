@@ -109,7 +109,9 @@ const changeStatus = async (status, id) => {
 // SaTable 基础配置
 const options = reactive({
   api: api.getPageList,
+#whether[$pk != "id"]
   pk: '${pk}',
+#/whether
 #whether[$generate_model == 1]
   recycleApi: api.getRecyclePageList,
 #/whether
