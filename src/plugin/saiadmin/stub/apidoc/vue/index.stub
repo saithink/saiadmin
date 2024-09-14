@@ -59,7 +59,7 @@
       <!-- Table 自定义渲染 -->
 #whether[in_array("changeStatus", $menus)]
       <template #status="{ record }">
-        <sa-switch v-model="record.status" @change="changeStatus($event, record.id)"></sa-switch>
+        <sa-switch v-model="record.status" @change="changeStatus($event, record.${pk})"></sa-switch>
       </template>
 #/whether
     </sa-table>
