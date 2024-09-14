@@ -234,7 +234,7 @@ class BaseController
      */
     public function changeStatus(Request $request) : Response
     {
-        $id = $request->input($this->pk, '');
+        $id = $request->input('id', '');
         $status = $request->input('status', 1);
         $result = $this->logic->where($this->pk, $id)->update(['status' => $status]);
         if ($result) {
