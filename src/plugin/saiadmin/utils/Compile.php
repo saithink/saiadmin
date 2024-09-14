@@ -62,6 +62,7 @@ class Compile
         $component_type = $this->value['component_type'];
         $generate_model = $this->value['generate_model'];
         $is_full = $this->value['is_full'];
+        $pk = $this->value['pk'];
         $current_file = $this->fileName;
 
         // Whether变量
