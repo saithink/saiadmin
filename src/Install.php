@@ -80,7 +80,7 @@ class Install
         // 如果Request中没有more方法，则自动添加一个
         $content = file_get_contents($path);
         if ($content !== false) {
-            if (stripos($content, "public function more") === false) {
+            if (stripos($content, "public function more") !== false) {
                 echo " Request类，已有more方法\n";
                 return;
             }
