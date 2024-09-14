@@ -18,6 +18,11 @@ use support\Response;
 class ${class_name}Controller extends BaseController
 {
     /**
+     * 数据表主键
+     */
+    protected $pk = '${pk}';
+    
+    /**
      * 构造函数
      */
     public function __construct()

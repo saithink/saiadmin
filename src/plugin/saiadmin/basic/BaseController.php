@@ -47,9 +47,9 @@ class BaseController
     protected $validate;
 
     /**
-     * @var string 默认主键
+     * 默认主键
      */
-    protected string $pk = 'id';
+    protected $pk = 'id';
 
     /**
      * 构造方法
