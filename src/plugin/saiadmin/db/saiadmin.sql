@@ -826,6 +826,7 @@ CREATE TABLE `eb_system_user_role`  (
 -- ----------------------------
 -- Records of eb_system_user_role
 -- ----------------------------
+INSERT INTO `eb_system_user_role` VALUES (1, 1, 1);
 
 -- ----------------------------
 -- Table structure for eb_tool_generate_columns
