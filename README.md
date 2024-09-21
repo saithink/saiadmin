@@ -42,7 +42,16 @@ composer require -W saithink/saiadmin
 
 <h1>演示地址</h1>
 <p>演示地址： <a href="http://admin.saithink.top">http://admin.saithink.top</a></p>
+<p>超级管理员</p>
 <p>演示账号：admin</p>
+<p>演示密码：123456</p>
+
+<p>总经理</p>
+<p>演示账号：liuqiangdong</p>
+<p>演示密码：123456</p>
+
+<p>销售总监</p>
+<p>演示账号：xiaoshou</p>
 <p>演示密码：123456</p>
 
 <h1>共同交流</h1>
