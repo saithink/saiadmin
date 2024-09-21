@@ -1,7 +1,15 @@
+<p align="center">
+  <img src="https://saithink.top/img/logo.png" width="120" />
+</p>
+<p align="center">
+  <img src="https://svg.hamm.cn/badge.svg?key=License&value=MIT" />
+  <img src="https://svg.hamm.cn/badge.svg?key=Version&value=3.0.0" />
+</p>
+
 <div style="padding:18px;max-width: 1024px;margin:0 auto;background-color:#fff;color:#333">
 <h1>SaiAdmin 3.x</h1>
 
-基于<a href="https://www.workerman.net/doc/webman/" target="_blank">webman</a>开箱即用的高质量中后台管理系统
+基于<a href="https://www.workerman.net/doc/webman/" target="_blank">webman</a>(高性能HTTP服务框架)开箱即用的高质量中后台管理系统
 
 <h1>安装</h1>
 
@@ -20,6 +28,43 @@ composer require -W saithink/saiadmin
 ```
 
 启动方式请查看webman官方文档
+
+<h1>功能列表</h1>
+• 用户管理，用户添加、修改、删除，支持不同用户登录后台看到不同的首页
+
+• 部门管理，部门组织机构（公司、部门、小组），树结构方式展现适应各种结构
+
+• 岗位管理，可以给用户配置所担任职务
+
+• 角色管理，树结构设计，支持角色菜单和按钮权限分配，支持角色数据权限分配、强大的角色管理体系
+
+• 菜单管理，配置系统菜单和按钮等
+
+• 字典管理，对系统中经常使用并且固定的数据可以重复使用和维护
+
+• 系统配置，系统的一些常用设置管理
+
+• 操作日志，用户对系统的一些正常操作的查询
+
+• 登录日志，用户登录系统的记录查询
+
+• 服务监控，查看当前服务器状态和PHP环境等信息
+
+• 附件管理，管理当前系统上传的文件及图片等信息
+
+• 数据表维护，对系统的数据表可以进行清理碎片和优化
+
+• 定时任务，在线（添加、修改、删除)任务调度包含执行结果日志
+
+• 代码生成，前后端代码的生成（php、vue、js、sql），支持一键下载和一键生成到项目中
+
+• 邮件服务，内置邮件发送服务
+
+• 文件上传，支持本地、七牛云、阿里云、腾讯云上传
+
+• 应用市场，生态丰富，官网上架官方和开发人员的插件应用
+
+• 兼容性强，基于webman插件形式开发，对webman无侵入，和webman各种应用插件共存
 
 <h1>学习</h1>
 
