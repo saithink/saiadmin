@@ -45,6 +45,9 @@ class SystemDeptLogic extends BaseLogic
         if ($data['parent_id'] == $where['id']) {
             throw new ApiException('不能设置父级为自身');
         }
+        if (in_array($where['id'], explode(',', $data['level']))) {
+			throw new ApiException('不能设置父级为下级部门');
+		}
         $newLevel = $data['level'].",".$where['id'];
         $deptIds = $this->model->where('level', $oldLevel)
             ->whereOr('level', 'like', $oldLevel . ',%')
