@@ -6,12 +6,11 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\logic\system;
 
-use PhpOffice\PhpSpreadsheet\Exception;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use plugin\saiadmin\app\model\system\SystemPost;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
-use plugin\saiadmin\utils\Excel;
+use plugin\saiadmin\service\OpenSpoutWriter;
+use OpenSpout\Reader\XLSX\Reader;
 
 /**
  * 岗位管理逻辑层
@@ -43,22 +42,29 @@ class SystemPostLogic extends BaseLogic
     public function import($file)
     {
         $path = $this->getImport($file);
-        $spreadsheet = IOFactory::load($path);
+        $reader = new Reader();
         try {
-            $sheet = $spreadsheet->getSheet(0);
-            $highest_row = $sheet->getHighestRow(); // 取得总行数
+            $reader->open($path);
             $data = [];
-            for ($i = 2; $i <= $highest_row; $i++) {
-                $data[] = [
-                    'name' => $sheet->getCellByColumnAndRow(1, $i)->getValue(),
-                    'code' => $sheet->getCellByColumnAndRow(2, $i)->getValue(),
-                    'sort' => $sheet->getCellByColumnAndRow(3, $i)->getValue(),
-                    'status' => $sheet->getCellByColumnAndRow(4, $i)->getValue(),
-                ];
+            foreach ($reader->getSheetIterator() as $sheet) {
+                $isHeader = true;
+                foreach ($sheet->getRowIterator() as $row) {
+                    if ($isHeader) {
+                        $isHeader = false;
+                        continue;
+                    }
+                    $cells = $row->getCells();
+                    $data[] = [
+                        'name' => $cells[0]->getValue(),
+                        'code' => $cells[1]->getValue(),
+                        'sort' => $cells[2]->getValue(),
+                        'status' => $cells[3]->getValue(),
+                    ];
+                }
             }
             $this->saveAll($data);
-        } catch (Exception $e) {
-            throw new ApiException('导入文件错误，操作失败');
+        } catch (\Exception $e) {
+            throw new ApiException('导入文件错误，请上传正确的文件格式xlsx');
         }
     }
 
@@ -71,11 +77,17 @@ class SystemPostLogic extends BaseLogic
         $data = $this->getAll($query);
         $file_name = '岗位数据.xlsx';
         $header = ['编号', '岗位名称', '岗位标识', '排序', '状态', '创建时间'];
-        $title = pathinfo($file_name, PATHINFO_FILENAME);
-        $instance = new Excel();
-        $file_path = $instance->setTitle($title)
-            ->setContent($header, $data)
-            ->saveFile($file_name, true);
+        $filter = [
+            'status' => [
+                ['value' => 1, 'label' => '正常'],
+                ['value' => 2, 'label' => '禁用']
+            ]
+        ];
+        $writer = new OpenSpoutWriter($file_name);
+        $writer->setWidth([15, 15, 20, 15, 15, 25]);
+        $writer->setHeader($header);
+        $writer->setData($data, null, $filter);
+        $file_path = $writer->returnFile();
         return response()->download($file_path, urlencode($file_name));
     }
 
