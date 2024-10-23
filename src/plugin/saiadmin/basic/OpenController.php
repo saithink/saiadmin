@@ -6,10 +6,6 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\basic;
 
-use plugin\saiadmin\app\logic\system\SystemMenuLogic;
-use plugin\saiadmin\app\logic\system\SystemRoleLogic;
-use plugin\saiadmin\app\logic\system\SystemUserLogic;
-
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Arr;
 use support\Request;
