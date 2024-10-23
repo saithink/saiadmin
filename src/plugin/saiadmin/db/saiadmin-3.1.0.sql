@@ -215,6 +215,7 @@ CREATE TABLE `eb_system_crontab`  (
     `rule` varchar(32) NULL DEFAULT NULL COMMENT '任务执行表达式',
     `singleton` smallint(6) NULL DEFAULT 1 COMMENT '是否单次执行 (1 是 2 不是)',
     `status` smallint(6) NULL DEFAULT 1 COMMENT '状态 (1正常 2停用)',
+    `task_id` int(11) NULL DEFAULT 0 COMMENT 'crontab任务id',
     `remark` varchar(255) NULL DEFAULT NULL COMMENT '备注',
     `created_by` int(11) NULL DEFAULT NULL COMMENT '创建者',
     `updated_by` int(11) NULL DEFAULT NULL COMMENT '更新者',
@@ -227,9 +228,9 @@ CREATE TABLE `eb_system_crontab`  (
 -- ----------------------------
 -- Records of eb_system_crontab
 -- ----------------------------
-INSERT INTO `eb_system_crontab` VALUES (1, '访问官网', 1, 'https://saithink.top', NULL, '0 0 8 * * *', 2, 1, NULL, 1, 1, '2024-01-20 14:21:11', '2024-01-20 15:26:41', NULL);
-INSERT INTO `eb_system_crontab` VALUES (2, '登录gitee', 2, 'https://gitee.com/check_user_login', '{\"user_login\": \"saiadmin\"}', '0 0 10 * * *', 2, 1, NULL, 1, 1, '2024-01-20 14:31:51', '2024-01-20 15:21:33', NULL);
-INSERT INTO `eb_system_crontab` VALUES (3, '定时执行任务', 3, '\\plugin\\saiadmin\\process\\Task', '{\"type\":\"1\"}', '0 0 12 * * *', 2, 1, NULL, 1, 1, '2024-01-20 14:38:03', '2024-01-20 15:21:42', NULL);
+INSERT INTO `eb_system_crontab` VALUES (1, '访问官网', 1, 'https://saithink.top', NULL, '0 0 8 * * *', 2, 1, 0, NULL, 1, 1, '2024-01-20 14:21:11', '2024-01-20 15:26:41', NULL);
+INSERT INTO `eb_system_crontab` VALUES (2, '登录gitee', 2, 'https://gitee.com/check_user_login', '{\"user_login\": \"saiadmin\"}', '0 0 10 * * *', 2, 1, 0, NULL, 1, 1, '2024-01-20 14:31:51', '2024-01-20 15:21:33', NULL);
+INSERT INTO `eb_system_crontab` VALUES (3, '定时执行任务', 3, '\\plugin\\saiadmin\\process\\Task', '{\"type\":\"1\"}', '0 0 12 * * *', 2, 1, 0, NULL, 1, 1, '2024-01-20 14:38:03', '2024-01-20 15:21:42', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_crontab_log
