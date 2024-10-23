@@ -47,6 +47,19 @@ class SystemCrontabController extends BaseController
     }
 
     /**
+     * 更新crontab任务
+     * @param $type
+     * @return void
+     */
+    public function afterChange($type)
+    {
+        if (in_array($type, ['save', 'update', 'changeStatus'])) {
+            $task = new \plugin\saiadmin\process\Task();
+            $task->reload();
+        }
+    }
+
+    /**
      * 执行定时任务
      * @param Request $request
      * @return Response

@@ -14,15 +14,37 @@ class Task
 {
     public function onWorkerStart()
     {
+        $this->initStart();
+    }
 
+    public function initStart()
+    {
         $logic = new SystemCrontabLogic();
-        $taskList = $logic->where('status', 1)->select();
-
+        $taskList = $logic->select();
         foreach ($taskList as $item) {
-            new Crontab($item->rule, function () use ($logic, $item) {
-                $logic->run($item->id);
-            });
+            if ($item->status == 1) {
+                $task = new Crontab($item->rule, function () use ($logic, $item) {
+                    $logic->run($item->id);
+                });
+                $task_id = $task->getId();
+                $logic->update(['task_id' => $task_id],['id' => $item->id]);
+            } else {
+                $logic->update(['task_id' => 0], ['id' => $item->id]);
+            }
         }
+    }
+
+    public function reload()
+    {
+        echo "重启Crontab\n";
+        $logic = new SystemCrontabLogic();
+        $taskList = $logic->where([['task_id', '>', 0]])->select();
+        foreach($taskList as $item) {
+            $taskId = intval($item->task_id);
+            Crontab::remove($taskId);
+            $this->initStart();
+        }
+        $this->initStart();
     }
 
     public function run($args)
