@@ -4,12 +4,13 @@ namespace plugin\saiadmin\app\exception;
 use Throwable;
 use Webman\Http\Request;
 use Webman\Http\Response;
+use Webman\Exception\ExceptionHandler;
 
 /**
  * Class Handler
- * @package Support\Exception
+ * @package plugin\saiadmin\app\exception
  */
-class Handler extends \support\exception\Handler
+class Handler extends ExceptionHandler
 {
     public function render(Request $request, Throwable $exception): Response
     {
@@ -31,10 +32,9 @@ class Handler extends \support\exception\Handler
                 'message' => $exception->getMessage(),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
-                'trace' => $exception->getTrace()
+                'trace' => explode("\n", $exception->getTraceAsString())
             ];
         }
-        return new Response(200, ['Content-Type' => 'application/json'],
-            \json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        return new Response(200, ['Content-Type' => 'application/json;charset=utf-8'], json_encode($json));
     }
 }
