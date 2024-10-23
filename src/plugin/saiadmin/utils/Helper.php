@@ -95,6 +95,7 @@ class Helper
         foreach ($data as $value) {
             if ($value['type'] === 'M'){
                 $path = '/'.$value['route'];
+                $layout = isset($value['is_layout']) ? $value['is_layout'] : 1;
                 $temp = [
                     $keyName => $value[$keyName],
                     $pidName => $value[$pidName],
@@ -106,6 +107,7 @@ class Helper
                         'title' => $value['name'],
                         'type' => $value['type'],
                         'hidden' => $value['is_hidden'] === 1,
+                        'layout' => $layout === 1,
                         'hiddenBreadcrumb' => false,
                         'icon' => $value['icon'],
                     ],
