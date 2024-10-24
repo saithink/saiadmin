@@ -20,29 +20,20 @@ class Task
     public function initStart()
     {
         $logic = new SystemCrontabLogic();
-        $taskList = $logic->select();
+        $taskList = $logic->where('status', 1)->select();
         foreach ($taskList as $item) {
-            if ($item->status == 1) {
-                $task = new Crontab($item->rule, function () use ($logic, $item) {
-                    $logic->run($item->id);
-                });
-                $task_id = $task->getId();
-                $logic->update(['task_id' => $task_id],['id' => $item->id]);
-            } else {
-                $logic->update(['task_id' => 0], ['id' => $item->id]);
-            }
+            new Crontab($item->rule, function () use ($logic, $item) {
+                $logic->run($item->id);
+            });
         }
     }
 
     public function reload()
     {
         echo "重启Crontab\n";
-        $logic = new SystemCrontabLogic();
-        $taskList = $logic->where([['task_id', '>', 0]])->select();
-        foreach($taskList as $item) {
-            $taskId = intval($item->task_id);
-            Crontab::remove($taskId);
-            $this->initStart();
+        $list = Crontab::getAll();
+        foreach ($list as $item) {
+            Crontab::remove($item->getId());
         }
         $this->initStart();
     }
