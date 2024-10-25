@@ -18,7 +18,7 @@ class Handler extends ExceptionHandler
         $code = $exception->getCode();
         $json = [
             'code' => $code ? $code : 500,
-            'message' => $debug ? $exception->getMessage() : 'Server internal error',
+            'message' => $code !== 500 ? $exception->getMessage() : 'Server internal error',
             'type' => 'failed'
         ];
         if ($debug) {
