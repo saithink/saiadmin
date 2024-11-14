@@ -10,7 +10,7 @@ use plugin\saiadmin\app\model\system\SystemConfigGroup;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemConfig;
-use plugin\saiadmin\utils\Cache;
+use support\Cache;
 use plugin\saiadmin\utils\Helper;
 
 /**
@@ -30,7 +30,7 @@ class SystemConfigGroupLogic extends BaseLogic
     {
         $model = $this->model->where('id', $id)->findOrEmpty();
         if (!$model->isEmpty()) {
-            Cache::set('cfg_' . $model->code, null);
+            Cache::delete('cfg_' . $model->code);
             $model->destroy($id, true);
             SystemConfig::where('group_id', $id)->delete();
         }

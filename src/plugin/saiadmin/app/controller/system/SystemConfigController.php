@@ -10,7 +10,7 @@ use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemConfigLogic;
 use plugin\saiadmin\app\logic\system\SystemConfigGroupLogic;
 use plugin\saiadmin\app\validate\system\SystemConfigValidate;
-use plugin\saiadmin\utils\Cache;
+use support\Cache;
 use support\Request;
 use support\Response;
 
@@ -68,7 +68,7 @@ class SystemConfigController extends BaseController
             ];
         }
         $this->logic->saveAll($saveData);
-        Cache::clear('cfg_'.$group->code);
+        Cache::set('cfg_'.$group->code, $saveData);
         return $this->success('操作成功');
     }
 }
