@@ -1,6 +1,6 @@
 <?php
 
-use plugin\saiadmin\utils\Cache;
+
 use plugin\saiadmin\utils\JwtAuth;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\logic\system\SystemConfigLogic;

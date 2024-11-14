@@ -9,7 +9,7 @@ namespace plugin\saiadmin\app\controller\system;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemDictDataLogic;
 use plugin\saiadmin\app\validate\system\SystemDictDataValidate;
-use plugin\saiadmin\utils\Cache;
+use support\Cache;
 use support\Request;
 use support\Response;
 
@@ -53,13 +53,13 @@ class SystemDictDataController extends BaseController
     public function afterChange($type)
     {
         if (in_array($type, ['save', 'update'])) {
-            Cache::clear(request()->input('code'));
+            Cache::delete(request()->input('code'));
         }
         if ($type === 'changeStatus') {
             $id = request()->input('id', '');
             $info = $this->logic->find($id);
             if ($info) {
-                Cache::clear($info->code);
+                Cache::delete($info->code);
             }
         }
         if ($type === 'destroy') {
@@ -68,7 +68,7 @@ class SystemDictDataController extends BaseController
                 $id = $ids[0];
                 $info = $this->logic->find($id);
                 if ($info) {
-                    Cache::clear($info->code);
+                    Cache::delete($info->code);
                 }
             }
         }

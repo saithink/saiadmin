@@ -19,7 +19,7 @@ use plugin\saiadmin\utils\ServerMonitor;
 use plugin\saiadmin\exception\ApiException;
 use support\Request;
 use support\Response;
-use plugin\saiadmin\utils\Cache;
+use support\Cache;
 use plugin\saiadmin\utils\Arr;
 use Tinywan\Storage\Storage;
 
@@ -91,7 +91,7 @@ class SystemController extends BaseController
     {
         $code = $request->input('code');
         $data = Cache::get($code);
-        if ($data) {
+        if (!is_null($data)) {
             return $this->success($data);
         }
         $logic = new SystemDictDataLogic();

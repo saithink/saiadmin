@@ -10,7 +10,7 @@ use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemConfig;
 use plugin\saiadmin\app\model\system\SystemConfigGroup;
-use plugin\saiadmin\utils\Cache;
+use support\Cache;
 use plugin\saiadmin\utils\Helper;
 
 /**
@@ -33,7 +33,7 @@ class SystemConfigLogic extends BaseLogic
     {
         $prefix = 'config_';
         $data = Cache::get($prefix . $config);
-        if ($data) {
+        if (!is_null($data)) {
             return $data;
         }
         $info = $this->model->where('key', $config)->findOrEmpty();
@@ -51,7 +51,7 @@ class SystemConfigLogic extends BaseLogic
     {
         $prefix = 'cfg_';
         $data = Cache::get($prefix . $config);
-        if ($data) {
+        if (!is_null($data)) {
             return $data;
         }
         $group = SystemConfigGroup::where('code', $config)->findOrEmpty();
