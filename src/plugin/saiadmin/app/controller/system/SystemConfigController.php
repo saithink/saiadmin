@@ -64,6 +64,9 @@ class SystemConfigController extends BaseController
         foreach ($config as $key => $value) {
             $saveData[] = [
                 'id' => $value['id'],
+                'sort' => $value['sort'],
+                'name' => $value['name'],
+                'key' => $value['key'],
                 'value' => $value['value']
             ];
         }
