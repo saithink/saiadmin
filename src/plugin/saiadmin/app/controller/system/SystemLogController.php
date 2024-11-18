@@ -68,6 +68,7 @@ class SystemLogController extends BaseController
             ['ip', ''],
         ]);
         $logic = new SystemOperLogLogic();
+        $logic->init($this->adminInfo);
         $query = $logic->search($where);
         $data = $logic->getList($query);
         return $this->success($data);

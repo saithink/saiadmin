@@ -274,6 +274,7 @@ class SystemController extends BaseController
     public function getOperationLogList() : Response
     {
         $logic = new SystemOperLogLogic();
+        $logic->init($this->adminInfo);
         $query = $logic->search(['username' => $this->adminName])->hidden(['request_data', 'delete_time']);
         $data = $logic->getList($query);
         return $this->success($data);
