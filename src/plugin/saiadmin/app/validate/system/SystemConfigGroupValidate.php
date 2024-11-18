@@ -18,7 +18,7 @@ class SystemConfigGroupValidate extends Validate
      * 定义验证规则
      */
     protected $rule =   [
-        'name' => 'require|max:16|chs',
+        'name' => 'require|max:16',
         'code' => 'require|alphaDash|unique:'.SystemConfigGroup::class,
     ];
 
