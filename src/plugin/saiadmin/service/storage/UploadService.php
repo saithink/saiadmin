@@ -92,6 +92,22 @@ class UploadService
                     'region' => Arr::getConfigValue($uploadConfig,'cos_region'),
                 ];
                 break;
+            case 5:
+                // s3 亚马逊
+                $config = [
+                    'adapter' => \Tinywan\Storage\Adapter\S3Adapter::class,
+                    'key' => Arr::getConfigValue($uploadConfig,'s3_key'),
+                    'secret' => Arr::getConfigValue($uploadConfig,'s3_secret'),
+                    'bucket' => Arr::getConfigValue($uploadConfig,'s3_bucket'),
+                    'dirname' => Arr::getConfigValue($uploadConfig,'s3_dirname'),
+                    'domain' => Arr::getConfigValue($uploadConfig,'s3_domain'),
+                    'region' => Arr::getConfigValue($uploadConfig,'s3_region'),
+                    'version' => Arr::getConfigValue($uploadConfig,'s3_version'),
+                    'use_path_style_endpoint' => Arr::getConfigValue($uploadConfig,'s3_use_path_style_endpoint'),
+                    'endpoint' => Arr::getConfigValue($uploadConfig,'s3_endpoint'),
+                    'acl' => Arr::getConfigValue($uploadConfig,'s3_acl'),
+                ];
+                break;    
             default:
                 throw new ApiException('该上传模式不存在');
         }
