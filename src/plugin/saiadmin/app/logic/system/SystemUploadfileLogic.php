@@ -139,22 +139,34 @@ class SystemUploadfileLogic extends BaseLogic
         $model = $this->model->where('hash', $hash)->findOrEmpty();
         if (!$model->isEmpty()) {
             return $model->toArray();
-        } else {
-            $url = str_replace('\\', '/', $data['url']);
-            $savePath = str_replace('\\', '/', $data['save_path']);
-            $info['storage_mode'] = $type;
-            $info['origin_name'] = $data['origin_name'];
-            $info['object_name'] = $data['save_name'];
-            $info['hash'] = $data['unique_id'];
-            $info['mime_type'] = $data['mime_type'];
-            $info['storage_path'] = $savePath;
-            $info['suffix'] = $data['extension'];
-            $info['size_byte'] = $data['size'];
-            $info['size_info'] = formatBytes($data['size']);
-            $info['url'] = $url;
-            $this->model->save($info);
-            return $info;
         }
+
+        $url = str_replace('\\', '/', $data['url']);
+        $savePath = str_replace('\\', '/', $data['save_path']);
+        $info['storage_mode'] = $type;
+        $info['origin_name'] = $data['origin_name'];
+        $info['object_name'] = $data['save_name'];
+        $info['hash'] = $data['unique_id'];
+        $info['mime_type'] = $data['mime_type'];
+        $info['storage_path'] = $savePath;
+        $info['suffix'] = $data['extension'];
+        $info['size_byte'] = $data['size'];
+        $info['size_info'] = formatBytes($data['size']);
+
+        if ($type == 2) {
+            $domain = Arr::getConfigValue($uploadConfig, 'oss_domain');
+            $endpoint = Arr::getConfigValue($uploadConfig,'oss_endpoint');
+            $bucket = Arr::getConfigValue($uploadConfig,'oss_bucket');
+            if (!empty($domain)) {
+                $url = $domain . $url;
+            } else {
+                $url = 'https://' . $bucket . '.' . $endpoint . $url;
+            }
+        }
+
+        $info['url'] = $url;
+        $this->model->save($info);
+        return $info;
     }
 
 }
