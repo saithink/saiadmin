@@ -12,3 +12,5 @@ INSERT INTO `eb_system_config` VALUES (NULL, 2, 's3_version', '', 'version', 'in
 INSERT INTO `eb_system_config` VALUES (NULL, 2, 's3_use_path_style_endpoint', '', 'path_style_endpoint', 'input', '', 0, '');
 INSERT INTO `eb_system_config` VALUES (NULL, 2, 's3_endpoint', '', 'endpoint', 'input', '', 0, '');
 INSERT INTO `eb_system_config` VALUES (NULL, 2, 's3_acl', '', 'acl', 'input', '', 0, '');
+
+INSERT INTO `eb_system_dict_data` VALUES (NULL, 2, '亚马逊S3', '2', 'upload_mode', 95, 1, NULL, 1, 1, now(), now(), NULL);
