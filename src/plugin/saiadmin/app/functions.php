@@ -1,7 +1,10 @@
 <?php
-
-
-use plugin\saiadmin\utils\JwtAuth;
+// +----------------------------------------------------------------------
+// | saithink [ saithink快速开发框架 ]
+// +----------------------------------------------------------------------
+// | Author: sai <1430792918@qq.com>
+// +----------------------------------------------------------------------
+use Tinywan\Jwt\JwtToken;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\logic\system\SystemConfigLogic;
 use support\Response;
@@ -10,25 +13,17 @@ use Webman\Route;
 /**
  * 获取当前登录用户
  */
-function getCurrentInfo()
+function getCurrentInfo(): bool|array
 {
     if (!request()) {
         return false;
     }
-    $header = request()->header(config('plugin.saiadmin.saithink.cross.token_name', 'Authori-zation'));
-    if ($header) {
-        $token = trim($header);
-        if ($token !== 'null' && $token !== '') {
-            $key = config('plugin.saiadmin.saithink.cross.jwt_key', 'sai_admin');
-            $jwt = new JwtAuth($key);
-            [$id, $username, $type] = $jwt->parseToken($token);
-            return compact('id', 'username', 'type');
-        } else {
-            return false;
-        }
-    } else {
+    try {
+        $token = JwtToken::getExtend();
+    } catch (\Throwable $e) {
         return false;
     }
+    return $token;
 }
 
 /**
