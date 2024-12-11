@@ -63,11 +63,11 @@ class BaseController
 
     /**
      * 成功返回json内容
-     * @param $data
-     * @param $msg
+     * @param array|string $data
+     * @param string $msg
      * @return Response
      */
-    public function success($data = [], $msg = 'success'): Response
+    public function success(array | string $data = [], string $msg = 'success'): Response
     {
         if (is_string($data)) {
             $msg = $data;
@@ -77,10 +77,10 @@ class BaseController
 
     /**
      * 失败返回json内容
-     * @param $msg
+     * @param string $msg
      * @return Response
      */
-    public function fail($msg = 'fail'): Response
+    public function fail(string $msg = 'fail'): Response
     {
         return json(['code' => 400, 'message' => $msg]);
     }
@@ -96,7 +96,7 @@ class BaseController
         $logic = new SystemUserLogic();
         $result = getCurrentInfo();
 		if (!$result) {
-            throw new ApiException('用户信息读取失败,请重新登录');
+            throw new ApiException('用户信息读取失败,请重新登录', 401);
         }
         $this->adminId = $result['id'];
         $this->adminName = $result['username'];
