@@ -126,7 +126,7 @@ CREATE TABLE `eb_system_config`  (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '编号',
     `group_id` int(11) NULL DEFAULT NULL COMMENT '组id',
     `key` varchar(32) NOT NULL COMMENT '配置键名',
-    `value` varchar(1000) NULL DEFAULT NULL COMMENT '配置值',
+    `value` text COMMENT '配置值',
     `name` varchar(255) NULL DEFAULT NULL COMMENT '配置名称',
     `input_type` varchar(32) NULL DEFAULT NULL COMMENT '数据输入类型',
     `config_select_data` varchar(500) NULL DEFAULT NULL COMMENT '配置选项数据',
@@ -146,7 +146,7 @@ INSERT INTO `eb_system_config` VALUES (4, 1, 'site_name', 'SaiAdmin', '网站名
 INSERT INTO `eb_system_config` VALUES (5, 1, 'site_record_number', '', '网站备案号', 'input', NULL, 95, NULL);
 INSERT INTO `eb_system_config` VALUES (6, 2, 'upload_allow_file', 'txt,doc,docx,xls,xlsx,ppt,pptx,rar,zip,7z,gz,pdf,wps,md', '文件类型', 'input', NULL, 0, NULL);
 INSERT INTO `eb_system_config` VALUES (7, 2, 'upload_allow_image', 'jpg,jpeg,png,gif,svg,bmp', '图片类型', 'input', NULL, 0, NULL);
-INSERT INTO `eb_system_config` VALUES (8, 2, 'upload_mode', '1', '上传模式', 'select', '[{\"label\":\"本地上传\",\"value\":\"1\"},{\"label\":\"阿里云OSS\",\"value\":\"2\"},{\"label\":\"七牛云\",\"value\":\"3\"},{\"label\":\"腾讯云COS\",\"value\":\"4\"}]', 99, NULL);
+INSERT INTO `eb_system_config` VALUES (8, 2, 'upload_mode', '1', '上传模式', 'select', '[{\"label\":\"本地上传\",\"value\":\"1\"},{\"label\":\"阿里云OSS\",\"value\":\"2\"},{\"label\":\"七牛云\",\"value\":\"3\"},{\"label\":\"腾讯云COS\",\"value\":\"4\"},{\"label\":\"亚马逊S3\",\"value\":\"5\"}]', 99, NULL);
 INSERT INTO `eb_system_config` VALUES (10, 2, 'upload_size', '5242880', '上传大小', 'input', NULL, 88, '单位Byte,1MB=1024*1024Byte');
 INSERT INTO `eb_system_config` VALUES (11, 2, 'local_root', 'public/storage/', '本地存储路径', 'input', NULL, 0, '本地存储文件路径');
 INSERT INTO `eb_system_config` VALUES (12, 2, 'local_domain', 'http://127.0.0.1:8787', '本地存储域名', 'input', NULL, 0, 'http://127.0.0.1:8787');
@@ -177,7 +177,16 @@ INSERT INTO `eb_system_config` VALUES (36, 3, 'From', '', '默认发件人', 'in
 INSERT INTO `eb_system_config` VALUES (37, 3, 'FromName', '', '默认发件名称', 'input', '', 100, '');
 INSERT INTO `eb_system_config` VALUES (38, 3, 'CharSet', 'UTF-8', '编码', 'input', '', 100, '');
 INSERT INTO `eb_system_config` VALUES (39, 3, 'SMTPDebug', '0', '调试模式', 'radio', '[\r\n    {\"label\":\"关闭\",\"value\":\"0\"},\r\n    {\"label\":\"client\",\"value\":\"1\"},\r\n    {\"label\":\"server\",\"value\":\"2\"}\r\n]', 100, '');
-
+INSERT INTO `eb_system_config` VALUES (40, 2, 's3_key', '', 'key', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (41, 2, 's3_secret', '', 'secret', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (42, 2, 's3_bucket', '', 'bucket', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (43, 2, 's3_dirname', '', 'dirname', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (44, 2, 's3_domain', '', 'domain', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (45, 2, 's3_region', '', 'region', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (46, 2, 's3_version', '', 'version', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (47, 2, 's3_use_path_style_endpoint', '', 'path_style_endpoint', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (48, 2, 's3_endpoint', '', 'endpoint', 'input', '', 0, '');
+INSERT INTO `eb_system_config` VALUES (49, 2, 's3_acl', '', 'acl', 'input', '', 0, '');
 -- ----------------------------
 -- Table structure for eb_system_config_group
 -- ----------------------------
@@ -363,6 +372,7 @@ INSERT INTO `eb_system_dict_data` VALUES (56, 15, '自定义数据权限', '2', 
 INSERT INTO `eb_system_dict_data` VALUES (57, 15, '本部门数据权限', '3', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
 INSERT INTO `eb_system_dict_data` VALUES (58, 15, '本部门及以下数据权限', '4', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
 INSERT INTO `eb_system_dict_data` VALUES (59, 15, '本人数据权限', '5', 'data_scope', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `eb_system_dict_data` VALUES (60, 2, '亚马逊S3', '2', 'upload_mode', 95, 1, NULL, 1, 1, '2021-06-27 13:34:19', '2023-12-13 16:47:34', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_dict_type
