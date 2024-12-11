@@ -3,15 +3,16 @@ namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\model\system\SystemUser;
 use plugin\saiadmin\basic\BaseLogic;
-use plugin\saiadmin\utils\JwtAuth;
 use plugin\saiadmin\exception\ApiException;
 use Webman\Event\Event;
+use Tinywan\Jwt\JwtToken;
 
 /**
  * 用户信息逻辑层
  */
 class SystemUserLogic extends BaseLogic
 {
+
     public function __construct()
     {
         $this->model = new SystemUser();
@@ -20,7 +21,7 @@ class SystemUserLogic extends BaseLogic
     public function read($id)
     {
         $admin = $this->model->find($id);
-        $data = $admin->toArray();
+        $data = $admin->hidden(['password'])->toArray();
         $data['roleList'] = $admin->roles->toArray() ?: [];
         $data['postList'] = $admin->posts->toArray() ?: [];
         $data['deptList'] = $admin->depts;
@@ -73,11 +74,10 @@ class SystemUserLogic extends BaseLogic
      */
     public function login(string $username, string $password, string $type): array
     {
-        $adminInfo = $this->model->where('username', $username)->find();
+        $adminInfo = $this->model->where('username', $username)->findOrEmpty();
         $status = 1;
         $message = '登录成功';
-        if (!$adminInfo) {
-            $status = 0;
+        if ($adminInfo->isEmpty()) {
             $message = '账号或密码错误，请重新输入!';
             throw new ApiException($message);
         }
@@ -98,21 +98,26 @@ class SystemUserLogic extends BaseLogic
         $adminInfo->login_ip = request()->getRealIp();
         $adminInfo->save();
 
-        $key = config('plugin.saiadmin.saithink.cross.jwt_key', 'sai_admin');
-        $jwt = new JwtAuth($key);
-        $token = $jwt->createToken($adminInfo->id, $adminInfo->username, $type);
+        $token = JwtToken::generateToken([
+            'id' => $adminInfo->id,
+            'username' => $adminInfo->username,
+            'type' => $type
+        ]);
         // 登录事件
         Event::emit('user.login', compact('username','status','message'));
-
-        return [
-            'token' => $token['token'],
-            'expires_time' => $token['params']['exp']
-        ];
+        return $token;
     }
 
-    public function modifyPassword($adminId, $oldPassword, $newPassword)
+    /**
+     * 密码修改
+     * @param $adminId
+     * @param $oldPassword
+     * @param $newPassword
+     * @return bool
+     */
+    public function modifyPassword($adminId, $oldPassword, $newPassword): bool
     {
-        $model = $this->model->find($adminId);
+        $model = $this->model->findOrEmpty($adminId);
         if (password_verify($oldPassword, $model->password)) {
             $model->password = password_hash($newPassword, PASSWORD_DEFAULT);
             return $model->save();
