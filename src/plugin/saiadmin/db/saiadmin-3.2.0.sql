@@ -983,3 +983,7 @@ ALTER TABLE `eb_system_menu`
 ADD COLUMN `is_layout` tinyint(1) UNSIGNED NULL DEFAULT '1' COMMENT '继承layout' AFTER `is_hidden`;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- eb_tool_generate_tables 添加generate_scope字段
+ALTER TABLE `eb_tool_generate_tables`
+ADD COLUMN `generate_scope` smallint(6) NULL DEFAULT 2 COMMENT '1 边界控制 2 边界不控制' AFTER `generate_model`;

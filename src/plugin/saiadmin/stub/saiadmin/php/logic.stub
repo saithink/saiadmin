@@ -16,6 +16,13 @@ use ${namespace_start}model${namespace_end}\${class_name};
  */
 class ${class_name}Logic extends BaseLogic
 {
+#whether[$generate_scope == "1"]
+    /**
+     * @var bool 数据边界启用状态
+     */
+    protected $scope = true;
+
+#/whether
     /**
      * 构造函数
      */

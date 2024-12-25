@@ -61,6 +61,7 @@ class Compile
         $menus = explode(',', $this->value['generate_menus']);
         $component_type = $this->value['component_type'];
         $generate_model = $this->value['generate_model'];
+		$generate_scope = $this->value['generate_scope'];
         $is_full = $this->value['is_full'];
         $pk = $this->value['pk'];
         $current_file = $this->fileName;
