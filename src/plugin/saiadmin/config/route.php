@@ -10,6 +10,8 @@ Route::group('/core', function () {
     Route::get("/system/dictData",[plugin\saiadmin\app\controller\SystemController::class, 'dictData']);
     Route::get("/system/dictAll",[plugin\saiadmin\app\controller\SystemController::class, 'dictAll']);
     Route::get('/system/user', [plugin\saiadmin\app\controller\SystemController::class, 'userInfo']);
+    Route::get('/system/statistics', [plugin\saiadmin\app\controller\SystemController::class, 'statistics']);
+    Route::get('/system/loginChart', [plugin\saiadmin\app\controller\SystemController::class, 'loginChart']);
 	Route::get('/system/clearAllCache', [plugin\saiadmin\app\controller\SystemController::class, 'clearAllCache']);
 
     Route::get("/system/getResourceList",[plugin\saiadmin\app\controller\SystemController::class, 'getResourceList']);

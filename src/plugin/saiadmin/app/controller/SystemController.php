@@ -87,7 +87,7 @@ class SystemController extends BaseController
     /**
      * 数据字典
      */
-    public function dictData(Request $request)
+    public function dictData(Request $request): Response
     {
         $code = $request->input('code');
         $data = Cache::get($code);
@@ -259,7 +259,7 @@ class SystemController extends BaseController
      * 获取登录日志
      * @return Response
      */
-    public function getLoginLogList() : Response
+    public function getLoginLogList(): Response
     {
         $logic = new SystemLoginLogLogic();
         $query = $logic->search(['username' => $this->adminName]);
@@ -271,7 +271,7 @@ class SystemController extends BaseController
      * 获取操作日志
      * @return Response
      */
-    public function getOperationLogList() : Response
+    public function getOperationLogList(): Response
     {
         $logic = new SystemOperLogLogic();
         $logic->init($this->adminInfo);
@@ -284,7 +284,7 @@ class SystemController extends BaseController
      * 获取服务器信息
      * @return Response
      */
-    public function getServerInfo() : Response
+    public function getServerInfo(): Response
     {
         $service = new ServerMonitor();
         return $this->success([
@@ -292,6 +292,39 @@ class SystemController extends BaseController
             'memory' => $service->getMemInfo(),
             'phpenv' => $service->getPhpAndEnvInfo(),
         ]);
+    }
+
+    /**
+     * 基本统计
+     * @return Response
+     */
+    public function statistics(): Response
+    {
+        $userLogic = new SystemUserLogic();
+        $userCount = $userLogic->count('id');
+        $uploadLogic = new SystemUploadfileLogic();
+        $attachCount = $uploadLogic->count('id');
+        $loginLogic = new SystemLoginLogLogic();
+        $loginCount = $loginLogic->count('id');
+        $operLogic = new SystemOperLogLogic();
+        $operCount = $operLogic->count('id');
+        return $this->success([
+            'user' => $userCount,
+            'attach' => $attachCount,
+            'login' => $loginCount,
+            'operate' => $operCount,
+        ]);
+    }
+
+    /**
+     * 登录统计图表
+     * @return Response
+     */
+    public function loginChart(): Response
+    {
+        $logic = new SystemLoginLogLogic();
+        $data = $logic->loginChart();
+        return $this->success($data);
     }
 	
 	/**
