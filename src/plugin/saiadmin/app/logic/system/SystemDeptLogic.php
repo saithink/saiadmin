@@ -95,21 +95,8 @@ class SystemDeptLogic extends BaseLogic
         if (request()->input('tree', 'false') === 'true') {
             $query->field('id, id as value, name as label, parent_id');
         }
-        $query->auth($this->adminInfo['deptList']);
         $query->order('sort', 'desc');
         $data = $this->getAll($query);
-        $disabled = $this->adminInfo['dept_id'];
-        if (request()->input('filter', 'true') === 'true') {
-            if (!empty($disabled)) {
-                foreach ($data as &$item) {
-                    if ($item['id'] === $this->adminInfo['dept_id']) {
-                        $item['disabled'] = true;
-                    } else {
-                        $item['disabled'] = false;
-                    }
-                }
-            }
-        }
         return Helper::makeTree($data);
     }
 
