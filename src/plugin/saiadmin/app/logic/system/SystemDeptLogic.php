@@ -96,6 +96,9 @@ class SystemDeptLogic extends BaseLogic
             $query->field('id, id as value, name as label, parent_id');
         }
         $query->order('sort', 'desc');
+        $query->with(['leader' => function($query) {
+            $query->field('id, username, nickname');
+        }]);
         $data = $this->getAll($query);
         return Helper::makeTree($data);
     }
