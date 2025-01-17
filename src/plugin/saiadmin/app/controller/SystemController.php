@@ -262,6 +262,7 @@ class SystemController extends BaseController
     public function getLoginLogList(): Response
     {
         $logic = new SystemLoginLogLogic();
+        $logic->init($this->adminInfo);
         $query = $logic->search(['username' => $this->adminName]);
         $data = $logic->getList($query);
         return $this->success($data);

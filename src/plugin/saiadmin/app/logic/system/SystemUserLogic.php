@@ -104,7 +104,8 @@ class SystemUserLogic extends BaseLogic
             'type' => $type
         ]);
         // 登录事件
-        Event::emit('user.login', compact('username','status','message'));
+        $admin_id = $adminInfo->id;
+        Event::emit('user.login', compact('username','status','message','admin_id'));
         return $token;
     }
 

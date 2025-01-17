@@ -23,6 +23,10 @@ class SystemUser
         $data['status'] = $item['status'];
         $data['message'] = $item['message'];
         $data['login_time'] = date('Y-m-d H:i:s');
+        if (isset($item['admin_id'])) {
+            $data['created_by'] = $item['admin_id'];
+            $data['updated_by'] = $item['admin_id'];
+        }
         SystemLoginLog::create($data);
     }
 
@@ -50,7 +54,10 @@ class SystemUser
         return true;
     }
 
-    protected function getServiceName() : string
+    /**
+     * 获取业务名称
+     */
+    protected function getServiceName(): string
     {
         $path = request()->route ? request()->route->getPath() : request()->path();
         if (preg_match("/\{[^}]+\}/", $path)) {
@@ -78,7 +85,11 @@ class SystemUser
         return json_encode($params, JSON_UNESCAPED_UNICODE);
     }
 
-    protected function getIpLocation($ip) {
+    /**
+     * 获取IP地理位置
+     */
+    protected function getIpLocation($ip): string
+    {
         $ip2region = new \Ip2Region();
         try {
             $region = $ip2region->memorySearch($ip);
@@ -98,6 +109,9 @@ class SystemUser
         }
     }
 
+    /**
+     * 获取浏览器信息
+     */
     protected function getBrowser($user_agent): string
     {
         $br = 'Unknown';
@@ -117,6 +131,9 @@ class SystemUser
         return $br;
     }
 
+    /**
+     * 获取操作系统信息
+     */
     protected function getOs($user_agent): string
     {
         $os = 'Unknown';
