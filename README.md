@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="https://saithink.top/img/logo.png" width="120" />
+  <img src="https://saithink.top/images/logo.png" width="120" />
 </p>
 <p align="center">
   <img src="https://svg.hamm.cn/badge.svg?key=License&value=MIT" />
-  <img src="https://svg.hamm.cn/badge.svg?key=Version&value=3.0.0" />
+  <img src="https://svg.hamm.cn/badge.svg?key=Version&value=3.x" />
 </p>
 
 <div style="padding:18px;max-width: 1024px;margin:0 auto;background-color:#fff;color:#333">
@@ -19,9 +19,7 @@ composer环境的安装命令如下
 composer require saithink/saiadmin
 ```
 
-已经做了版本兼容，最低支持php7.3,已支持最新的php8.3
-
-如果php7.3无法直接安装，采用下面的安装命令
+如果无法直接安装，采用下面的安装命令
 
 ``` bash
 composer require -W saithink/saiadmin
@@ -74,13 +72,13 @@ composer require -W saithink/saiadmin
     <a href="https://saithink.top" target="_blank">主页 / Home page</a>
   </li>
   <li>
-    <a href="https://saithink.top/pages/52d5c3/" target="_blank">指南 / guide</a>
+    <a href="https://saithink.top/guide/introduction/" target="_blank">指南 / guide</a>
   </li>
   <li>
-    <a href="https://saithink.top/pages/b0a8ec/" target="_blank">开发文档 / document</a>
+    <a href="https://saithink.top/documents/v3/front/route.html" target="_blank">开发文档 / document</a>
   </li>
   <li>
-    <a href="https://saithink.top/pages/a20ce8/" target="_blank">常见问题 / Question</a>
+    <a href="https://saithink.top/guide/question/faq1.html" target="_blank">常见问题 / Question</a>
   </li>
 </ul>
 
@@ -106,7 +104,7 @@ composer require -W saithink/saiadmin
   <tbody>
     <tr>
       <td align="center" valign="middle">
-        <img src="https://saithink.top/img/me.png" class="no-zoom" width="180px">
+        <img src="https://saithink.top/images/me.png" class="no-zoom" width="180px">
         <p>saiadmin交流群(添加我微信备注"saiadmin")</p>
       </td>
     </tr>
@@ -121,7 +119,7 @@ composer require -W saithink/saiadmin
 
 | 微信 | 支付宝 |
 | :---: | :---: |
-| <img src="https://saithink.top/img/qrcode/wechat.png" alt="Wechat QRcode" width=180>| <img src="https://saithink.top/img/qrcode/alipay.png" alt="Alipay QRcode" width=180> |
+| <img src="https://saithink.top/images/wechat.png" alt="Wechat QRcode" width=180>| <img src="https://saithink.top/images/alipay.png" alt="Alipay QRcode" width=180> |
 
 <div style="clear: both">
 <h1>LICENSE</h1>
