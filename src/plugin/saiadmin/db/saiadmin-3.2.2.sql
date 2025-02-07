@@ -271,8 +271,6 @@ CREATE TABLE `eb_system_dept`  (
     `parent_id` int(11) UNSIGNED NULL DEFAULT NULL COMMENT '父ID',
     `level` varchar(500) NULL DEFAULT NULL COMMENT '组级集合',
     `name` varchar(30) NULL DEFAULT NULL COMMENT '部门名称',
-    `leader` varchar(20) NULL DEFAULT NULL COMMENT '负责人',
-    `phone` varchar(11) NULL DEFAULT NULL COMMENT '联系电话',
     `status` smallint(6) NULL DEFAULT 1 COMMENT '状态 (1正常 2停用)',
     `sort` smallint(5) UNSIGNED NULL DEFAULT 0 COMMENT '排序',
     `remark` varchar(255) NULL DEFAULT NULL COMMENT '备注',
@@ -288,13 +286,13 @@ CREATE TABLE `eb_system_dept`  (
 -- ----------------------------
 -- Records of eb_system_dept
 -- ----------------------------
-INSERT INTO `eb_system_dept` VALUES (1, 0, '0', '赛弟科技', '赛弟', '18888888888', 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_dept` VALUES (2, 1, '0,1', '青岛分公司', NULL, NULL, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_dept` VALUES (3, 1, '0,1', '洛阳总公司', NULL, NULL, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_dept` VALUES (4, 2, '0,1,2', '市场部门', NULL, NULL, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_dept` VALUES (5, 2, '0,1,2', '财务部门', NULL, NULL, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_dept` VALUES (6, 3, '0,1,3', '研发部门', NULL, NULL, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
-INSERT INTO `eb_system_dept` VALUES (7, 3, '0,1,3', '市场部门', NULL, NULL, 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
+INSERT INTO `eb_system_dept` VALUES (1, 0, '0', '赛弟科技', 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
+INSERT INTO `eb_system_dept` VALUES (2, 1, '0,1', '青岛分公司', 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
+INSERT INTO `eb_system_dept` VALUES (3, 1, '0,1', '洛阳总公司', 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
+INSERT INTO `eb_system_dept` VALUES (4, 2, '0,1,2', '市场部门', 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
+INSERT INTO `eb_system_dept` VALUES (5, 2, '0,1,2', '财务部门', 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
+INSERT INTO `eb_system_dept` VALUES (6, 3, '0,1,3', '研发部门', 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
+INSERT INTO `eb_system_dept` VALUES (7, 3, '0,1,3', '市场部门', 1, 1, NULL, 1, 1, '2023-10-24 12:00:00', '2023-10-24 12:00:00', NULL);
 
 -- ----------------------------
 -- Table structure for eb_system_dept_leader
@@ -421,6 +419,8 @@ CREATE TABLE `eb_system_login_log`  (
     `message` varchar(50) NULL DEFAULT NULL COMMENT '提示消息',
     `login_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '登录时间',
     `remark` varchar(255) NULL DEFAULT NULL COMMENT '备注',
+    `created_by` int(11) NULL DEFAULT NULL COMMENT '创建者',
+    `updated_by` int(11) NULL DEFAULT NULL COMMENT '更新者',
     `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
     `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
     `delete_time` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
