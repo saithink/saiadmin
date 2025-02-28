@@ -20,5 +20,7 @@ return [
         'expire' => 300,
     ],
     // excel模板下载路径
-    'template' => base_path(). '/plugin/saiadmin/public/template'
+    'template' => base_path(). '/plugin/saiadmin/public/template',
+    // 文件开启hash验证，开启后上传文件将会判断数据库中是否存在，如果存在直接获取
+    'file_hash' => false,
 ];
