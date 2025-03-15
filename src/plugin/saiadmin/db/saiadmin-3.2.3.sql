@@ -757,7 +757,7 @@ CREATE TABLE `eb_system_uploadfile`  (
     `update_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
     `delete_time` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`) USING BTREE,
-    UNIQUE INDEX `hash`(`hash`) USING BTREE,
+    INDEX `hash`(`hash`) USING BTREE,
     INDEX `storage_path`(`storage_path`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 COMMENT = '上传文件信息表' ROW_FORMAT = Dynamic;
 
