@@ -9,6 +9,7 @@
         "webman/captcha": "^1.0",
         "webman/push": "^1.0",
         "webman/event": "^1.0",
+        "webman/cache": "^2.1",
         "workerman/crontab": "^1.0",
         "illuminate/redis": ">=8.0",
         "illuminate/events": ">=8.0",
