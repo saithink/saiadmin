@@ -5,8 +5,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "webman/think-orm": "^1.1",
-        "webman/captcha": "^1.0",
+        "webman/think-orm": "^1.1||^2.1",
+        "webman/captcha": "^1.0||^2.1",
         "webman/push": "^1.0",
         "webman/event": "^1.0",
         "workerman/crontab": "^1.0",
