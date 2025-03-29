@@ -43,6 +43,9 @@ class DataMaintainController extends BaseController
     public function source(): Response
     {
         $data = config('thinkorm.connections');
+        if (empty($data)) {
+            $data = config('think-orm.connections');
+        }
         $list = [];
         foreach ($data as $k => $v) {
             $list[] = $k;
