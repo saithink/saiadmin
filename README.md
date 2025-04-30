@@ -19,7 +19,7 @@ composer环境的安装命令如下
 composer require saithink/saiadmin
 ```
 
-```启动方式请查看webman官方文档
+启动方式请查看webman官方文档
 
 <h1>功能列表</h1>
 
