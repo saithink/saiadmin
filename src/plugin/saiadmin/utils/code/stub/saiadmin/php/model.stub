@@ -1,0 +1,225 @@
+<?php
+// +----------------------------------------------------------------------
+// | saiadmin [ saiadmin快速开发框架 ]
+// +----------------------------------------------------------------------
+// | Author: your name
+// +----------------------------------------------------------------------
+namespace {{namespace_start}}model{{namespace_end}};
+
+{% if generate_model == 1 %}
+use plugin\saiadmin\basic\BaseModel;
+
+/**
+ * {{menu_name}}模型
+ */
+class {{class_name}} extends BaseModel
+{% else %}
+use plugin\saiadmin\basic\BaseNormalModel;
+
+/**
+ * {{menu_name}}模型
+ */
+class {{class_name}} extends BaseNormalModel
+{% endif %}
+{
+    /**
+     * 数据表主键
+     * @var string
+     */
+    protected $pk = '{{pk}}';
+
+    /**
+     * 数据库表名称
+     * @var string
+     */
+    protected $table = '{{table_name}}';
+
+{% if source != db_source and source != '' %}
+    /**
+     * 数据库连接
+     * @var string
+     */
+    protected $connection = '{{source}}';
+
+{% endif %}
+{% for column in columns %}
+{% if column.view_type == 'inputTag' or column.view_type == 'checkbox' or column.view_type == 'cityLinkage' or column.view_type == 'userSelect' %}
+    /**
+     * {{column.column_comment}} 保存数组转换
+     */
+    public function set{{column.column_name | camel}}Attr($value)
+    {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * {{column.column_comment}} 读取数组转换
+     */
+    public function get{{column.column_name | camel}}Attr($value)
+    {
+        return json_decode($value ?? '', true);
+    }
+
+{% endif %}
+{% if column.view_type == 'uploadImage' and column.options.multiple == true %}
+    /**
+     * {{column.column_comment}} 保存数组转换
+     */
+    public function set{{column.column_name | camel}}Attr($value)
+    {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * {{column.column_comment}} 读取数组转换
+     */
+    public function get{{column.column_name | camel}}Attr($value)
+    {
+        return json_decode($value ?? '', true);
+    }
+
+{% endif %}
+{% if column.view_type == 'uploadFile' and column.options.multiple == true %}
+    /**
+     * {{column.column_comment}} 保存数组转换
+     */
+    public function set{{column.column_name | camel}}Attr($value)
+    {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * {{column.column_comment}} 读取数组转换
+     */
+    public function get{{column.column_name | camel}}Attr($value)
+    {
+        return json_decode($value ?? '', true);
+    }
+
+{% endif %}
+{% endfor %}
+{% for column in columns %}
+{% if column.is_query == 2 and column.query_type == 'neq' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->where('{{column.column_name}}', '<>', $value);
+    }
+
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'gt' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->where('{{column.column_name}}', '>', $value);
+    }
+
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'gte' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->where('{{column.column_name}}', '>=', $value);
+    }
+
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'lt' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->where('{{column.column_name}}', '<', $value);
+    }
+
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'lte' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->where('{{column.column_name}}', '<=', $value);
+    }
+
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'like' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->where('{{column.column_name}}', 'like', '%'.$value.'%');
+    }
+
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'in' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->where('{{column.column_name}}', 'in', $value);
+    }
+
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'notin' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->where('{{column.column_name}}', 'not in', $value);
+    }
+
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'between' %}
+    /**
+     * {{column.column_comment}} 搜索
+     */
+    public function search{{column.column_name | camel}}Attr($query, $value)
+    {
+        $query->whereTime('{{column.column_name}}', 'between', $value);
+    }
+
+{% endif %}
+{% endfor %}
+{% for item in options.relations %}
+{% if item.type == 'belongsTo' %}
+    /**
+     * 关联模型 {{item.name}}
+     */
+    public function {{item.name}}()
+    {
+        return $this->{{item.type}}({{item.model}}::class, '{{item.localKey}}', '{{item.foreignKey}}');
+    }
+
+{% endif %}
+{% if item.type == 'hasOne' or item.type == 'hasMany' %}
+    /**
+     * 关联模型 {{item.name}}
+     */
+    public function {{item.name}}()
+    {
+        return $this->{{item.type}}({{item.model}}::class, '{{item.localKey}}', '{{item.foreignKey}}');
+    }
+
+{% endif %}
+{% if item.type == 'belongsToMany' %}
+    /**
+     * 关联模型 {{item.name}}
+     */
+    public function {{item.name}}()
+    {
+        return $this->{{item.type}}({{item.model}}::class, {{item.table}}::class, '{{item.localKey}}', '{{item.foreignKey}}');
+    }
+
+{% endif %}
+{% endfor %}
+}

@@ -1,0 +1,67 @@
+import { request } from '@/utils/request.js'
+
+/**
+ * {{menu_name}} API接口
+ */
+export default {
+
+  /**
+   * 数据列表
+   * @returns
+   */
+  getPageList(params = {}) {
+    return request({
+      url: '/{{url_path}}/index',
+      method: 'get',
+      params
+    })
+  },
+
+  /**
+   * 添加数据
+   * @returns
+   */
+  save(params = {}) {
+    return request({
+      url: '/{{url_path}}/save',
+      method: 'post',
+      data: params
+    })
+  },
+
+  /**
+   * 更新数据
+   * @returns
+   */
+  update(id, data = {}) {
+    return request({
+      url: '/{{url_path}}/update?id=' + id,
+      method: 'put',
+      data
+    })
+  },
+
+  /**
+   * 读取数据
+   * @returns
+   */
+  read(id) {
+    return request({
+      url: '/{{url_path}}/read?id=' + id,
+      method: 'get'
+    })
+  },
+
+  /**
+   * 删除数据
+   * @returns
+   */
+  destroy(data) {
+    return request({
+      url: '/{{url_path}}/destroy',
+      method: 'delete',
+      data
+    })
+  },
+
+}

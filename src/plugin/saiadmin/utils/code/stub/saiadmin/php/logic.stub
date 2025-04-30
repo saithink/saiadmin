@@ -1,0 +1,80 @@
+<?php
+// +----------------------------------------------------------------------
+// | saiadmin [ saiadmin快速开发框架 ]
+// +----------------------------------------------------------------------
+// | Author: your name
+// +----------------------------------------------------------------------
+namespace {{namespace_start}}logic{{namespace_end}};
+
+use plugin\saiadmin\basic\BaseLogic;
+use plugin\saiadmin\exception\ApiException;
+use plugin\saiadmin\utils\Helper;
+use {{namespace_start}}model{{namespace_end}}\{{class_name}};
+
+/**
+ * {{menu_name}}逻辑层
+ */
+class {{class_name}}Logic extends BaseLogic
+{
+    /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+        $this->model = new {{class_name}}();
+    }
+
+{% if tpl_category == 'tree' %}
+    /**
+     * 修改数据
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
+    public function edit($id, $data): mixed
+    {
+        if (!isset($data['{{options.tree_parent_id}}'])) {
+            $data['{{options.tree_parent_id}}'] = 0;
+        }
+        if ($data['{{options.tree_parent_id}}'] == $data['{{options.tree_id}}']) {
+            throw new ApiException('不能设置父级为自身');
+        }
+        return parent::edit($id, $data);
+    }
+
+    /**
+     * 删除数据
+     * @param $ids
+     */
+    public function destroy($ids)
+    {
+        $num = $this->model->where('{{options.tree_parent_id}}', 'in', $ids)->count();
+        if ($num > 0) {
+            throw new ApiException('该分类下存在子分类，请先删除子分类');
+        } else {
+            parent::destroy($ids);
+        }
+    }
+
+    /**
+     * 树形数据
+     */
+    public function tree($where)
+    {
+        $query = $this->search($where);
+        if (request()->input('tree', 'false') === 'true') {
+            $query->field('{{options.tree_id}}, {{options.tree_id}} as value, {{options.tree_name}} as label, {{options.tree_parent_id}}');
+        }
+{% if options.relations != null %}
+        $query->with([
+{% for item in options.relations %}
+            '{{item.name}}',
+{% endfor %}
+        ]);
+{% endif %}
+        $data = $this->getAll($query);
+        return Helper::makeTree($data);
+    }
+
+{% endif %}
+}

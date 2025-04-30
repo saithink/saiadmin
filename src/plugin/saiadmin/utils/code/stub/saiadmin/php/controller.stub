@@ -1,0 +1,61 @@
+<?php
+// +----------------------------------------------------------------------
+// | saiadmin [ saiadmin快速开发框架 ]
+// +----------------------------------------------------------------------
+// | Author: your name
+// +----------------------------------------------------------------------
+namespace {{namespace_start}}controller{{namespace_end}};
+
+use plugin\saiadmin\basic\BaseController;
+use {{namespace_start}}logic{{namespace_end}}\{{class_name}}Logic;
+use {{namespace_start}}validate{{namespace_end}}\{{class_name}}Validate;
+use support\Request;
+use support\Response;
+
+/**
+ * {{menu_name}}控制器
+ */
+class {{class_name}}Controller extends BaseController
+{
+    /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+        $this->logic = new {{class_name}}Logic();
+        $this->validate = new {{class_name}}Validate;
+        parent::__construct();
+    }
+
+    /**
+     * 数据列表
+     * @param Request $request
+     * @return Response
+     */
+    public function index(Request $request): Response
+    {
+        $where = $request->more([
+{% for column in columns %}
+{% if column.is_query == '2' %}
+            ['{{column.column_name}}', ''],
+{% endif %}
+{% endfor %}
+        ]);
+{% if tpl_category == 'single' %}
+        $query = $this->logic->search($where);
+{% if options.relations != null %}
+        $query->with([
+{% for item in options.relations %}
+            '{{item.name}}',
+{% endfor %}
+        ]);
+{% endif %}
+        $data = $this->logic->getList($query);
+{% endif %}
+{% if tpl_category == 'tree' %}
+        $data = $this->logic->tree($where);
+{% endif %}
+        return $this->success($data);
+    }
+
+}

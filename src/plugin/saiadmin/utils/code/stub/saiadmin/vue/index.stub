@@ -1,0 +1,166 @@
+<template>
+  <div class="ma-content-block">
+    <sa-table ref="crudRef" :options="options" :columns="columns" :searchForm="searchForm">
+      <!-- 搜索区 tableSearch -->
+      <template #tableSearch>
+{% for column in columns %}
+{% if column.is_query == 2 %}
+{% if column.view_type == 'select' %}
+        <a-col :sm="8" :xs="24">
+          <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+            <a-select v-model="searchForm.{{column.column_name}}" :options="[]" placeholder="请选择{{column.column_comment}}" allow-clear />
+          </a-form-item>
+        </a-col>
+{% endif %}
+{% if column.view_type == 'saSelect' or column.view_type == 'radio' %}
+        <a-col :sm="8" :xs="24">
+          <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+            <sa-select v-model="searchForm.{{column.column_name}}" dict="{{column.dict_type}}" placeholder="请选择{{column.column_comment}}" allow-clear />
+          </a-form-item>
+        </a-col>
+{% endif %}
+{% if column.view_type == 'cascader' %}
+        <a-col :sm="8" :xs="24">
+          <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+            <a-cascader v-model="searchForm.{{column.column_name}}" :options="[]" placeholder="请选择{{column.column_comment}}" allow-clear />
+          </a-form-item>
+        </a-col>
+{% endif %}
+{% if column.view_type == 'date' and column.query_type == 'between' %}
+        <a-col :sm="8" :xs="24">
+          <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+            <a-range-picker v-model="searchForm.{{column.column_name}}" :show-time="{{column.options.show_time}}" mode="{{column.options.mode}}" />
+          </a-form-item>
+        </a-col>
+{% endif %}
+{% if column.view_type == 'date' and column.query_type != 'between' %}
+        <a-col :sm="8" :xs="24">
+          <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+            <a-date-picker v-model="searchForm.{{column.column_name}}" :show-time="{{column.options.show_time}}" mode="{{column.options.mode}}" placeholder="请选择{{column.column_comment}}" />
+          </a-form-item>
+        </a-col>
+{% endif %}
+{% if column.view_type != 'select' and column.view_type != 'radio' and column.view_type != 'saSelect' and column.view_type != 'cascader' and column.view_type != 'cascader'  %}
+        <a-col :sm="8" :xs="24">
+          <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+            <a-input v-model="searchForm.{{column.column_name}}" placeholder="请输入{{column.column_comment}}" allow-clear />
+          </a-form-item>
+        </a-col>
+{% endif %}
+{% endif %}
+{% endfor %}
+      </template>
+
+      <!-- Table 自定义渲染 -->
+    </sa-table>
+
+    <!-- 编辑表单 -->
+    <edit-form ref="editRef" @success="refresh" />
+
+  </div>
+</template>
+
+<script setup>
+import { onMounted, ref, reactive } from 'vue'
+import { Message } from '@arco-design/web-vue'
+import EditForm from './edit.vue'
+{% if package_name == '' %}
+import api from '../api/{{business_name}}'
+{% else %}
+import api from '../../api/{{package_name}}/{{business_name}}'
+{% endif %}
+
+// 引用定义
+const crudRef = ref()
+const editRef = ref()
+const viewRef = ref()
+
+// 搜索表单
+const searchForm = ref({
+{% for column in columns %}
+{% if column.is_query == 2 and column.query_type != 'between' %}
+  {{column.column_name}}: '',
+{% endif %}
+{% if column.is_query == 2 and column.query_type == 'between' %}
+  {{column.column_name}}: [],
+{% endif %}
+{% endfor %}
+})
+
+// SaTable 基础配置
+const options = reactive({
+  api: api.getPageList,
+{% if pk != 'id' %}
+  pk: '{{pk}}',
+{% endif %}
+  rowSelection: { showCheckedAll: true },
+{% if tpl_category == 'tree' %}
+  isExpand: true,
+{% endif %}
+  add: {
+    show: true,
+    auth: ['/{{url_path}}/save'],
+    func: async () => {
+      editRef.value?.open()
+    },
+  },
+  edit: {
+    show: true,
+    auth: ['/{{url_path}}/update'],
+    func: async (record) => {
+      editRef.value?.open('edit')
+      editRef.value?.setFormData(record)
+    },
+  },
+  delete: {
+    show: true,
+    auth: ['/{{url_path}}/destroy'],
+    func: async (params) => {
+      const resp = await api.destroy(params)
+      if (resp.code === 200) {
+        Message.success(`删除成功！`)
+        crudRef.value?.refresh()
+      }
+    },
+  },
+})
+
+// SaTable 列配置
+const columns = reactive([
+{% for column in columns %}
+{% if column.is_list == 2 %}
+{% if column.view_type == 'uploadImage' %}
+  { title: '{{column.column_comment}}', dataIndex: '{{column.column_name}}', type: 'image', width: 120 },
+{% else %}
+{% if column.is_sort == 2 %}
+{% if column.view_type == 'saSelect' or column.view_type == 'radio' %}
+  { title: '{{column.column_comment}}', dataIndex: '{{column.column_name}}', type: 'dict', dict: '{{column.dict_type}}', width: 120, sortable: { sortDirections: ['ascend', 'descend'] } },
+{% else %}
+  { title: '{{column.column_comment}}', dataIndex: '{{column.column_name}}', width: 180, sortable: { sortDirections: ['ascend', 'descend'] } },
+{% endif %}
+{% else %}
+{% if column.view_type == 'saSelect' or column.view_type == 'radio' %}
+  { title: '{{column.column_comment}}', dataIndex: '{{column.column_name}}', type: 'dict', dict: '{{column.dict_type}}', width: 120 },
+{% else %}
+  { title: '{{column.column_comment}}', dataIndex: '{{column.column_name}}', width: 180 },
+{% endif %}
+{% endif %}
+{% endif %}
+{% endif %}
+{% endfor %}
+])
+
+// 页面数据初始化
+const initPage = async () => {}
+
+// SaTable 数据请求
+const refresh = async () => {
+  crudRef.value?.refresh()
+}
+
+// 页面加载完成执行
+onMounted(async () => {
+  initPage()
+  refresh()
+})
+</script>
