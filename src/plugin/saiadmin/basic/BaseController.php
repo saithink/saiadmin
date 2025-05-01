@@ -9,6 +9,7 @@ namespace plugin\saiadmin\basic;
 use support\Request;
 use support\Response;
 use plugin\saiadmin\app\cache\UserInfoCache;
+use plugin\saiadmin\exception\ApiException;
 
 /**
  * 基类 控制器继承此类
@@ -46,6 +47,8 @@ class BaseController extends OpenController
      */
     protected function init(): void
     {
+        // 检查默认请求类型
+        $this->checkDefaultMethod();
         // 登录模式赋值
         $isLogin = request()->header('check_login', false);
         if ($isLogin) {
@@ -57,6 +60,42 @@ class BaseController extends OpenController
 
             // 用户数据传递给逻辑层
             $this->logic && $this->logic->init($this->adminInfo);
+        }
+    }
+
+    /**
+     * 检查默认方法
+     * @return void
+     */
+    protected function checkDefaultMethod()
+    {
+        $functions = [
+            'index' => 'get',
+            'save' => 'post',
+            'update' => 'put',
+            'read' => 'get',
+            'changestatus' => 'post',
+            'destroy' => 'delete',
+            'import' => 'post',
+            'export' => 'post',
+        ];
+        
+        $action = strtolower(request()->action);
+        if (array_key_exists($action, $functions)) {
+            $this->checkMethod($functions[$action]);
+        }
+    }
+
+    /**
+     * 验证请求方式
+     * @param string $method
+     * @return void
+     */
+    protected  function checkMethod(string $method)
+    {
+        $m = strtolower(request()->method());
+        if ($m !== strtolower($method)) {
+            throw new ApiException('Not Found!', 404);
         }
     }
 
