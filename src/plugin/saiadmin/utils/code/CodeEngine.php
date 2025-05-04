@@ -181,9 +181,6 @@ class CodeEngine
             case 'edit':
                 $outPath = $rootPath . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name'] . DIRECTORY_SEPARATOR . 'edit.vue';
                 break;
-            case 'view':
-                $outPath = $rootPath . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name'] . DIRECTORY_SEPARATOR . 'view.vue';
-                break;
             case 'api':
                 $outPath = $rootPath . DIRECTORY_SEPARATOR . 'api' . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name'] . '.js';
                 break;
@@ -232,11 +229,6 @@ class CodeEngine
         $this->checkPath($editOutPath);
         $editContent = $this->renderContent('vue', 'edit.stub');
         file_put_contents($editOutPath, $editContent);
-
-        $viewOutPath = $vuePath . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name']. DIRECTORY_SEPARATOR . 'edit.vue';
-        $this->checkPath($viewOutPath);
-        $viewContent = $this->renderContent('vue', 'view.stub');
-        file_put_contents($viewOutPath, $viewContent);
 
         $viewOutPath = $vuePath . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR . $this->value['business_name'] . '.js';
         $this->checkPath($viewOutPath);
