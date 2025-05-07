@@ -40,7 +40,7 @@
           </a-form-item>
         </a-col>
 {% endif %}
-{% if column.view_type != 'select' and column.view_type != 'radio' and column.view_type != 'saSelect' and column.view_type != 'cascader' and column.view_type != 'cascader'  %}
+{% if column.view_type != 'select' and column.view_type != 'radio' and column.view_type != 'saSelect' and column.view_type != 'cascader' and column.view_type != 'date'  %}
         <a-col :sm="8" :xs="24">
           <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
             <a-input v-model="searchForm.{{column.column_name}}" placeholder="请输入{{column.column_comment}}" allow-clear />
