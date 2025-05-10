@@ -22,6 +22,7 @@
         "openspout/openspout": "^4.0",
         "phpmailer/phpmailer": "^6.9",
         "godruoyi/php-snowflake": "^3.0.0",
+        "vlucas/phpdotenv": "^5.6",
         "twig/twig": "^3.20"
     },
     "autoload": {
