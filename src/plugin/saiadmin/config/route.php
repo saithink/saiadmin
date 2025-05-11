@@ -4,6 +4,9 @@ use Webman\Route;
 
 Route::group('/core', function () {
 
+    Route::get('/install', [plugin\saiadmin\app\controller\InstallController::class, 'index']);
+    Route::post('/install/install', [plugin\saiadmin\app\controller\InstallController::class, 'install']);
+
     Route::get('/captcha', [plugin\saiadmin\app\controller\LoginController::class, 'captcha']);
     Route::post('/login', [plugin\saiadmin\app\controller\LoginController::class, 'login']);
 
