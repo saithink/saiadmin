@@ -456,6 +456,7 @@ INSERT INTO `sa_system_menu` VALUES (1106, 1100, '0,1000,1100', '用户状态改
 INSERT INTO `sa_system_menu` VALUES (1107, 1100, '0,1000,1100', '用户重置密码', '/core/user/initUserPassword', '', '', '', NULL, 2, 1, 'B', 0, NULL, 1, 0, '', 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (1108, 1100, '0,1000,1100', '更新用户缓存', '/core/user/clearCache', '', '', '', NULL, 2, 1, 'B', 0, NULL, 1, 0, '', 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (1109, 1100, '0,1000,1100', '设置用户首页', '/core/user/setHomePage', '', NULL, '', NULL, 2, 1, 'B', 0, NULL, 1, 0, NULL, 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
+INSERT INTO `sa_system_menu` VALUES (1109, 1100, '0,1000,1100', '更新用户资料', '/core/user/updateinfo', '', NULL, '', NULL, 2, 1, 'B', 0, NULL, 1, 0, NULL, 1, 1, '2025-05-11 20:35:05', '2025-05-11 20:35:05', NULL);
 INSERT INTO `sa_system_menu` VALUES (1200, 1000, '0,1000', '菜单管理', 'permission/menu', 'IconMenu', 'permission/menu', 'system/menu/index', NULL, 2, 1, 'M', 0, NULL, 1, 0, '', 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (1201, 1200, '0,1000,1200', '菜单列表', '/core/menu/index', NULL, NULL, NULL, NULL, 2, 1, 'B', 0, NULL, 1, 0, NULL, 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (1202, 1200, '0,1000,1200', '菜单保存', '/core/menu/save', NULL, NULL, NULL, NULL, 2, 1, 'B', 0, NULL, 1, 0, NULL, 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
