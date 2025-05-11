@@ -8,7 +8,7 @@ return [
 	// 验证码存储模式
     'captcha' => [
         // 验证码存储模式 session或者cache
-        'mode' => 'cache',
+        'mode' => getenv('CAPTCHA_MODE'),
         // 验证码过期时间 (秒)
         'expire' => 300,
     ],
