@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>应用安装向导</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary: #7166F0;
+            --primary-light: #8B7FF7;
+            --primary-dark: #5B4FD9;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --dark: #1F2937;
+            --light: #F8FAFC;
+            --border-radius: 10px;
+            --box-shadow: 0 10px 30px rgba(113, 102, 240, 0.1);
+            --transition: all 0.3s ease;
+            --primary-gradient: linear-gradient(135deg, #7166F0 0%, #8B7FF7 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(113, 102, 240, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+            color: var(--dark);
+        }
+
+        .install-wrapper {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .logo-section {
+            text-align: left;
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+
+        .logo-icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon img:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-section h1 {
+            font-size: 1.4rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin-top: 70px;
+        }
+
+        .install-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-container {
+            padding: 25px 30px 0;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 50px;
+            background-color: #F5F3FF;
+            margin-bottom: 25px;
+            overflow: visible;
+            box-shadow: inset 0 1px 3px rgba(113, 102, 240, 0.1);
+        }
+
+        .progress-bar {
+            background: var(--primary-gradient);
+            border-radius: 50px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: -4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            border: 2px solid #F5F3FF;
+            color: #94A3B8;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .step-icon i {
+            font-size: 20px;
+        }
+
+        .step-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #94A3B8;
+            transition: var(--transition);
+        }
+
+        .step-item.active .step-icon,
+        .step-item.completed .step-icon {
+            border-color: var(--primary);
+            color: white;
+            background: var(--primary-gradient);
+        }
+
+        .step-item.active .step-text,
+        .step-item.completed .step-text {
+            color: var(--primary);
+        }
+
+        .step-item.completed .step-icon::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+        }
+
+        .content-section {
+            padding: 30px;
+            width: 100%;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+            width: 100%;
+        }
+
+        .step-content.active {
+            display: block;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--primary);
+            width: 100%;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .form-control {
+            height: 50px;
+            border-radius: var(--border-radius);
+            border: 2px solid #F5F3FF;
+            padding: 10px 15px 10px 50px;
+            font-size: 15px;
+            transition: var(--transition);
+            background-color: #F8FAFC;
+            color: var(--dark);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(113, 102, 240, 0.1);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #94A3B8;
+        }
+
+        /* Custom Input Group Styles */
+        .custom-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-input-icon {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            color: #94A3B8;
+            z-index: 5;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .custom-input-group:hover .custom-input-icon {
+            color: var(--primary);
+        }
+
+        .custom-input-group .form-control:focus + .custom-input-icon {
+            color: var(--primary);
+        }
+
+        /* 添加输入框动画效果 */
+        .form-control:focus + .custom-input-icon {
+            transform: scale(1.1);
+        }
+
+        /* 添加输入框hover效果 */
+        .form-control:hover {
+            border-color: #ced4da;
+            background-color: #fff;
+        }
+
+        /* 添加密码输入框特殊样式 */
+        input[type="password"].form-control {
+            letter-spacing: 2px;
+        }
+
+        /* 添加数字输入框特殊样式 */
+        input[type="number"].form-control {
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"].form-control::-webkit-outer-spin-button,
+        input[type="number"].form-control::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* 添加输入框聚焦时的标签动画 */
+        .form-group:focus-within .form-label {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* 添加输入框验证状态样式 */
+        .form-control.is-valid {
+            border-color: var(--success);
+            background-image: none;
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--warning);
+            background-image: none;
+        }
+
+        /* 添加输入框加载状态样式 */
+        .form-control.is-loading {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234361ee' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a9 9 0 1 1-6.219-8.56'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+
+        .btn {
+            height: 50px;
+            border-radius: var(--border-radius);
+            padding: 0 25px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(113, 102, 240, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(113, 102, 240, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .log-container {
+            background: #F8FAFC;
+            border-radius: var(--border-radius);
+            border: 2px solid #F5F3FF;
+            height: 300px;
+            overflow-y: auto;
+            padding: 20px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .log-item {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background: white;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(113, 102, 240, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            animation: slideIn 0.3s ease;
+            border: 1px solid #F5F3FF;
+            transition: var(--transition);
+        }
+
+        .log-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(113, 102, 240, 0.1);
+        }
+
+        .log-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(113, 102, 240, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .log-item:hover .log-icon {
+            transform: scale(1.1);
+            background: rgba(113, 102, 240, 0.2);
+        }
+
+        .log-content {
+            flex-grow: 1;
+        }
+
+        .log-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .log-time {
+            font-size: 12px;
+            color: #94A3B8;
+        }
+
+        .completed-message {
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeIn 0.5s ease;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .completed-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(113, 102, 240, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: var(--primary);
+            font-size: 40px;
+            animation: scaleIn 0.5s ease;
+            transition: var(--transition);
+        }
+
+        .completed-icon:hover {
+            transform: scale(1.1);
+            background: rgba(113, 102, 240, 0.2);
+        }
+
+        .completed-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .completed-subtitle {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            max-width: 100%;
+            padding: 0 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .action-buttons .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(113, 102, 240, 0.3);
+        }
+
+        .action-buttons .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(113, 102, 240, 0.4);
+        }
+
+        .action-buttons .btn:active {
+            transform: translateY(0);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content-section {
+                padding: 20px;
+            }
+
+            .step-title {
+                font-size: 20px;
+            }
+
+            .btn {
+                height: 45px;
+                padding: 0 20px;
+                font-size: 14px;
+            }
+
+            .form-control {
+                height: 45px;
+            }
+
+            .custom-input-icon {
+                height: 45px;
+                width: 45px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .steps-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .step-item {
+                flex-direction: row;
+                width: 100%;
+                justify-content: flex-start;
+                gap: 15px;
+            }
+
+            .step-icon {
+                margin-bottom: 0;
+            }
+
+            .log-container {
+                height: 250px;
+            }
+
+            .completed-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+
+            .completed-title {
+                font-size: 24px;
+            }
+        }
+
+        /* Step 2: Installation Process Styles */
+        #step2 {
+            width: 100%;
+        }
+
+        #step2 .progress {
+            width: 100%;
+        }
+
+        #step2 .log-container {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        /* Step 3: Installation Complete Styles */
+        #step3 {
+            width: 100%;
+        }
+
+        #step3 .completed-message {
+            width: 100%;
+            padding: 40px 0;
+        }
+
+        #step3 .completed-subtitle {
+            width: 100%;
+            padding: 0;
+            margin: 0 auto 30px;
+        }
+
+        #step3 .action-buttons {
+            width: 100%;
+            padding: 0;
+        }
+
+        /* 确保所有步骤内容区域宽度一致 */
+        .row {
+            width: 100%;
+            margin: 0;
+        }
+
+        .col-md-6 {
+            width: 100%;
+            padding: 0;
+        }
+
+        @media (min-width: 768px) {
+            .col-md-6 {
+                width: 50%;
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="install-wrapper">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <img src="https://saithink.top/images/logo.png" alt="Logo">
+            </div>
+            <h1>【{{app}}-{{version}}】安装配置向导</h1>
+        </div>
+
+        <!-- Main Install Container -->
+        <div class="main-content">
+            <div class="install-container">
+                <!-- Progress Section -->
+                <div class="progress-container">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div class="steps-container">
+                        <div class="step-item active" data-step="1">
+                            <div class="step-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="step-text">数据库配置</div>
+                        </div>
+                        <div class="step-item" data-step="2">
+                            <div class="step-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="step-text">执行安装</div>
+                        </div>
+                        <div class="step-item" data-step="3">
+                            <div class="step-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="step-text">安装完成</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Section -->
+                <div class="content-section">
+                    <!-- Step 1: Database Config -->
+                    <div class="step-content active" id="step1">
+                        <h2 class="step-title">数据库配置</h2>
+                        <form id="dbConfigForm">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dbHost" class="form-label">数据库主机</label>
+                                        <div class="custom-input-group">
+                                            <input type="text" class="form-control" id="dbHost" value="127.0.0.1" required>
+                                            <div class="custom-input-icon">
+                                                <i class="fas fa-server"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dbPort" class="form-label">端口</label>
+                                        <div class="custom-input-group">
+                                            <input type="number" class="form-control" id="dbPort" value="3306" required>
+                                            <div class="custom-input-icon">
+                                                <i class="fas fa-plug"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dbName" class="form-label">数据库名</label>
+                                        <div class="custom-input-group">
+                                            <input type="text" class="form-control" id="dbName" required>
+                                            <div class="custom-input-icon">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dbUser" class="form-label">用户名</label>
+                                        <div class="custom-input-group">
+                                            <input type="text" class="form-control" id="dbUser" required>
+                                            <div class="custom-input-icon">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dbPassword" class="form-label">密码</label>
+                                        <div class="custom-input-group">
+                                            <input type="password" class="form-control" id="dbPassword" required>
+                                            <div class="custom-input-icon">
+                                                <i class="fas fa-key"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="button" class="btn btn-primary" onclick="nextStep(1)">
+                                    <span>下一步</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Step 2: Installation Process -->
+                    <div class="step-content" id="step2">
+                        <h2 class="step-title">执行安装</h2>
+                        <div class="progress mb-4">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div class="log-container" id="installLog">
+                            <div class="log-item">
+                                <div class="log-icon">
+                                    <i class="fas fa-info"></i>
+                                </div>
+                                <div class="log-content">
+                                    <div class="log-text">准备开始安装...</div>
+                                    <div class="log-time">刚刚</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Installation Complete -->
+                    <div class="step-content" id="step3">
+                        <div class="completed-message">
+                            <div class="completed-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h2 class="completed-title">安装成功</h2>
+                            <p class="completed-subtitle">恭喜！已成功安装系统，请重启webman，启动前端项目进行访问。</p>
+                            <div class="action-buttons">
+                                <a href="http://localhost:8888" class="btn btn-primary">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span>进入管理后台</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+
+        // 显示通知
+        function showNotification(type, message) {
+            const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+            const color = type === 'success' ? '#4cc9f0' : '#f72585';
+            
+            const notification = $(`
+                <div class="notification" style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    z-index: 1000;
+                    transform: translateX(120%);
+                    transition: transform 0.3s ease;
+                ">
+                    <div style="
+                        width: 30px;
+                        height: 30px;
+                        background: ${color};
+                        color: white;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">
+                        <i class="fas fa-${icon}"></i>
+                    </div>
+                    <div>${message}</div>
+                </div>
+            `);
+            
+            $('body').append(notification);
+            
+            setTimeout(() => {
+                notification.css('transform', 'translateX(0)');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.css('transform', 'translateX(120%)');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // 切换步骤
+        function nextStep(currentStep) {
+            if (currentStep === 1) {
+                // 验证数据库配置
+                if (!validateDbConfig()) {
+                    return;
+                }
+                // 开始安装过程
+                startInstallation();
+            } else {
+                // 隐藏当前步骤，显示下一步
+                $('.step-content').removeClass('active');
+                $(`#step${currentStep + 1}`).addClass('active');
+            
+                // 更新步骤指示器
+                $('.step-item').removeClass('active');
+                $(`.step-item[data-step="${currentStep + 1}"]`).addClass('active');
+            
+                // 将之前的步骤标记为已完成
+                for (let i = 1; i <= currentStep; i++) {
+                    $(`.step-item[data-step="${i}"]`).addClass('completed');
+                }
+            
+                // 更新进度条
+                const progress = ((currentStep + 1) / 3) * 100;
+                $('.progress-bar').css('width', progress + '%');
+            }
+            
+            
+        }
+
+        // 验证数据库配置
+        function validateDbConfig() {
+            const required = ['dbHost', 'dbName', 'dbUser', 'dbPassword'];
+            for (const field of required) {
+                if (!$(`#${field}`).val()) {
+                    showNotification('error', '请填写所有必填字段');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 开始安装过程
+        function startInstallation() {
+            const dbConfig = {
+                host: $('#dbHost').val(),
+                port: $('#dbPort').val(),
+                database: $('#dbName').val(),
+                username: $('#dbUser').val(),
+                password: $('#dbPassword').val(),
+                prefix: $('#dbPrefix').val()
+            };
+
+            // 模拟安装过程
+            const steps = [
+                { icon: 'database', text: '正在创建数据库表...' },
+                { icon: 'file-import', text: '正在导入基础数据...' },
+                { icon: 'cogs', text: '正在配置系统参数...' },
+                { icon: 'tachometer-alt', text: '正在优化系统性能...' }
+            ];
+
+            let currentStep = 0;
+            const installLog = $('#installLog');
+            const progressBar = $('.progress-bar');
+
+            function runStep() {
+                if (currentStep < steps.length) {
+                    // 获取当前时间
+                    const now = new Date();
+                    const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                                       now.getMinutes().toString().padStart(2, '0') + ':' + 
+                                       now.getSeconds().toString().padStart(2, '0');
+                    
+                    // 添加日志
+                    const step = steps[currentStep];
+                    installLog.append(`
+                        <div class="log-item">
+                            <div class="log-icon">
+                                <i class="fas fa-${step.icon}"></i>
+                            </div>
+                            <div class="log-content">
+                                <div class="log-text">${step.text}</div>
+                                <div class="log-time">${timeString}</div>
+                            </div>
+                        </div>
+                    `);
+                    installLog.scrollTop(installLog[0].scrollHeight);
+                    
+                    // 更新进度
+                    const progress = ((currentStep + 1) / steps.length) * 100;
+                    progressBar.css('width', progress + '%');
+
+                    // 模拟异步操作
+                    setTimeout(() => {
+                        currentStep++;
+                        runStep();
+                    }, 1000);
+                } else {
+                    // 安装完成
+                    setTimeout(() => {
+                        nextStep(2);
+                    }, 500);
+                }
+            }
+
+            $.ajax({
+                url: '/core/install/install',
+                method: 'POST',
+                data: dbConfig,
+                success: function(response) {
+                    if (response.code == 200) {
+
+                        // 隐藏当前步骤，显示下一步
+                        $('.step-content').removeClass('active');
+                        $(`#step2`).addClass('active');
+                    
+                        // 更新步骤指示器
+                        $('.step-item').removeClass('active');
+                        $(`.step-item[data-step=2]`).addClass('active');
+
+                        runStep()
+                    } else {
+                        showNotification('error', '数据库连接失败：' + response.message);
+                    }
+                },
+                error: function() {
+                    showNotification('error', '请求失败，请检查网络连接');
+                }
+            });
+           
+        }
+    </script>
+</body>
+</html>

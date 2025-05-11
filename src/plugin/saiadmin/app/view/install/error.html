@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安装错误</title>
+    <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #7166F0 0%, #8F85F3 100%);
+            --error-gradient: linear-gradient(135deg, #7166F0 0%, #8F85F3 100%);
+            --bg-gradient: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --border-color: rgba(113, 102, 240, 0.1);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-primary);
+        }
+
+        .logo-section {
+            text-align: left;
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+
+        .logo-icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon img:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-section h1 {
+            font-size: 1.4rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin-top: 70px;
+        }
+
+        .install-wrapper {
+            width: 100%;
+            max-width: 800px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .error-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .error-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: shake 0.5s ease-in-out;
+            color: #7166F0;
+        }
+
+        .error-icon svg {
+            filter: drop-shadow(0 5px 15px rgba(113, 102, 240, 0.2));
+        }
+
+        .error-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--error-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+            background: rgba(113, 102, 240, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(113, 102, 240, 0.1);
+        }
+
+        .btn-custom {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(113, 102, 240, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(113, 102, 240, 0.4);
+            color: white;
+        }
+
+        .btn-custom:active {
+            transform: translateY(0);
+        }
+
+        .btn-custom::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .btn-custom:hover::after {
+            transform: translateX(100%);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 576px) {
+            .logo-section {
+                padding: 0.8rem 1rem;
+            }
+            .logo-section h1 {
+                font-size: 1rem;
+            }
+            .logo-icon img {
+                width: 32px;
+                height: 32px;
+            }
+            .main-content {
+                margin-top: 60px;
+                padding: 1rem;
+            }
+            .error-container {
+                padding: 2rem;
+            }
+            .error-title {
+                font-size: 1.6rem;
+            }
+            .btn-custom {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo Section -->
+    <div class="logo-section">
+        <div class="logo-icon">
+            <img src="https://saithink.top/images/logo.png">
+        </div>
+        <h1>【{{app}}-{{version}}】安装配置向导</h1>
+    </div>
+
+    <div class="main-content">
+        <div class="install-wrapper">
+            <div class="error-container">
+                <div class="error-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                    </svg>
+                </div>
+                <h2 class="error-title">安装失败</h2>
+                <p class="error-message">错误提示：{{error}}</p>
+                <a href="/core/install" class="btn btn-custom">重新安装</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
