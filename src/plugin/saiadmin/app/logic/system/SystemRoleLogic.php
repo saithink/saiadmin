@@ -46,6 +46,9 @@ class SystemRoleLogic extends BaseLogic
         if ($data['parent_id'] == $id) {
             throw new ApiException('不能设置父级为自身');
         }
+        if (in_array($id, explode(',', $data['level']))) {
+            throw new ApiException('不能设置父级为下级角色');
+        }
         $query = $this->model->where('id', $id);
         $query->auth([
             'id' => $this->adminInfo['id'],
@@ -56,9 +59,7 @@ class SystemRoleLogic extends BaseLogic
             throw new ApiException('没有权限操作该数据');
         }
         $newLevel = $data['level'].",".$id;
-        $roleIds = $this->model->where('level', $oldLevel)
-            ->whereOr('level', 'like', $oldLevel . ',%')
-            ->column('id');
+        $roleIds = SystemRole::whereRaw('FIND_IN_SET("'.$id.'", level) > 0')->column('id');
         SystemRole::whereIn('id', $roleIds)->exp('level', "REPLACE(level, '$oldLevel', '$newLevel')")->update();
         return $model->save($data);
     }
@@ -73,17 +74,14 @@ class SystemRoleLogic extends BaseLogic
             $roleList = $this->adminInfo['roleList'];
             $roleIds = [];
             foreach ($roleList as $item) {
-                $level = $item['level'] . ',' . $item['id'];
-                $temp = SystemRole::where('level', $level)
-                    ->whereOr('level', 'like', $level . ',%')
-                    ->column('id');
+                $temp = SystemRole::whereRaw('FIND_IN_SET("'.$item['id'].'", level) > 0')->column('id');
                 $roleIds = array_merge($roleIds, $temp);
             }
-            if (count(array_diff($ids, $roleIds))) {
+            if (count(array_diff($ids, $roleIds)) > 0) {
                 throw new ApiException('删除角色不在当前角色下');
             }
         }
-        $num = $this->model->where('parent_id', 'in', $ids)->count();
+        $num = SystemRole::where('parent_id', 'in', $ids)->count();
         if ($num > 0) {
             throw new ApiException('该角色下存在子角色，请先删除子角色');
         } else {
@@ -96,27 +94,23 @@ class SystemRoleLogic extends BaseLogic
      */
     protected function handleData($data)
     {
-        if (empty($data['parent_id']) || $data['parent_id'] == 0) {
+        if ($this->adminInfo['id'] > 1) {
+            // 判断parent_id是否允许使用
+            $ids = [];
+            foreach ($this->adminInfo['roleList'] as $item) {
+                $ids[] = $item['id'];
+                $temp = SystemRole::whereRaw('FIND_IN_SET("'.$item['id'].'", level) > 0')->column('id');
+                $ids = array_merge($ids, $temp);
+            }
+            if (!in_array($data['parent_id'], array_unique($ids))) {
+                throw new ApiException('父级角色不在当前角色下');
+            }
+        }
+        if (empty($data['parent_id'])) {
             $data['level'] = '0';
             $data['parent_id'] = 0;
         } else {
-            // 判断parent_id是否允许使用
-            if ($this->adminInfo['id'] > 1) {
-                $roleList = $this->adminInfo['roleList'];
-                $ids = [];
-                foreach ($roleList as $item) {
-                    $level = $item['level'] . ',' . $item['id'];
-                    $temp = SystemRole::where('id', $item['id'])
-                        ->whereOr('level', $level)
-                        ->whereOr('level', 'like', $level . ',%')
-                        ->column('id');
-                    $ids = array_merge($ids, $temp);
-                }
-                if (!in_array($data['parent_id'], $ids)) {
-                    throw new ApiException('父级角色不在当前角色下');
-                }
-            }
-            $parentMenu = $this->model->findOrEmpty($data['parent_id']);
+            $parentMenu = SystemRole::findOrEmpty($data['parent_id']);
             $data['level'] = $parentMenu['level'] . ',' . $parentMenu['id'];
         }
         return $data;
