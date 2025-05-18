@@ -7,6 +7,8 @@
 namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\cache\UserInfoCache;
+use plugin\saiadmin\app\model\system\SystemDept;
+use plugin\saiadmin\app\model\system\SystemRole;
 use plugin\saiadmin\app\model\system\SystemUser;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\basic\BaseLogic;
@@ -39,6 +41,13 @@ class SystemUserLogic extends BaseLogic
         $data['roleList'] = $admin->roles->toArray() ?: [];
         $data['postList'] = $admin->posts->toArray() ?: [];
         $data['deptList'] = $admin->depts ? $admin->depts->toArray() : [];
+        if ($this->adminInfo['id'] > 1) {
+            // 判断部门id是否有操作权限
+            $dept_ids = SystemDept::whereRaw('FIND_IN_SET("'.$this->adminInfo['dept_id'].'", level) > 0')->column('id');
+            if (!in_array($admin['dept_id'], $dept_ids)) {
+                throw new ApiException('没有权限操作该部门数据');
+            }
+        }
         return $data;
     }
 
@@ -53,6 +62,22 @@ class SystemUserLogic extends BaseLogic
         return $this->transaction(function () use ($data) {
             $role_ids = $data['role_ids'] ?? [];
             $post_ids = $data['post_ids'] ?? [];
+            if ($this->adminInfo['id'] > 1) {
+                // 1、判断部门id是否有操作权限
+                $dept_ids = SystemDept::whereRaw('FIND_IN_SET("' . $this->adminInfo['dept_id'] . '", level) > 0')->column('id');
+                if (!in_array($data['dept_id'], $dept_ids)) {
+                    throw new ApiException('没有权限操作该部门数据');
+                }
+                // 2、判断角色id是否有操作权限
+                $roleIds = [];
+                foreach ($this->adminInfo['roleList'] as $item) {
+                    $temp = SystemRole::whereRaw('FIND_IN_SET("' . $item['id'] . '", level) > 0')->column('id');
+                    $roleIds = array_merge($roleIds, $temp);
+                }
+                if (count(array_diff($role_ids, $roleIds)) > 0) {
+                    throw new ApiException('没有权限操作该角色数据');
+                }
+            }
             $user = SystemUser::create($data);
             $user->roles()->detach();
             $user->posts()->detach();
@@ -76,6 +101,7 @@ class SystemUserLogic extends BaseLogic
         return $this->transaction(function () use ($data, $id) {
             $role_ids = $data['role_ids'] ?? [];
             $post_ids = $data['post_ids'] ?? [];
+            // 1、判断用户是否可以操作
             $query = $this->model->where('id', $id);
             $query->auth([
                 'id' => $this->adminInfo['id'],
@@ -84,6 +110,22 @@ class SystemUserLogic extends BaseLogic
             $user = $query->findOrEmpty();
             if ($user->isEmpty()) {
                 throw new ApiException('没有权限操作该数据');
+            }
+            if ($this->adminInfo['id'] > 1) {
+                // 2、判断部门id是否有操作权限
+                $dept_ids = SystemDept::whereRaw('FIND_IN_SET("' . $this->adminInfo['dept_id'] . '", level) > 0')->column('id');
+                if (!in_array($data['dept_id'], $dept_ids)) {
+                    throw new ApiException('没有权限操作该部门数据');
+                }
+                // 3、判断角色id是否有操作权限
+                $roleIds = [];
+                foreach ($this->adminInfo['roleList'] as $item) {
+                    $temp = SystemRole::whereRaw('FIND_IN_SET("' . $item['id'] . '", level) > 0')->column('id');
+                    $roleIds = array_merge($roleIds, $temp);
+                }
+                if (count(array_diff($role_ids, $roleIds)) > 0) {
+                    throw new ApiException('没有权限操作该角色数据');
+                }
             }
             $result = $user->save($data);
             if ($result) {
@@ -186,6 +228,26 @@ class SystemUserLogic extends BaseLogic
         } else {
             throw new ApiException('原密码错误');
         }
+    }
+
+    /**
+     * 修改数据
+     */
+    public function authEdit($id, $data)
+    {
+        if ($this->adminInfo['id'] > 1) {
+            // 判断用户是否可以操作
+            $query = SystemUser::where('id', $id);
+            $query->auth([
+                'id' => $this->adminInfo['id'],
+                'dept' => $this->adminInfo['deptList']
+            ]);
+            $user = $query->findOrEmpty();
+            if ($user->isEmpty()) {
+                throw new ApiException('没有权限操作该数据');
+            }
+        }
+        parent::edit($id, $data);
     }
 
 }
