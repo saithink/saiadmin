@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\cache;
 
-use plugin\saiadmin\app\logic\system\SystemUserLogic;
+use plugin\saiadmin\app\model\system\SystemUser;
 use support\Cache;
 
 /**
@@ -54,10 +54,14 @@ class UserInfoCache
      */
     public function setUserInfo(): array
     {
-        $info = (new SystemUserLogic())->read($this->adminId);
+        $admin = SystemUser::where('id', $this->adminId)->findOrEmpty();
+        $data = $admin->hidden(['password'])->toArray();
+        $data['roleList'] = $admin->roles->toArray() ?: [];
+        $data['postList'] = $admin->posts->toArray() ?: [];
+        $data['deptList'] = $admin->depts ? $admin->depts->toArray() : [];
         // 保存到缓存
-        Cache::set($this->cacheUserKey, $info,3600);
-        return $info;
+        Cache::set($this->cacheUserKey, $data, 3600);
+        return $data;
     }
 
     /**
