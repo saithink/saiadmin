@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\logic\system;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemDept;
+use plugin\saiadmin\app\model\system\SystemUser;
 use plugin\saiadmin\app\model\system\SystemDeptLeader;
 use plugin\saiadmin\utils\Helper;
 use plugin\saiadmin\utils\Arr;
