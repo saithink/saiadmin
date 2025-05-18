@@ -50,9 +50,7 @@ class SystemDeptLogic extends BaseLogic
 			throw new ApiException('不能设置父级为下级部门');
 		}
         $newLevel = $data['level'].",".$id;
-        $deptIds = $this->model->where('level', $oldLevel)
-            ->whereOr('level', 'like', $oldLevel . ',%')
-            ->column('id');
+        $deptIds = $this->model->whereRaw('FIND_IN_SET("'.$id.'", level) > 0')->column('id');
         $this->model->whereIn('id', $deptIds)->exp('level', "REPLACE(level, '$oldLevel', '$newLevel')")->update();
         return $this->model->update($data, ['id' => $id]);
     }
@@ -66,6 +64,10 @@ class SystemDeptLogic extends BaseLogic
         if ($num > 0) {
             throw new ApiException('该部门下存在子部门，请先删除子部门');
         } else {
+            $count = SystemUser::where('dept_id', 'in', $ids)->count();
+            if ($count > 0) {
+                throw new ApiException('该部门下存在用户，请先删除或者转移用户');
+            }
             return $this->model->destroy($ids);
         }
     }
@@ -79,7 +81,7 @@ class SystemDeptLogic extends BaseLogic
             $data['level'] = '0';
             $data['parent_id'] = 0;
         } else {
-            $parentMenu = $this->model->findOrEmpty($data['parent_id']);
+            $parentMenu = SystemDept::findOrEmpty($data['parent_id']);
             $data['level'] = $parentMenu['level'] . ',' . $parentMenu['id'];
         }
         return $data;
