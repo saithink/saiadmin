@@ -142,7 +142,7 @@ class SystemUserController extends BaseController
             return $this->fail('超级管理员不允许重置密码');
         }
         $data = ['password' => password_hash('sai123456', PASSWORD_DEFAULT)];
-        $this->logic->update($data, ['id' => $id]);
+        $this->logic->authEdit($id, $data);
         $userInfoCache = new UserInfoCache($id);
         $userInfoCache->clearUserInfo();
         $userAuthCache = new UserAuthCache($id);
@@ -160,7 +160,7 @@ class SystemUserController extends BaseController
         $id = $request->post('id', '');
         $dashboard = $request->post('dashboard', '');
         $data = ['dashboard' => $dashboard];
-        $this->logic->update($data, ['id' => $id]);
+        $this->logic->authEdit($id, $data);
         $userInfoCache = new UserInfoCache($id);
         $userInfoCache->clearUserInfo();
         $userAuthCache = new UserAuthCache($id);
