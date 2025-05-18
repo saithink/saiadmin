@@ -50,8 +50,7 @@ class SystemUser extends BaseModel
         $id = $value['id'];
         $dept = $value['dept'];
         if ($id > 1) {
-            $level = $dept['level'] . ',' . $dept['id'];
-            $ids = SystemDept::where('level', $level)->whereOr('level', 'like', $level . ',%')->column('id');
+            $ids = SystemDept::whereRaw('FIND_IN_SET("'.$dept['id'].'", level) > 0')->column('id');
             $query->whereIn('dept_id', $ids);
         }
     }
