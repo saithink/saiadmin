@@ -16,11 +16,6 @@ use plugin\saiadmin\utils\Helper;
 class SystemNoticeLogic extends BaseLogic
 {
     /**
-     * @var bool 数据边界启用状态
-     */
-    protected $scope = true;
-
-    /**
      * 构造函数
      */
     public function __construct()
