@@ -27,8 +27,10 @@ class SystemDept extends BaseModel
     public function scopeAuth($query, $value)
     {
         if (!empty($value)) {
-            $level = $value['level'] . ',' . $value['id'];
-            $query->where('id', $value['id'])->whereOr('level', $level)->whereOr('level', 'like', $level . ',%');
+            $deptIds[] = $value['id'];
+            $ids = static::whereRaw('FIND_IN_SET("'.$value['id'].'", level) > 0')->column('id');
+            $deptIds = array_merge($deptIds, $ids);
+            $query->whereIn('id', $deptIds);
         }
     }
 

@@ -36,14 +36,11 @@ class SystemRole extends BaseModel
         if ($id > 1) {
             $ids = [];
             foreach ($roles as $item) {
-                $level = $item['level'] . ',' . $item['id'];
-                $temp = SystemRole::where('id', $item['id'])
-                    ->whereOr('level', $level)
-                    ->whereOr('level', 'like', $level . ',%')
-                    ->column('id');
+                $ids[] = $item['id'];
+                $temp = static::whereRaw('FIND_IN_SET("'.$item['id'].'", level) > 0')->column('id');
                 $ids = array_merge($ids, $temp);
             }
-            $query->where('id', 'in', $ids);
+            $query->where('id', 'in', array_unique($ids));
         }
     }
 
