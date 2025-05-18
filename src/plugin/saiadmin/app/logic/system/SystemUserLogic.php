@@ -149,7 +149,10 @@ class SystemUserLogic extends BaseLogic
     public function destroy($ids)
     {
         if (is_array($ids)) {
-            throw new ApiException('禁止批量删除操作');
+            if (count($ids) > 1) {
+                throw new ApiException('禁止批量删除操作');
+            }
+            $ids = $ids[0];
         }
         if ($ids == 1) {
             throw new ApiException('超级管理员禁止删除');
