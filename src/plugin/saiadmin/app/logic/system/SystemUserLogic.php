@@ -127,7 +127,7 @@ class SystemUserLogic extends BaseLogic
                     throw new ApiException('没有权限操作该角色数据');
                 }
             }
-            $result = $user->save($data);
+            $result = parent::edit($id, $data);
             if ($result) {
                 $user->roles()->detach();
                 $user->posts()->detach();
