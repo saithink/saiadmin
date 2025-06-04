@@ -29,14 +29,14 @@
 {% if column.view_type == 'date' and column.query_type == 'between' %}
         <a-col :sm="8" :xs="24">
           <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
-            <a-range-picker v-model="searchForm.{{column.column_name}}" :show-time="{{column.options.showTime | bool}}" mode="{{column.options.mode}}" />
+            <a-range-picker v-model="searchForm.{{column.column_name}}" :show-time="{{column.options.showTime|bool}}" mode="{{column.options.mode}}" />
           </a-form-item>
         </a-col>
 {% endif %}
 {% if column.view_type == 'date' and column.query_type != 'between' %}
         <a-col :sm="8" :xs="24">
           <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
-            <a-date-picker v-model="searchForm.{{column.column_name}}" :show-time="{{column.options.showTime | bool}}" mode="{{column.options.mode}}" placeholder="请选择{{column.column_comment}}" />
+            <a-date-picker v-model="searchForm.{{column.column_name}}" :show-time="{{column.options.showTime|bool}}" mode="{{column.options.mode}}" placeholder="请选择{{column.column_comment}}" />
           </a-form-item>
         </a-col>
 {% endif %}

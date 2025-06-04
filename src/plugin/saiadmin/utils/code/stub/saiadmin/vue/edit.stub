@@ -96,7 +96,7 @@
 {% endif %}
 {% if column.view_type == 'date' %}
       <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
-        <a-date-picker v-model="formData.{{column.column_name}}" :show-time="{{column.options.show_time}}" mode="{{column.options.mode}}" placeholder="请选择{{column.column_comment}}" />
+        <a-date-picker v-model="formData.{{column.column_name}}" :show-time="{{column.options.showTime|bool}}" mode="{{column.options.mode}}" placeholder="请选择{{column.column_comment}}" />
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'time' %}
