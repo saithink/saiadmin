@@ -108,7 +108,8 @@ class UploadService
                     'domain' => Arr::getConfigValue($uploadConfig,'s3_domain'),
                     'region' => Arr::getConfigValue($uploadConfig,'s3_region'),
                     'version' => Arr::getConfigValue($uploadConfig,'s3_version'),
-                    'use_path_style_endpoint' => Arr::getConfigValue($uploadConfig,'s3_use_path_style_endpoint'),
+                    // 'use_path_style_endpoint' => Arr::getConfigValue($uploadConfig,'s3_use_path_style_endpoint'),
+                    'use_path_style_endpoint' => filter_var(Arr::getConfigValue($uploadConfig,'s3_use_path_style_endpoint'), FILTER_VALIDATE_BOOLEAN),
                     'endpoint' => Arr::getConfigValue($uploadConfig,'s3_endpoint'),
                     'acl' => Arr::getConfigValue($uploadConfig,'s3_acl'),
                 ];
