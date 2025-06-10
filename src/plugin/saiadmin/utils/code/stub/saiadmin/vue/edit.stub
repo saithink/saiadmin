@@ -126,12 +126,12 @@
 {% endif %}
 {% if column.view_type == 'uploadImage' %}
       <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
-        <sa-upload-image v-model="formData.{{column.column_name}}" :limit="{{column.options.limit}}" :multiple="{{column.options.multiple|bool}}" />
+        <sa-upload-image v-model="formData.{{column.column_name}}" :limit="{{column.options.limit|formatNumber}}" :multiple="{{column.options.multiple|bool}}" />
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'uploadFile' %}
       <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
-        <sa-upload-file v-model="formData.{{column.column_name}}" :limit="{{column.options.limit}}" :multiple="{{column.options.multiple|bool}}" />
+        <sa-upload-file v-model="formData.{{column.column_name}}" :limit="{{column.options.limit|formatNumber}}" :multiple="{{column.options.multiple|bool}}" />
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'wangEditor' %}

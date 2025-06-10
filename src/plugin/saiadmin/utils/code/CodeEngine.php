@@ -97,6 +97,13 @@ class CodeEngine
                 return 'false';
             }
         });
+        $formatFilter = new TwigFilter('formatNumber', function ($value) {
+            if (ctype_digit((string)$value)) {
+                return $value;
+            } else {
+                return '1';
+            }
+        });
         $defaultFilter = new TwigFilter('parseNumber', function ($value) {
             if ($value) {
                 return $value;
@@ -111,6 +118,7 @@ class CodeEngine
         $twig->addFilter($camelFilter);
         $twig->addFilter($boolFilter);
         $twig->addFilter($containsFilter);
+        $twig->addFilter($formatFilter);
         $twig->addFilter($defaultFilter);
 
         return $twig->render($filename, $this->value);
