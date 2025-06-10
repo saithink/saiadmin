@@ -306,31 +306,31 @@ CREATE TABLE `sa_system_dict_data`  (
 -- ----------------------------
 -- Records of sa_system_dict_data
 -- ----------------------------
-INSERT INTO `sa_system_dict_data` VALUES (2, 2, '本地存储', '1', 'upload_mode', 99, 1, NULL, 1, 2, '2021-06-27 13:33:43', '2025-04-28 21:23:38', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (3, 2, '阿里云OSS', '2', 'upload_mode', 98, 1, NULL, 1, 2, '2021-06-27 13:33:55', '2025-04-28 21:25:13', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (4, 2, '七牛云', '3', 'upload_mode', 97, 1, NULL, 1, 1, '2021-06-27 13:34:07', '2025-03-28 19:35:25', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (5, 2, '腾讯云COS', '4', 'upload_mode', 96, 1, NULL, 1, 1, '2021-06-27 13:34:19', '2025-03-28 19:35:25', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (6, 2, '亚马逊S3', '5', 'upload_mode', 95, 1, '', 1, 1, '2021-06-27 13:34:19', '2025-04-04 23:05:31', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (7, 3, '正常', '1', 'data_status', 0, 1, '1为正常', 1, 1, '2021-06-27 13:36:51', '2021-06-27 13:37:01', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (8, 3, '停用', '2', 'data_status', 0, 1, '2为停用', 1, 1, '2021-06-27 13:37:10', '2021-06-27 13:37:10', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (9, 4, '统计页面', 'statistics', 'dashboard', 0, 1, '管理员用', 1, 1, '2021-08-09 12:53:53', '2023-11-16 11:39:17', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (10, 4, '工作台', 'work', 'dashboard', 0, 1, '员工使用', 1, 1, '2021-08-09 12:54:18', '2021-08-09 12:54:18', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (11, 5, '男', '1', 'gender', 0, 1, NULL, 1, 1, '2021-08-09 12:55:00', '2025-04-04 23:05:52', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (12, 5, '女', '2', 'gender', 0, 1, NULL, 1, 1, '2021-08-09 12:55:08', '2025-04-04 23:05:52', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (13, 5, '未知', '3', 'gender', 0, 1, NULL, 1, 1, '2021-08-09 12:55:16', '2025-04-04 23:05:52', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (14, 7, '通知', '1', 'backend_notice_type', 2, 1, NULL, 1, 1, '2021-11-11 17:29:27', '2021-11-11 17:30:51', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (15, 7, '公告', '2', 'backend_notice_type', 1, 1, NULL, 1, 1, '2021-11-11 17:31:42', '2021-11-11 17:31:42', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (16, 12, '图片', 'image', 'attachment_type', 10, 1, NULL, 1, 1, '2022-03-17 14:49:59', '2022-03-17 14:49:59', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (17, 12, '文档', 'text', 'attachment_type', 9, 1, NULL, 1, 1, '2022-03-17 14:50:20', '2022-03-17 14:50:49', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (18, 12, '音频', 'audio', 'attachment_type', 8, 1, NULL, 1, 1, '2022-03-17 14:50:37', '2022-03-17 14:50:52', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (19, 12, '视频', 'video', 'attachment_type', 7, 1, NULL, 1, 1, '2022-03-17 14:50:45', '2022-03-17 14:50:57', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (20, 12, '应用程序', 'application', 'attachment_type', 6, 1, NULL, 1, 1, '2022-03-17 14:50:52', '2022-03-17 14:50:59', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (21, 13, '菜单', 'M', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:12', '2024-07-31 10:34:12', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (22, 13, '按钮', 'B', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:20', '2024-07-31 10:34:20', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (23, 13, '外链', 'L', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:27', '2024-07-31 10:34:27', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (24, 13, 'iFrame', 'I', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:51', '2024-07-31 10:34:51', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (25, 14, '是', '1', 'yes_or_no', 100, 1, '', 1, 1, '2024-07-31 10:35:17', '2024-07-31 10:35:17', NULL);
-INSERT INTO `sa_system_dict_data` VALUES (26, 14, '否', '2', 'yes_or_no', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (2, 2, '本地存储', '1', 'green', 'upload_mode', 99, 1, NULL, 1, 2, '2021-06-27 13:33:43', '2025-04-28 21:23:38', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (3, 2, '阿里云OSS', '2', 'orange', 'upload_mode', 98, 1, NULL, 1, 2, '2021-06-27 13:33:55', '2025-04-28 21:25:13', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (4, 2, '七牛云', '3', 'cyan', 'upload_mode', 97, 1, NULL, 1, 1, '2021-06-27 13:34:07', '2025-03-28 19:35:25', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (5, 2, '腾讯云COS', '4', 'blue', 'upload_mode', 96, 1, NULL, 1, 1, '2021-06-27 13:34:19', '2025-03-28 19:35:25', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (6, 2, '亚马逊S3', '5', 'red', 'upload_mode', 95, 1, '', 1, 1, '2021-06-27 13:34:19', '2025-04-04 23:05:31', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (7, 3, '正常', '1', 'green', 'data_status', 0, 1, '1为正常', 1, 1, '2021-06-27 13:36:51', '2021-06-27 13:37:01', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (8, 3, '停用', '2', 'red', 'data_status', 0, 1, '2为停用', 1, 1, '2021-06-27 13:37:10', '2021-06-27 13:37:10', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (9, 4, '统计页面', 'statistics', 'green', 'dashboard', 0, 1, '管理员用', 1, 1, '2021-08-09 12:53:53', '2023-11-16 11:39:17', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (10, 4, '工作台', 'work', 'orange', 'dashboard', 0, 1, '员工使用', 1, 1, '2021-08-09 12:54:18', '2021-08-09 12:54:18', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (11, 5, '男', '1', 'green', 'gender', 0, 1, NULL, 1, 1, '2021-08-09 12:55:00', '2025-04-04 23:05:52', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (12, 5, '女', '2', 'red', 'gender', 0, 1, NULL, 1, 1, '2021-08-09 12:55:08', '2025-04-04 23:05:52', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (13, 5, '未知', '3', 'orange', 'gender', 0, 1, NULL, 1, 1, '2021-08-09 12:55:16', '2025-04-04 23:05:52', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (14, 7, '通知', '1', 'green', 'backend_notice_type', 2, 1, NULL, 1, 1, '2021-11-11 17:29:27', '2021-11-11 17:30:51', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (15, 7, '公告', '2', 'red', 'backend_notice_type', 1, 1, NULL, 1, 1, '2021-11-11 17:31:42', '2021-11-11 17:31:42', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (16, 12, '图片', 'image', 'green', 'attachment_type', 10, 1, NULL, 1, 1, '2022-03-17 14:49:59', '2022-03-17 14:49:59', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (17, 12, '文档', 'text', 'blue', 'attachment_type', 9, 1, NULL, 1, 1, '2022-03-17 14:50:20', '2022-03-17 14:50:49', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (18, 12, '音频', 'audio', 'cyan', 'attachment_type', 8, 1, NULL, 1, 1, '2022-03-17 14:50:37', '2022-03-17 14:50:52', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (19, 12, '视频', 'video', 'red', 'attachment_type', 7, 1, NULL, 1, 1, '2022-03-17 14:50:45', '2022-03-17 14:50:57', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (20, 12, '应用程序', 'application', 'orange', 'attachment_type', 6, 1, NULL, 1, 1, '2022-03-17 14:50:52', '2022-03-17 14:50:59', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (21, 13, '菜单', 'M', 'green', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:12', '2024-07-31 10:34:12', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (22, 13, '按钮', 'B', 'orange', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:20', '2024-07-31 10:34:20', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (23, 13, '外链', 'L', 'blue', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:27', '2024-07-31 10:34:27', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (24, 13, 'iFrame', 'I', 'cyan', 'menu_type', 100, 1, '', 1, 1, '2024-07-31 10:34:51', '2024-07-31 10:34:51', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (25, 14, '是', '1', 'green', 'yes_or_no', 100, 1, '', 1, 1, '2024-07-31 10:35:17', '2024-07-31 10:35:17', NULL);
+INSERT INTO `sa_system_dict_data` VALUES (26, 14, '否', '2', 'red', 'yes_or_no', 100, 1, '', 1, 1, '2024-07-31 10:35:22', '2024-07-31 10:35:22', NULL);
 
 -- ----------------------------
 -- Table structure for sa_system_dict_type
