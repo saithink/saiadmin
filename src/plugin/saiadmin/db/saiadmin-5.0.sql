@@ -289,6 +289,7 @@ CREATE TABLE `sa_system_dict_data`  (
   `type_id` int(11) UNSIGNED NULL DEFAULT NULL COMMENT '字典类型ID',
   `label` varchar(50) NULL DEFAULT NULL COMMENT '字典标签',
   `value` varchar(100) NULL DEFAULT NULL COMMENT '字典值',
+  `color` varchar(50) NULL DEFAULT NULL COMMENT '字典颜色',
   `code` varchar(100) NULL DEFAULT NULL COMMENT '字典标示',
   `sort` smallint(5) UNSIGNED NULL DEFAULT 0 COMMENT '排序',
   `status` smallint(6) NULL DEFAULT 1 COMMENT '状态 (1正常 2停用)',
