@@ -12,6 +12,7 @@ use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Helper;
 use think\db\Query;
+use think\facade\Db;
 
 /**
  * 角色逻辑层
@@ -225,7 +226,10 @@ class SystemRoleLogic extends BaseLogic
             $role = $this->model->findOrEmpty($id);
             if ($role) {
                 $role->menus()->detach();
-                $role->menus()->saveAll($menu_ids);
+                $data = array_map(function($menu_id) use ($id) {
+                    return ['menu_id' => $menu_id, 'role_id' => $id];
+                }, $menu_ids);
+                Db::name('sa_system_role_menu')->limit(100)->insertAll($data);
             }
             (new UserAuthCache($this->adminInfo['id']))->clearAuthCache();
             return true;
