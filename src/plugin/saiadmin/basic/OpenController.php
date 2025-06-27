@@ -33,14 +33,15 @@ class OpenController
      * 成功返回json内容
      * @param array|string $data
      * @param string $msg
+     * @param int $option
      * @return Response
      */
-    public function success(array | string $data = [], string $msg = 'success'): Response
+    public function success(array | string $data = [], string $msg = 'success', $option = JSON_UNESCAPED_UNICODE): Response
     {
         if (is_string($data)) {
             $msg = $data;
         }
-        return json(['code' => 200, 'message' => $msg, 'data' => $data]);
+        return json(['code' => 200, 'message' => $msg, 'data' => $data], $option);
     }
 
     /**
