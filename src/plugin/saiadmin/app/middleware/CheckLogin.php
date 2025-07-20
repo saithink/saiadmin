@@ -28,11 +28,14 @@ class CheckLogin implements MiddlewareInterface
         if (!in_array($request->action, $noNeedLogin)) {
             try {
                 $token = JwtToken::getExtend();
-                $request->setHeader('check_login', true);
-                $request->setHeader('check_admin', $token);
             } catch (\Throwable $e) {
                 throw new ApiException('您的登录凭证错误或者已过期，请重新登录', 401);
             }
+            if ($token['plat'] !== 'saiadmin') {
+                throw new ApiException('登录凭证校验失败');
+            }
+            $request->setHeader('check_login', true);
+            $request->setHeader('check_admin', $token);
         }
         return $handler($request);
     }
