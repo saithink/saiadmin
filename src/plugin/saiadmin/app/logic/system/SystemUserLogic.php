@@ -207,7 +207,8 @@ class SystemUserLogic extends BaseLogic
         $token = JwtToken::generateToken([
             'id' => $adminInfo->id,
             'username' => $adminInfo->username,
-            'type' => $type
+            'type' => $type,
+            'plat' => 'saiadmin',
         ]);
         // 登录事件
         $admin_id = $adminInfo->id;
