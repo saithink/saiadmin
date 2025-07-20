@@ -14,7 +14,10 @@ class Task
 {
     public function onWorkerStart()
     {
-        $this->initStart();
+        $dbName = getenv('DB_NAME');
+        if (!empty($dbName)) {
+            $this->initStart();
+        }
     }
 
     public function initStart()
