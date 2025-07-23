@@ -537,6 +537,7 @@ INSERT INTO `sa_system_menu` VALUES (4205, 4200, '0,4000,4200', '定时任务读
 INSERT INTO `sa_system_menu` VALUES (4206, 4200, '0,4000,4200', '定时任务状态修改', '/tool/crontab/changeStatus', '', '', '', NULL, 2, 1, 'B', 0, NULL, 1, 0, '', 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (4207, 4200, '0,4000,4200', '定时任务执行', '/tool/crontab/run', '', '', '', NULL, 2, 1, 'B', 0, NULL, 1, 0, '', 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (4208, 4200, '0,4000,4200', '定时任务日志删除', '/tool/crontab/deleteLog', '', '', '', NULL, 2, 1, 'B', 0, NULL, 1, 0, '', 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
+INSERT INTO `sa_system_menu` VALUES (4300, 4000, '0,4000', '插件安装', 'tool/install', 'IconUpload', 'tool/install', 'tool/install/index', NULL, 2, 1, 'M', 0, NULL, 1, 0, '', 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (5000, 0, '0', '系统设置', 'config', 'IconSettings', 'config', 'system/config/index', NULL, 2, 1, 'M', 0, NULL, 1, 0, '', 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (5001, 5000, '0,5000', '配置列表', '/core/config/index', NULL, NULL, NULL, NULL, 2, 1, 'B', 0, NULL, 1, 0, NULL, 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
 INSERT INTO `sa_system_menu` VALUES (5002, 5000, '0,5000', '新增配置 ', '/core/config/save', NULL, NULL, NULL, NULL, 2, 1, 'B', 0, NULL, 1, 0, NULL, 1, 1, '2025-04-30 13:56:46', '2025-04-30 13:56:46', NULL);
