@@ -162,17 +162,17 @@ return [
     'connections' => [
         'mysql' => [
             // 数据库类型
-            'type' => getenv('DB_TYPE'),
+            'type' => env('DB_TYPE', 'mysql'),
             // 服务器地址
-            'hostname' => getenv('DB_HOST'),
+            'hostname' => env('DB_HOST', '127.0.0.1'),
             // 数据库名
-            'database' => getenv('DB_NAME'),
+            'database' => env('DB_NAME', 'saiadmin'),
             // 数据库用户名
-            'username' => getenv('DB_USER'),
+            'username' => env('DB_USER', 'root'),
             // 数据库密码
-            'password' => getenv('DB_PASSWORD'),
+            'password' => env('DB_PASSWORD', '123456'),
             // 数据库连接端口
-            'hostport' => getenv('DB_PORT'),
+            'hostport' => env('DB_PORT', 3306),
             // 数据库连接参数
             'params' => [
                 // 连接超时3秒
@@ -181,7 +181,7 @@ return [
             // 数据库编码默认采用utf8
             'charset' => 'utf8',
             // 数据库表前缀
-            'prefix' => getenv('DB_PREFIX'),
+            'prefix' => env('DB_PREFIX', ''),
             // 断线重连
             'break_reconnect' => true,
             // 自定义分页类
@@ -205,7 +205,7 @@ EOF;
 <?php
 
 return [
-    'default' => getenv('CACHE_MODE'),
+    'default' => env('CACHE_MODE', 'file'),
     'stores' => [
         'file' => [
             'driver' => 'file',
@@ -229,10 +229,10 @@ EOF;
 
 return [
     'default' => [
-        'password' => getenv('REDIS_PASSWORD'),
-        'host' => getenv('REDIS_HOST'),
-        'port' => getenv('REDIS_PORT'),
-        'database' => getenv('REDIS_DB'),
+        'password' => env('REDIS_PASSWORD', ''),
+        'host' => env('REDIS_HOST', '127.0.0.1'),
+        'port' => env('REDIS_PORT', 6379),
+        'database' => env('REDIS_DB', 0),
         'pool' => [
             'max_connections' => 5,
             'min_connections' => 1,
