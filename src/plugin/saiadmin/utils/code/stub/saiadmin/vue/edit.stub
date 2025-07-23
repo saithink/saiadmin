@@ -121,16 +121,16 @@
 {% endif %}
 {% if column.view_type == 'cityLinkage' %}
       <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
-        <ma-cityLinkage v-model="formData.{{column.column_name}}" type="${type}" mode="${mode}" />
+        <ma-cityLinkage v-model="formData.{{column.column_name}}" type="{{column.options.type}}" mode="{{column.options.mode}}" />
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'uploadImage' %}
-      <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+      <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}" validate-trigger="input">
         <sa-upload-image v-model="formData.{{column.column_name}}" :limit="{{column.options.limit|formatNumber}}" :multiple="{{column.options.multiple|bool}}" />
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'uploadFile' %}
-      <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+      <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}" validate-trigger="input">
         <sa-upload-file v-model="formData.{{column.column_name}}" :limit="{{column.options.limit|formatNumber}}" :multiple="{{column.options.multiple|bool}}" />
       </a-form-item>
 {% endif %}
