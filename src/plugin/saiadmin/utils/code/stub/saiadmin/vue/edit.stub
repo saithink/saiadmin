@@ -188,7 +188,7 @@ const initialFormData = {
 {% elseif column.is_insert == 2 %}
 {% if column.column_type == 'int' or column.column_type == 'smallint' or column.column_type == 'tinyint' %}
   {{column.column_name}}: {{column.default_value | parseNumber}},
-{% elseif column.view_type == 'inputTag' %}
+{% elseif column.view_type == 'inputTag' or column.view_type == 'userSelect' %}
   {{column.column_name}}: [],
 {% else %}
   {{column.column_name}}: '{{column.default_value}}',
