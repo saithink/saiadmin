@@ -172,8 +172,17 @@ class BaseLogic
         $limit = request()->input('limit', 10);
         $orderBy = request()->input('orderBy', '');
         $orderType = request()->input('orderType', $this->orderType);
+        $saiColumn = request()->input('saiColumn', '');
         if(empty($orderBy)) {
             $orderBy = $this->orderField !== '' ? $this->orderField : $this->model->getPk();
+        }
+        // 动态字段处理：解析并设置查询字段
+        if ($saiColumn !== '') {
+            $fields = array_map('trim', explode(',', $saiColumn));
+            $validFields = array_filter($fields); // 过滤空字段
+            if (!empty($validFields)) {
+                $query->field($validFields);
+            }
         }
         $query->order($orderBy, $orderType);
         if ($saiType === 'all') {
