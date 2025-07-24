@@ -125,13 +125,23 @@
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'uploadImage' %}
-      <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}" validate-trigger="input">
-        <sa-upload-image v-model="formData.{{column.column_name}}" :limit="{{column.options.limit|formatNumber}}" :multiple="{{column.options.multiple|bool}}" />
+      <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
+        <sa-upload-image
+          v-model="formData.{{column.column_name}}"
+          :limit="{{column.options.limit|formatNumber}}"
+          :multiple="{{column.options.multiple|bool}}"
+          @update:modelValue="() => { formRef?.validateField('{{column.column_name}}') }"
+        />
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'uploadFile' %}
       <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}" validate-trigger="input">
-        <sa-upload-file v-model="formData.{{column.column_name}}" :limit="{{column.options.limit|formatNumber}}" :multiple="{{column.options.multiple|bool}}" />
+        <sa-upload-file
+          v-model="formData.{{column.column_name}}"
+          :limit="{{column.options.limit|formatNumber}}"
+          :multiple="{{column.options.multiple|bool}}"
+          @update:modelValue="() => { formRef?.validateField('{{column.column_name}}') }"
+        />
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'wangEditor' %}
