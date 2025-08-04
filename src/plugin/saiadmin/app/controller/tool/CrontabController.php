@@ -10,6 +10,7 @@ use plugin\saiadmin\app\logic\tool\CrontabLogic;
 use plugin\saiadmin\app\logic\tool\CrontabLogLogic;
 use plugin\saiadmin\app\validate\tool\CrontabValidate;
 use plugin\saiadmin\basic\BaseController;
+use Webman\Channel\Client;
 use support\Request;
 use support\Response;
 
@@ -61,7 +62,39 @@ class CrontabController extends BaseController
         }
         $result = $model->save(['status' => $status]);
         if ($result) {
-            $this->afterChange('changeStatus', $model);
+            $this->afterChange('changeStatus', $id);
+            return $this->success('操作成功');
+        } else {
+            return $this->fail('操作失败');
+        }
+    }
+
+    /**
+     * 修改数据
+     * @param $id
+     * @param Request $request
+     * @return Response
+     */
+    public function update(Request $request, $id) : Response
+    {
+        $id = $request->input('id', $id);
+        if (empty($id)) {
+            return $this->fail('参数错误，请检查');
+        }
+        $data = $request->post();
+        if ($this->validate) {
+            if (!$this->validate->scene('update')->check($data)) {
+                return $this->fail($this->validate->getError());
+            }
+        }
+        $up = false;
+        $result = $this->logic->edit($id, $data, function($oldRule, $newRule) use(&$up){
+            $up = $oldRule != $newRule;
+        });
+        if ($result) {
+            if($up){
+                $this->afterChange('update', $id);
+            }
             return $this->success('操作成功');
         } else {
             return $this->fail('操作失败');
@@ -76,9 +109,19 @@ class CrontabController extends BaseController
      */
     protected function afterChange($type, $args): void
     {
-        if (in_array($type, ['save', 'update', 'changeStatus'])) {
-            $task = new \plugin\saiadmin\process\Task();
-            $task->reload();
+        if (in_array($type, ['save', 'update', 'destroy'])) {
+//            $task = new \plugin\saiadmin\process\Task();
+//            $task->reload();
+            // 连接到Channel服务
+            Client::connect();
+            // 发布某个自定义事件，订阅这个事件的客户端会收到事件数据，并触发客户端对应的事件回调
+            if(is_array($args)){
+                foreach ($args as $id){
+                    Client::publish('crontab', ['args' => $id]);
+                }
+            }else{
+                Client::publish('crontab', ['args' => $args]);
+            }
         }
     }
 
