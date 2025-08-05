@@ -794,7 +794,7 @@ CREATE TABLE `sa_tool_crontab`  (
 -- ----------------------------
 INSERT INTO `sa_tool_crontab` VALUES (1, '访问官网', 1, 'https://saithink.top', NULL, 1, '0 0 8 * * *', 2, 1, NULL, 1, 2, '2024-01-20 14:21:11', '2025-04-29 17:54:32', NULL);
 INSERT INTO `sa_tool_crontab` VALUES (2, '登录gitee', 2, 'https://gitee.com/check_user_login', '{\"user_login\": \"saiadmin\"}', 1, '0 0 10 * * *', 2, 1, NULL, 1, 1, '2024-01-20 14:31:51', '2025-04-28 00:08:34', NULL);
-INSERT INTO `sa_tool_crontab` VALUES (3, '定时执行任务', 3, '\\plugin\\saiadmin\\process\\Task', '{\"type\":\"1\"}', 1, '0 30 12 * * *', 2, 1, '', 1, 1, '2024-01-20 14:38:03', '2025-04-28 00:09:30', NULL);
+INSERT INTO `sa_tool_crontab` VALUES (3, '定时执行任务', 3, '\\plugin\\saiadmin\\process\\Test', '{\"type\":\"1\"}', 1, '0 30 12 * * *', 2, 1, '', 1, 1, '2024-01-20 14:38:03', '2025-04-28 00:09:30', NULL);
 
 -- ----------------------------
 -- Table structure for sa_tool_crontab_log
