@@ -7,11 +7,23 @@
 namespace plugin\saiadmin\process;
 
 use plugin\saiadmin\app\logic\tool\CrontabLogic;
-use Webman\Push\Api;
+use Webman\Channel\Client;
 use Workerman\Crontab\Crontab;
 
 class Task
 {
+    protected $logic; //login对象 
+    public $crontabIds = []; //定时任务表主键id => Crontab对象id
+
+    public function __construct()
+    {
+        $this->logic = new CrontabLogic();
+        Client::connect();
+        // 订阅某个自定义事件并注册回调，收到事件后会自动触发此回调
+        Client::on('crontab', function($data) {
+            $this->reload($data);
+        });
+    }
     public function onWorkerStart()
     {
         $dbName = env('DB_NAME');
@@ -25,49 +37,26 @@ class Task
         $logic = new CrontabLogic();
         $taskList = $logic->where('status', 1)->select();
         foreach ($taskList as $item) {
-            new Crontab($item->rule, function () use ($logic, $item) {
-                $logic->run($item->id);
+            $crontab = new Crontab($item->rule, function () use ($item) {
+                $this->logic->run($item->id);
             });
+            $this->crontabIds[intval($item->id)] = $crontab->getId(); //存储定时任务表主键id => Crontab对象id
         }
     }
 
     public function reload()
     {
-        echo "重启Crontab\n";
-        $list = Crontab::getAll();
-        foreach ($list as $item) {
-            Crontab::remove($item->getId());
+        $id = intval($data['args'] ?? 0); //定时任务表主键id
+        if(isset($this->crontabIds[$id])){
+            Crontab::remove($this->crontabIds[$id]);
+            unset($this->crontabIds[$id]); //删除定时任务表主键id => Crontab对象id
         }
-        $this->initStart();
-    }
-
-    public function run($args)
-    {
-        echo '任务调用：'.date('Y-m-d H:i:s')."\n";
-        var_dump('参数:'. $args);
-
-        $api = new Api(
-            'http://127.0.0.1:3232',
-            config('plugin.webman.push.app.app_key'),
-            config('plugin.webman.push.app.app_secret')
-        );
-        // 给订阅 saiadmin 的所有客户端推送 message 事件的消息
-        $return_ret = [
-            'event' => 'ev_new_message',
-            'message' => '新消息通知',
-            'data' => [
-                [
-                    'id' => 1,
-                    'title' => '系统消息',
-                    'content' => '欢迎使用saiadmin框架',
-                    'create_time' => date('Y-m-d H:i:s'),
-                    'send_user' => [
-                        'nickname' => '系统管理员',
-                        'avatar' => ''
-                    ]
-                ]
-            ]
-        ];
-        $api->trigger('saiadmin', 'message', $return_ret);
+        $item = $this->logic->findOrEmpty($id);// 查询定时任务表数据
+        if (!$item->isEmpty()) {
+            $crontab = new Crontab($item->rule, function () use ($item) {
+                $this->logic->run($item->id);
+            });
+            $this->crontabIds[$id] = $crontab->getId(); //存储定时任务表主键id => Crontab对象id
+        }
     }
 }
