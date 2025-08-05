@@ -68,7 +68,7 @@ class CrontabLogic extends BaseLogic
     /**
      * 修改任务
      */
-    public function edit($id, $data, callable $callback = null): mixed
+    public function edit($id, $data): mixed
     {
         $second = $data['second'];
         $minute = $data['minute'];
@@ -95,9 +95,7 @@ class CrontabLogic extends BaseLogic
         if ($model->isEmpty()) {
             throw new ApiException('数据不存在');
         }
-        if($callback){
-            $callback($model->rule, $rule);
-        }
+
         // 修改任务数据
         return $model->save([
             'name' => $data['name'],
@@ -118,8 +116,8 @@ class CrontabLogic extends BaseLogic
      */
     public function run($id): bool
     {
-        $info = $this->find($id);
-        if(!$info || $info->status != 1){
+        $info = $this->model->where('status', 1)->findOrEmpty($id);
+        if($info->isEmpty()){
             return false;
         }
         $data['crontab_id'] = $info->id;
