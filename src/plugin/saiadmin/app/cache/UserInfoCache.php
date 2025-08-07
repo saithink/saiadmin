@@ -14,7 +14,7 @@ use support\Cache;
  */
 class UserInfoCache
 {
-    private string $prefix = 'user_info_';   // 缓存前置
+    private string $prefix = 'user_info:';   // 缓存前置
     private string $cacheUserKey = '';       // 管理员缓存key
 
     private string $adminId = '';            // 管理员id
