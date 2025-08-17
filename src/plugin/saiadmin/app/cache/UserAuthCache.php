@@ -14,7 +14,7 @@ use plugin\saiadmin\app\logic\system\SystemMenuLogic;
  */
 class UserAuthCache
 {
-    private string $prefix = 'user_auth:'; // 缓存前缀
+    private string $prefix = 'user_auth_'; // 缓存前缀
     private array $authCodeList = [];      // 全部权限列表
     private string $cacheMd5Key = '';      // 权限文件MD5的key
     private string $cacheAllKey = '';      // 全部权限的key
