@@ -82,7 +82,7 @@ class SystemDeptController extends BaseController
      */
     public function accessDept(Request $request) : Response
     {
-        $where = [];
+        $where = ['status' => 1];
         $data = $this->logic->accessDept($where);
         return $this->success($data);
     }

@@ -107,7 +107,7 @@ class SystemPostController extends BaseController
      */
     public function accessPost(Request $request) : Response
     {
-        $where = [];
+        $where = ['status' => 1];
         $data = $this->logic->accessPost($where);
         return $this->success($data);
     }

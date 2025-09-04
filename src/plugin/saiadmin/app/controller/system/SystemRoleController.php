@@ -53,7 +53,7 @@ class SystemRoleController extends BaseController
      */
     public function accessRole(Request $request) : Response
     {
-        $where = [];
+        $where = ['status' => 1];
         $data = $this->logic->accessRole($where);
         return $this->success($data);
     }
