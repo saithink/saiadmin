@@ -109,9 +109,9 @@ class GenerateTablesLogic extends BaseLogic
         foreach ($columnLogicData as $item) {
             $columnLogicList[$item['column_name']] = $item;
         }
-        $this->columnLogic->destroy(function ($query) use ($id) {
+        GenerateColumns::destroy(function ($query) use ($id) {
             $query->where('table_id', $id);
-        }, true);
+        });
         $columns = $this->dataLogic->getColumnList($model->table_name, $model->source ?? '');
         foreach ($columns as &$column) {
             $column['table_id'] = $model->id;
