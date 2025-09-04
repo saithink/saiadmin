@@ -11,6 +11,12 @@ use plugin\saiadmin\basic\BaseModel;
 
 /**
  * {{menu_name}}模型
+ *
+ * {{table_name}} {{table_comment}}
+ *
+{% for column in columns %}
+ * @property {{column.php_type}} ${{column.column_name}} {{column.column_comment}}
+{% endfor %}
  */
 class {{class_name}} extends BaseModel
 {% else %}
@@ -18,6 +24,12 @@ use plugin\saiadmin\basic\BaseNormalModel;
 
 /**
  * {{menu_name}}模型
+ *
+ * {{table_name}} {{table_comment}}
+ *
+{% for column in columns %}
+ * @property {{column.php_type}} ${{column.column_name}} {{column.column_comment}}
+{% endfor %}
  */
 class {{class_name}} extends BaseNormalModel
 {% endif %}
