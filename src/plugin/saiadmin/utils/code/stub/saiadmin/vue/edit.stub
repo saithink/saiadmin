@@ -135,7 +135,7 @@
       </a-form-item>
 {% endif %}
 {% if column.view_type == 'uploadFile' %}
-      <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}" validate-trigger="input">
+      <a-form-item label="{{column.column_comment}}" field="{{column.column_name}}">
         <sa-upload-file
           v-model="formData.{{column.column_name}}"
           :limit="{{column.options.limit|formatNumber}}"
