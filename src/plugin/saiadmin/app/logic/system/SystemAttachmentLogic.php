@@ -11,9 +11,9 @@ use plugin\saiadmin\app\model\system\SystemAttachment;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\service\storage\UploadService;
+use plugin\saiadmin\service\storage\ChunkUploadService;
 use plugin\saiadmin\utils\Arr;
 use plugin\saiadmin\utils\Helper;
-use support\Request;
 
 /**
  * 角色逻辑层
@@ -157,6 +157,26 @@ class SystemAttachmentLogic extends BaseLogic
         $info['url'] = $url;
         $this->model->save($info);
         return $info;
+    }
+
+    /**
+     * 切片上传
+     * @param $data
+     * @return array
+     */
+    public function chunkUpload($data): array
+    {
+        $chunkService = new ChunkUploadService();
+        if ($data['index'] == 1) {
+            $model = $this->model->where('hash', $data['hash'])->findOrEmpty();
+            if (!$model->isEmpty()) {
+                return $model->toArray();
+            } else {
+                return $chunkService->checkChunk($data);
+            }
+        } else {
+            return $chunkService->uploadChunk($data);
+        }
     }
 
 }

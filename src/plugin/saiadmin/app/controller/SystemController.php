@@ -181,6 +181,17 @@ class SystemController extends BaseController
     }
 
     /**
+     * 切片上传
+     */
+    public function chunkUpload(Request $request): Response
+    {
+        $logic = new SystemAttachmentLogic();
+        $data = $request->post();
+        $result = $logic->chunkUpload($data);
+        return $this->success($result);
+    }
+
+    /**
      * 根据id下载资源
      * @param Request $request
      * @return Response
