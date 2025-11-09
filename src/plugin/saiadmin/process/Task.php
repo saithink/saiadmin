@@ -17,13 +17,16 @@ class Task
 
     public function __construct()
     {
-        $this->logic = new CrontabLogic();
-        // 连接webman channel服务
-        Client::connect();
-        // 订阅某个自定义事件并注册回调，收到事件后会自动触发此回调
-        Client::on('crontab', function($data) {
-            $this->reload($data);
-        });
+        $dbName = env('DB_NAME');
+        if (!empty($dbName)) {
+            $this->logic = new CrontabLogic();
+            // 连接webman channel服务
+            Client::connect();
+            // 订阅某个自定义事件并注册回调，收到事件后会自动触发此回调
+            Client::on('crontab', function ($data) {
+                $this->reload($data);
+            });
+        }
     }
     public function onWorkerStart()
     {
