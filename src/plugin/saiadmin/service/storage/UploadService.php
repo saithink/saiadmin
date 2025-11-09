@@ -59,6 +59,8 @@ class UploadService
                     'domain' => Arr::getConfigValue($uploadConfig,'local_domain'),
                     'uri' => Arr::getConfigValue($uploadConfig, 'local_uri'),
                     'algo' => 'sha1',
+                    'single_limit'=> Arr::getconfigValue($uploadConfig, 'upload_size'),
+                    'total_limit'=> Arr::getconfigValue($uploadConfig, 'upload_size')
                 ];
                 break;
             case 2:
