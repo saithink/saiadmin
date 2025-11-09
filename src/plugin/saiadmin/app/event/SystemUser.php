@@ -98,7 +98,7 @@ class SystemUser
         } catch (\Exception $e) {
             return '未知';
         }
-        list($country, $number, $province, $city, $network) = explode('|', $region['region']);
+        list($country, $province, $city, $network) = explode('|', $region['region']);
         if ($network === '内网IP') {
             return $network;
         }
