@@ -12,10 +12,12 @@ use Workerman\Crontab\Crontab;
 
 class Task
 {
+    protected $logic;
     public $crontabIds = []; //定时任务表主键id => Crontab对象id
 
     public function __construct()
     {
+        $this->logic = new CrontabLogic;
         $dbName = env('DB_NAME');
         if (!empty($dbName)) {
             // 连接webman channel服务
@@ -36,7 +38,7 @@ class Task
 
     public function initStart()
     {
-        $taskList = CrontabLogic::where('status', 1)->select();
+        $taskList = $this->logic->where('status', 1)->select();
         foreach ($taskList as $item) {
             $crontab = new Crontab($item->rule, function () use ($item) {
                 $this->run($item->id);
@@ -54,7 +56,7 @@ class Task
             unset($this->crontabIds[$id]); //删除定时任务表主键id => Crontab对象id
             echo date('Y-m-d H:i:s')." => 定时任务[".$id."]:移除成功".PHP_EOL;
         }
-        $item = CrontabLogic::findOrEmpty($id);// 查询定时任务表数据
+        $item = $this->logic->findOrEmpty($id);// 查询定时任务表数据
         if (!$item->isEmpty() && $item->status == 1) {
             $crontab = new Crontab($item->rule, function () use ($item) {
                 $this->run($item->id);
