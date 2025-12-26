@@ -292,7 +292,7 @@ return [
     ],
 ];
 EOF;
-        file_put_contents(base_path() . '/config/think-orm.php', $think_cache_config);
+        file_put_contents(base_path() . '/config/think-cache.php', $think_cache_config);
 
     }
 
