@@ -52,4 +52,42 @@ return [
 
         '/tool/crontab/logPageList' => '/tool/crontab/index',
     ],
+
+    // 用户信息缓存
+    'user_cache' => [
+        'prefix' => 'saiadmin:user_cache:info_',
+        'expire' => 60 * 60 * 4,
+        'dept' => 'saiadmin:user_cache:dept_',
+        'role' => 'saiadmin:user_cache:role_',
+        'post' => 'saiadmin:user_cache:post_',
+    ],
+
+    // 用户权限缓存
+    'button_cache' => [
+        'prefix' => 'saiadmin:button_cache:user_',
+        'expire' => 60 * 60 * 2,
+        'all' => 'saiadmin:button_cache:all',
+        'role' => 'saiadmin:button_cache:role_',
+        'tag' => 'saiadmin:button_cache',
+    ],
+
+    // 用户菜单缓存
+    'menu_cache' => [
+        'prefix' => 'saiadmin:menu_cache:user_',
+        'expire' => 60 * 60 * 24 * 7,
+        'tag' => 'saiadmin:menu_cache',
+    ],
+
+    // 字典缓存
+    'dict_cache' => [
+        'expire' => 60 * 60 * 24 * 365,
+        'tag' => 'saiadmin:dict_cache',
+    ],
+
+    // 配置数据缓存
+    'config_cache' => [
+        'expire' => 60 * 60 * 24 * 365,
+        'prefix' => 'saiadmin:config_cache:config_',
+        'tag' => 'saiadmin:config_cache'
+    ],
 ];
