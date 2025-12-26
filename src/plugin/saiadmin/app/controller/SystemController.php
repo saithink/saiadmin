@@ -8,7 +8,8 @@ namespace plugin\saiadmin\app\controller;
 
 use plugin\saiadmin\app\cache\UserAuthCache;
 use plugin\saiadmin\app\cache\UserInfoCache;
-use plugin\saiadmin\app\logic\system\SystemDictTypeLogic;
+use plugin\saiadmin\app\cache\UserMenuCache;
+use plugin\saiadmin\app\cache\DictCache;
 use plugin\saiadmin\app\logic\system\SystemLoginLogLogic;
 use plugin\saiadmin\app\logic\system\SystemNoticeLogic;
 use plugin\saiadmin\app\logic\system\SystemOperLogLogic;
@@ -38,11 +39,11 @@ class SystemController extends BaseController
         if ($this->adminInfo['id'] === 1) {
             $info['codes'] = ['*'];
             $info['roles'] = ['superAdmin'];
-            $info['routers'] = $logic->getAllMenus();
+            $info['routers'] = UserMenuCache::getUserMenu($this->adminInfo['id']);
         } else {
-            $info['codes'] = $logic->getAuthByAdminId($this->adminInfo['id']);
+            $info['codes'] = UserAuthCache::getUserAuth($this->adminInfo['id']);
             $info['roles'] = Arr::getArrayColumn($this->adminInfo['roleList'],'code');
-            $info['routers'] = $logic->getRoutersByAdminId($this->adminInfo['id']);
+            $info['routers'] = UserMenuCache::getUserMenu($this->adminInfo['id']);
         }
         return $this->success($info);
     }
@@ -52,37 +53,8 @@ class SystemController extends BaseController
      */
     public function dictAll(): Response
     {
-        $logic = new SystemDictTypeLogic();
-        $query = $logic->where('status', 1)
-            ->field('id, name, code, remark')
-            ->with(['dicts' => function ($query) {
-                $query->where('status', 1)->withoutField(['created_by','updated_by','create_time','update_time'])->order('sort desc');
-            }]);
-        $data = $logic->getAll($query);
-        $dict = $this->packageDict($data, 'code');
+        $dict = DictCache::getDictAll();
         return $this->success($dict);
-    }
-
-    /**
-     * 组合数据
-     * @param $array
-     * @param $field
-     * @return array
-     */
-    private function packageDict($array, $field): array
-    {
-        $result = [];
-        foreach ($array as $item) {
-            if (isset($item[$field])) {
-                if (isset($result[$item[$field]])) {
-                    $result[$item[$field]] = [($result[$item[$field]])];
-                    $result[$item[$field]][] = $item['dicts'];
-                } else {
-                    $result[$item[$field]] = $item['dicts'];
-                }
-            }
-        }
-        return $result;
     }
 
     /**
@@ -317,10 +289,9 @@ class SystemController extends BaseController
      */
     public function clearAllCache() : Response
     {
-        $userInfoCache = new UserInfoCache($this->adminId);
-        $userInfoCache->clearUserInfo();
-        $userAuthCache = new UserAuthCache($this->adminId);
-        $userAuthCache->clearUserCache();
+        UserInfoCache::clearUserInfo($this->adminId);
+        UserAuthCache::clearUserAuth($this->adminId);
+        UserMenuCache::clearUserMenu($this->adminId);
         return $this->success([], '清除缓存成功!');
     }
 
