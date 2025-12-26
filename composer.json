@@ -6,6 +6,7 @@
     "require": {
         "php": ">=8.1",
         "webman/think-orm": "^2.1",
+        "webman/think-cache": "^2.1",
         "webman/cache": "^2.1",
         "webman/redis": "^2.1",
         "webman/captcha": "^1.0",
