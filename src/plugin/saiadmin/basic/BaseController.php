@@ -53,10 +53,9 @@ class BaseController extends OpenController
         $isLogin = request()->header('check_login', false);
         if ($isLogin) {
             $result = request()->header('check_admin');
-            $userInfoCache = new UserInfoCache($result['id']);
             $this->adminId = $result['id'];
             $this->adminName = $result['username'];
-            $this->adminInfo = $userInfoCache->getUserInfo();
+            $this->adminInfo = UserInfoCache::getUserInfo($this->adminId);
 
             // 用户数据传递给逻辑层
             $this->logic && $this->logic->init($this->adminInfo);
