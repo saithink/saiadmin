@@ -1,115 +1,143 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | saiadmin [ saiadmin快速开发框架 ]
 // +----------------------------------------------------------------------
 // | Author: sai <1430792918@qq.com>
 // +----------------------------------------------------------------------
+
 namespace plugin\saiadmin\app\cache;
 
-use support\Cache;
 use plugin\saiadmin\app\logic\system\SystemMenuLogic;
+use plugin\saiadmin\app\model\system\SystemUserRole;
+use support\think\Cache;
 
 /**
  * 用户权限缓存
  */
 class UserAuthCache
 {
-    private string $prefix = 'user_auth_'; // 缓存前缀
-    private array $authCodeList = [];      // 全部权限列表
-    private string $cacheMd5Key = '';      // 权限文件MD5的key
-    private string $cacheAllKey = '';      // 全部权限的key
-    private string $cacheUrlKey = '';      // 管理员的url缓存key
-    private string $authMd5 = '';          // 权限文件MD5的值
-    private string $adminId = '';          // 管理员id
-
     /**
-     * 初始化
-     * @param string $adminId
+     * 读取缓存配置
+     * @return array
      */
-    public function __construct(string $adminId = '')
+    public static function cacheConfig(): array
     {
-        $this->adminId = $adminId;
-
-        // 全部权限
-        $this->authCodeList = (new SystemMenuLogic())->getAllCode();
-        // 当前权限配置文件的md5
-        $this->authMd5 = md5(json_encode($this->authCodeList));
-
-        $this->cacheMd5Key = $this->prefix . 'md5';
-        $this->cacheAllKey = $this->prefix . 'all';
-        $this->cacheUrlKey = $this->prefix . 'url_' . $this->adminId;
-
-        $cacheAuthMd5 = Cache::get($this->cacheMd5Key);
-        $cacheAuth = Cache::get($this->cacheAllKey);
-
-        //权限配置和缓存权限对比，不一样说明权限配置文件已修改，清理缓存
-        if ($this->authMd5 !== $cacheAuthMd5 || empty($cacheAuth)) {
-            Cache::deleteMultiple([
-                $this->cacheMd5Key,
-                $this->cacheAllKey,
-                $this->cacheUrlKey
-            ]);
-        }
+        return config('plugin.saiadmin.saithink.button_cache', [
+            'prefix' => 'saiadmin:button_cache:user_',
+            'expire' => 60 * 60 * 2,
+            'all' => 'saiadmin:button_cache:all',
+            'role' => 'saiadmin:button_cache:role_',
+            'tag' => 'saiadmin:button_cache',
+        ]);
     }
 
     /**
-     * 获取全部权限uri
+     * 获取用户的权限
      */
-    public function getAllUri()
+    public static function getUserAuth($uid): array
     {
-        // 从缓存获取，直接返回
-        $cacheAuth = Cache::get($this->cacheAllKey);
-        if ($cacheAuth) {
-            return $cacheAuth;
+        if (empty($uid)) {
+            return [];
+        }
+        $cache = static::cacheConfig();
+        // 直接从缓存获取
+        $auth = Cache::get($cache['prefix'] . $uid);
+        if ($auth) {
+            return $auth;
         }
 
-        // 获取全部权限
-        $authList = (new SystemMenuLogic)->getAllCode();
+        // 设置权限并返回
+        $auth = static::setUserAuth($uid);
+        if ($auth) {
+            return $auth;
+        }
 
-        // 保存到缓存并读取返回
-        Cache::set($this->cacheMd5Key, $this->authMd5);
-        Cache::set($this->cacheAllKey, $authList);
-        return $authList;
+        return [];
     }
 
     /**
-     * 获取管理权限uri
+     * 设置用户的权限
      */
-    public function getAdminUri()
+    public static function setUserAuth($uid): array
     {
         // 从缓存获取，直接返回
-        $urisAuth = Cache::get($this->cacheUrlKey);
-        if ($urisAuth) {
-            return $urisAuth;
-        }
+        $roleIds = SystemUserRole::where('user_id', $uid)->column('role_id');
 
-        // 获取角色关联的菜单id(菜单或权限)
-        $urisAuth = (new SystemMenuLogic)->getAuthByAdminId($this->adminId);
-        if (empty($urisAuth)) {
+        // 获取角色关联的菜单权限
+        $data = (new SystemMenuLogic())->getAuthByRole($roleIds);
+        if (empty($data)) {
             return [];
         }
 
+        $cache = static::cacheConfig();
+
+        $tag = [];
+        $tag[] = $cache['tag'];
+        if (!empty($roleIds)) {
+            foreach ($roleIds as $role) {
+                $tag[] = $cache['role'] . $role;
+            }
+        }
+
         // 保存到缓存
-        Cache::set($this->cacheUrlKey, $urisAuth, 3600);
-        return $urisAuth;
+        Cache::tag($tag)->set($cache['prefix'] . $uid, $data, $cache['expire']);
+        return $data;
     }
 
     /**
-     * 清理用户权限缓存
+     * 获取全部权限
      */
-    public function clearUserCache(): bool
+    public static function getAllAuth(): array
     {
-        Cache::delete($this->cacheUrlKey);
-        return true;
+        $cache = static::cacheConfig();
+        // 直接从缓存获取
+        $auth = Cache::get($cache['all']);
+        if ($auth) {
+            return $auth;
+        }
+
+        $all = (new SystemMenuLogic())->getAllCode();
+
+        // 设置权限并返回
+        Cache::tag($cache['tag'])->set($cache['all'], $all, $cache['expire']);
+
+        return $all;
     }
 
     /**
      * 清理缓存
      */
-    public function clearAuthCache(): bool
+    public static function clearUserAuth($uid): bool
     {
-        Cache::delete($this->cacheAllKey);
-        return true;
+        $cache = static::cacheConfig();
+        return Cache::delete($cache['prefix'] . $uid);
     }
 
+    /**
+     * 清理角色缓存
+     */
+    public static function clearUserAuthByRoleId($role_id): bool
+    {
+        $cache = static::cacheConfig();
+        if (is_array($role_id)) {
+            $tags = [];
+            foreach ($role_id as $id) {
+                $tags[] = $cache['role'] . $id;
+            }
+        } else {
+            $tags = $cache['role'] . $role_id;
+        }
+        return Cache::tag($tags)->clear();
+    }
+
+    /**
+     * 清理所有用户缓存
+     * @return bool
+     */
+    public static function clear(): bool
+    {
+        $cache = static::cacheConfig();
+        return Cache::tag($cache['tag'])->clear();
+    }
 }

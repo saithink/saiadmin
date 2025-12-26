@@ -7,70 +7,142 @@
 namespace plugin\saiadmin\app\cache;
 
 use plugin\saiadmin\app\model\system\SystemUser;
-use support\Cache;
+use support\think\Cache;
 
 /**
  * 用户信息缓存
  */
 class UserInfoCache
 {
-    private string $prefix = 'user_info_';   // 缓存前置
-    private string $cacheUserKey = '';       // 管理员缓存key
-
-    private string $adminId = '';            // 管理员id
-
     /**
-     * 初始化
-     * @param string $adminId
+     * 读取缓存配置
+     * @return array
      */
-    public function __construct(string $adminId = '')
+    public static function cacheConfig(): array
     {
-        $this->adminId = $adminId;
-        $this->cacheUserKey = $this->prefix  . $this->adminId;
+        return config('plugin.saiadmin.saithink.user_cache', [
+            'prefix' => 'saiadmin:user_cache:info_',
+            'expire' => 60 * 60 * 4,
+            'dept' => 'saiadmin:user_cache:dept_',
+            'role' => 'saiadmin:user_cache:role_',
+            'post' => 'saiadmin:user_cache:post_',
+        ]);
     }
 
     /**
      * 通过id获取缓存管理员信息
      */
-    public function getUserInfo()
+    public static function getUserInfo($uid): array
     {
+        if (empty($uid)) {
+            return [];
+        }
+        $cache = static::cacheConfig();
         // 直接从缓存获取
-        $adminInfo = Cache::get($this->cacheUserKey);
+        $adminInfo = Cache::get($cache['prefix'] . $uid);
+
         if ($adminInfo) {
             return $adminInfo;
         }
 
-        // 获取信息并返回
-        $adminInfo = $this->setUserInfo();
+        // 获取缓存信息并返回
+        $adminInfo = static::setUserInfo($uid);
         if ($adminInfo) {
             return $adminInfo;
         }
 
-        return false;
+        return [];
     }
 
     /**
      * 设置管理员信息
      */
-    public function setUserInfo(): array
+    public static function setUserInfo($uid): array
     {
-        $admin = SystemUser::where('id', $this->adminId)->findOrEmpty();
+        $admin = SystemUser::where('id', $uid)->findOrEmpty();
         $data = $admin->hidden(['password'])->toArray();
         $data['roleList'] = $admin->roles->toArray() ?: [];
         $data['postList'] = $admin->posts->toArray() ?: [];
         $data['deptList'] = $admin->depts ? $admin->depts->toArray() : [];
-        // 保存到缓存
-        Cache::set($this->cacheUserKey, $data, 3600);
+
+        $cache = static::cacheConfig();
+
+        $tags = [];
+        if (!empty($data['deptList'])) {
+            $tags[] = $cache['dept'] . $data['deptList']['id'];
+        }
+        if (!empty($data['roleList'])) {
+            foreach ($data['roleList'] as $role) {
+                $tags[] = $cache['role'] . $role['id'];
+            }
+        }
+        if (!empty($data['postList'])) {
+            foreach ($data['postList'] as $post) {
+                $tags[] = $cache['post'] . $post['id'];
+            }
+        }
+        Cache::tag($tags)->set($cache['prefix'] . $uid, $data, $cache['expire']);
         return $data;
     }
 
     /**
      * 清理管理员信息缓存
      */
-    public function clearUserInfo(): bool
+    public static function clearUserInfo($uid): bool
     {
-        Cache::delete($this->cacheUserKey);
-        return true;
+        $cache = static::cacheConfig();
+        return Cache::delete($cache['prefix'] . $uid);
+    }
+
+    /**
+     * 清理部门下所有用户缓存
+     */
+    public static function clearUserInfoByDeptId($dept_id): bool
+    {
+        $cache = static::cacheConfig();
+        if (is_array($dept_id)) {
+            $tags = [];
+            foreach ($dept_id as $id) {
+                $tags[] = $cache['dept'] . $id;
+            }
+        } else {
+            $tags = $cache['dept'] . $dept_id;
+        }
+        return Cache::tag($tags)->clear();
+    }
+
+    /**
+     * 清理角色下所有用户缓存
+     */
+    public static function clearUserInfoByRoleId($role_id): bool
+    {
+        $cache = static::cacheConfig();
+        if (is_array($role_id)) {
+            $tags = [];
+            foreach ($role_id as $id) {
+                $tags[] = $cache['role'] . $id;
+            }
+        } else {
+            $tags = $cache['role'] . $role_id;
+        }
+        return Cache::tag($tags)->clear();
+    }
+
+    /**
+     * 清理岗位下所有用户缓存
+     */
+    public static function clearUserInfoByPostId($post_id): bool
+    {
+        $cache = static::cacheConfig();
+        if (is_array($post_id)) {
+            $tags = [];
+            foreach ($post_id as $id) {
+                $tags[] = $cache['post'] . $id;
+            }
+        } else {
+            $tags = $cache['post'] . $post_id;
+        }
+        return Cache::tag($tags)->clear();
     }
 
 }
