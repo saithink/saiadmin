@@ -5,12 +5,11 @@
 // | Author: sai <1430792918@qq.com>
 // +----------------------------------------------------------------------
 use Webman\Route;
-use support\Cache;
 use support\Response;
 use Tinywan\Jwt\JwtToken;
 use plugin\saiadmin\exception\ApiException;
-use plugin\saiadmin\app\model\system\SystemDictData;
-use plugin\saiadmin\app\logic\system\SystemConfigLogic;
+use plugin\saiadmin\app\cache\ConfigCache;
+use plugin\saiadmin\app\cache\DictCache;
 
 if (!function_exists('getCurrentInfo')) {
     /**
@@ -92,8 +91,7 @@ if (!function_exists('getConfigGroup')) {
      */
     function getConfigGroup($group): mixed
     {
-        $logic = new SystemConfigLogic();
-        return $logic->getGroup($group);
+        return ConfigCache::getConfig($group);
     }
 }
 
@@ -105,15 +103,7 @@ if (!function_exists('dictDataList')) {
      */
     function dictDataList(string $code): array
     {
-        $data = Cache::get($code);
-        if ($data) {
-            return $data;
-        }
-        $model = new SystemDictData;
-        $query = $model->where('status', 1)->where('code', $code)->field('id, label, value')->order('sort desc');
-        $data = $query->select()->toArray();
-        Cache::set($code, $data);
-        return $data;
+        return DictCache::getDict($code);
     }
 }
 
