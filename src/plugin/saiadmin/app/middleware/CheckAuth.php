@@ -49,16 +49,14 @@ class CheckAuth implements MiddlewareInterface
             $path = $replace[$path];
         }
         $path = strtolower($path);
-
-        // 用户权限缓存
-        $userAuthCache = new UserAuthCache($token['id']);
-
+        
         // 全部路由文件
-        $routes = $this->formatUrl($userAuthCache->getAllUri());
+        $routes = $this->formatUrl(UserAuthCache::getAllAuth());
         // 请求接口有权限配置则进行验证
         if (in_array($path, $routes)) {
 
-            $allowCodes = $userAuthCache->getAdminUri() ?? [];
+            // 用户权限缓存
+            $allowCodes = UserAuthCache::getUserAuth($token['id']) ?? [];
             $allowCodes = $this->formatUrl($allowCodes);
             if (!in_array($path, $allowCodes)) {
                 throw new SystemException('权限不足，无法访问或操作');

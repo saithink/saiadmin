@@ -9,7 +9,7 @@ namespace plugin\saiadmin\app\controller\system;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemDictTypeLogic;
 use plugin\saiadmin\app\validate\system\SystemDictTypeValidate;
-use support\Cache;
+use plugin\saiadmin\app\cache\DictCache;
 use support\Request;
 use support\Response;
 
@@ -75,15 +75,8 @@ class SystemDictTypeController extends BaseController
      */
     protected function afterChange($type, $args): void
     {
-        if (in_array($type, ['save', 'update'])) {
-            Cache::delete(request()->input('code'));
-        }
-        if ($type === 'changeStatus') {
-            $id = request()->input('id', '');
-            $info = $this->logic->findOrEmpty($id);
-            if (!$info->isEmpty()) {
-                Cache::delete($info->code);
-            }
+        if (in_array($type, ['save', 'update', 'destroy', 'changeStatus'])) {
+            DictCache::clear();
         }
     }
 

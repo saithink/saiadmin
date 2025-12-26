@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\controller\system;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemMenuLogic;
 use plugin\saiadmin\app\validate\system\SystemMenuValidate;
+use plugin\saiadmin\app\cache\UserMenuCache;
 use support\Request;
 use support\Response;
 
@@ -58,6 +59,19 @@ class SystemMenuController extends BaseController
             $data = $this->logic->tree($where);
         }
         return $this->success($data);
+    }
+
+    /**
+     * 数据改变后执行
+     * @param $type
+     * @param $args
+     * @return void
+     */
+    protected function afterChange($type, $args): void
+    {
+        if (in_array($type, ['save', 'update', 'destroy'])) {
+            UserMenuCache::clearMenuCache();
+        }
     }
 
 }

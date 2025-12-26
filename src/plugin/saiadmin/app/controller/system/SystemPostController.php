@@ -7,7 +7,6 @@
 namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\app\cache\UserInfoCache;
-use plugin\saiadmin\app\model\system\SystemUserPost;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemPostLogic;
 use plugin\saiadmin\app\validate\system\SystemPostValidate;
@@ -80,23 +79,13 @@ class SystemPostController extends BaseController
         // 批量清理用户缓存
         if ($type == 'update') {
             $post_id = request()->input('id', '');
-            $userIds = SystemUserPost::where('post_id', $post_id)->column('user_id');
-            $userIds = array_unique($userIds);
-            foreach ($userIds as $userId) {
-                $userInfoCache = new UserInfoCache($userId);
-                $userInfoCache->clearUserInfo();
-            }
+            // 清理岗位下所有用户缓存
+            UserInfoCache::clearUserInfoByPostId($post_id);
         }
         if ($type == 'destroy') {
             $post_ids = request()->input('ids', '');
-            if (is_array($post_ids)) {
-                $userIds = SystemUserPost::whereIn('post_id', $post_ids)->column('user_id');
-                $userIds = array_unique($userIds);
-                foreach ($userIds as $userId) {
-                    $userInfoCache = new UserInfoCache($userId);
-                    $userInfoCache->clearUserInfo();
-                }
-            }
+            // 清理岗位下所有用户缓存
+            UserInfoCache::clearUserInfoByPostId($post_ids);
         }
     }
 

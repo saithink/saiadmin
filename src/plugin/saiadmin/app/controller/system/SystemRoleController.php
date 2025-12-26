@@ -6,10 +6,8 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\controller\system;
 
-use plugin\saiadmin\app\model\system\SystemUserRole;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\cache\UserInfoCache;
-use plugin\saiadmin\app\model\system\SystemUser;
 use plugin\saiadmin\app\validate\system\SystemRoleValidate;
 use plugin\saiadmin\app\logic\system\SystemRoleLogic;
 use support\Request;
@@ -94,23 +92,13 @@ class SystemRoleController extends BaseController
         // 批量清理用户缓存
         if ($type == 'update') {
             $role_id = request()->input('id', '');
-            $userIds = SystemUserRole::where('role_id', $role_id)->column('user_id');
-            $userIds = array_unique($userIds);
-            foreach ($userIds as $userId) {
-                $userInfoCache = new UserInfoCache($userId);
-                $userInfoCache->clearUserInfo();
-            }
+            // 清理角色下所有用户缓存
+            UserInfoCache::clearUserInfoByRoleId($role_id);
         }
         if ($type == 'destroy') {
             $role_ids = request()->input('ids', '');
-            if (is_array($role_ids)) {
-                $userIds = SystemUserRole::whereIn('role_id', $role_ids)->column('user_id');
-                $userIds = array_unique($userIds);
-                foreach ($userIds as $userId) {
-                    $userInfoCache = new UserInfoCache($userId);
-                    $userInfoCache->clearUserInfo();
-                }
-            }
+            // 清理角色下所有用户缓存
+            UserInfoCache::clearUserInfoByRoleId($role_ids);
         }
     }
 

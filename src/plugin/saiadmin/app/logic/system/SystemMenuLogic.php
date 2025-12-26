@@ -145,13 +145,12 @@ class SystemMenuLogic extends BaseLogic
     }
 
     /**
-     * 根据管理员id获取权限
-     * @param $id
+     * 根据角色获取权限
+     * @param $roleIds
      * @return array
      */
-    public function getAuthByAdminId($id): array
+    public function getAuthByRole($roleIds): array
     {
-        $roleIds = SystemUserRole::where('user_id', $id)->column('role_id');
         $menuId = SystemRoleMenu::whereIn('role_id', $roleIds)->column('menu_id');
 
         return SystemMenu::distinct(true)
@@ -162,13 +161,12 @@ class SystemMenuLogic extends BaseLogic
     }
 
     /**
-     * 根据管理员id获取菜单
-     * @param $id
+     * 根据角色获取菜单
+     * @param $roleIds
      * @return array
      */
-    public function getRoutersByAdminId($id): array
+    public function getMenuByRole($roleIds): array
     {
-        $roleIds = SystemUserRole::where('user_id', $id)->column('role_id');
         $menuId = SystemRoleMenu::whereIn('role_id', $roleIds)->column('menu_id');
 
         $data = SystemMenu::distinct(true)

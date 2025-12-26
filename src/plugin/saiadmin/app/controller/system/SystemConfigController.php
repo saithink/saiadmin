@@ -10,7 +10,7 @@ use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemConfigLogic;
 use plugin\saiadmin\app\logic\system\SystemConfigGroupLogic;
 use plugin\saiadmin\app\validate\system\SystemConfigValidate;
-use support\Cache;
+use plugin\saiadmin\app\cache\ConfigCache;
 use support\Request;
 use support\Response;
 
@@ -71,7 +71,7 @@ class SystemConfigController extends BaseController
             ];
         }
         $this->logic->saveAll($saveData);
-        Cache::set('cfg_'.$group->code, $saveData);
+        ConfigCache::clearConfig($group->code);
         return $this->success('操作成功');
     }
 
@@ -87,7 +87,7 @@ class SystemConfigController extends BaseController
             $groupLogic = new SystemConfigGroupLogic();
             $group = $groupLogic->findOrEmpty(request()->input('group_id'));
             if (!$group->isEmpty()) {
-                Cache::delete('cfg_' . $group['code']);
+                ConfigCache::clearConfig($group->code);
             }
         }
     }

@@ -7,6 +7,8 @@
 namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\cache\UserAuthCache;
+use plugin\saiadmin\app\cache\UserInfoCache;
+use plugin\saiadmin\app\cache\UserMenuCache;
 use plugin\saiadmin\app\model\system\SystemRole;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
@@ -231,7 +233,9 @@ class SystemRoleLogic extends BaseLogic
                 }, $menu_ids);
                 Db::table('sa_system_role_menu')->limit(100)->insertAll($data);
             }
-            (new UserAuthCache($this->adminInfo['id']))->clearAuthCache();
+            UserInfoCache::clearUserInfoByRoleId($id);
+            UserAuthCache::clearUserAuthByRoleId($id);
+            UserMenuCache::clearMenuCache();
             return true;
         });
     }

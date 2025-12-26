@@ -7,8 +7,9 @@
 namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\app\cache\UserAuthCache;
-use plugin\saiadmin\basic\BaseController;
+use plugin\saiadmin\app\cache\UserMenuCache;
 use plugin\saiadmin\app\cache\UserInfoCache;
+use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemUserLogic;
 use plugin\saiadmin\app\validate\system\SystemUserValidate;
 use support\Request;
@@ -68,7 +69,7 @@ class SystemUserController extends BaseController
         }
         $result = $model->save(['status' => $status]);
         if ($result) {
-            $this->afterChange('changeStatus', $model);
+            UserInfoCache::clearUserInfo($id);
             return $this->success('操作成功');
         } else {
             return $this->fail('操作失败');
@@ -88,10 +89,7 @@ class SystemUserController extends BaseController
         unset($data['roleList']);
         $result = $this->logic->update($data, ['id' => $this->adminId], ['nickname', 'phone', 'signed', 'email', 'avatar', 'backend_setting']);
         if ($result) {
-            $userInfoCache = new UserInfoCache($this->adminId);
-            $userInfoCache->clearUserInfo();
-            $userAuthCache = new UserAuthCache($this->adminId);
-            $userAuthCache->clearUserCache();
+            UserInfoCache::clearUserInfo($this->adminId);
             return $this->success('操作成功');
         } else {
             return $this->fail('操作失败');
@@ -108,10 +106,7 @@ class SystemUserController extends BaseController
         $oldPassword = $request->input('oldPassword');
         $newPassword = $request->input('newPassword');
         $this->logic->modifyPassword($this->adminId, $oldPassword, $newPassword);
-        $userInfoCache = new UserInfoCache($this->adminId);
-        $userInfoCache->clearUserInfo();
-        $userAuthCache = new UserAuthCache($this->adminId);
-        $userAuthCache->clearUserCache();
+        UserInfoCache::clearUserInfo($this->adminId);
         return $this->success('修改成功');
     }
 
@@ -123,10 +118,9 @@ class SystemUserController extends BaseController
     public function clearCache(Request $request) : Response
     {
         $id = $request->post('id', '');
-        $userInfoCache = new UserInfoCache($id);
-        $userInfoCache->clearUserInfo();
-        $userAuthCache = new UserAuthCache($id);
-        $userAuthCache->clearUserCache();
+        UserInfoCache::clearUserInfo($id);
+        UserAuthCache::clearUserAuth($id);
+        UserMenuCache::clearUserMenu($id);
         return $this->success('操作成功');
     }
 
@@ -143,10 +137,7 @@ class SystemUserController extends BaseController
         }
         $data = ['password' => password_hash('sai123456', PASSWORD_DEFAULT)];
         $this->logic->authEdit($id, $data);
-        $userInfoCache = new UserInfoCache($id);
-        $userInfoCache->clearUserInfo();
-        $userAuthCache = new UserAuthCache($id);
-        $userAuthCache->clearUserCache();
+        UserInfoCache::clearUserInfo($id);
         return $this->success('操作成功');
     }
 
@@ -161,10 +152,7 @@ class SystemUserController extends BaseController
         $dashboard = $request->post('dashboard', '');
         $data = ['dashboard' => $dashboard];
         $this->logic->authEdit($id, $data);
-        $userInfoCache = new UserInfoCache($id);
-        $userInfoCache->clearUserInfo();
-        $userAuthCache = new UserAuthCache($id);
-        $userAuthCache->clearUserCache();
+        UserInfoCache::clearUserInfo($id);
         return $this->success('操作成功');
     }
 }

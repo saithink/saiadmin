@@ -10,7 +10,7 @@ use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemConfigGroupLogic;
 use plugin\saiadmin\app\validate\system\SystemConfigGroupValidate;
 use plugin\saiadmin\utils\Arr;
-use support\Cache;
+use plugin\saiadmin\app\cache\ConfigCache;
 use support\Request;
 use support\Response;
 use plugin\saiadmin\service\EmailService;
@@ -100,7 +100,7 @@ class SystemConfigGroupController extends BaseController
     protected function afterChange($type, $args): void
     {
         if (in_array($type, ['save', 'update'])) {
-            Cache::delete('cfg_' . request()->input('code'));
+            ConfigCache::clearConfig(request()->input('code'));
         }
     }
 

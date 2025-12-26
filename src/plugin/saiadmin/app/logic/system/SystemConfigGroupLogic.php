@@ -10,7 +10,7 @@ use plugin\saiadmin\app\model\system\SystemConfigGroup;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemConfig;
-use support\Cache;
+use plugin\saiadmin\app\cache\ConfigCache;
 use think\facade\Db;
 
 /**
@@ -45,7 +45,7 @@ class SystemConfigGroupLogic extends BaseLogic
             // 删除配置组数据
             $typeIds = SystemConfig::where('group_id', $ids)->column('id');
             SystemConfig::destroy($typeIds);
-            Cache::delete('cfg_' . $model->code);
+            ConfigCache::clearConfig($model->code);
             Db::commit();
             return true;
         } catch (\Exception $e) {

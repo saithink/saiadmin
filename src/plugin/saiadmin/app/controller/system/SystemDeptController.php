@@ -7,7 +7,6 @@
 namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\app\cache\UserInfoCache;
-use plugin\saiadmin\app\model\system\SystemUser;
 use plugin\saiadmin\app\validate\system\SystemDeptValidate;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemDeptLogic;
@@ -57,21 +56,13 @@ class SystemDeptController extends BaseController
         // 批量清理用户缓存
         if ($type == 'update') {
             $dept_id = request()->input('id', '');
-            $userIds = SystemUser::where('dept_id', $dept_id)->column('id');
-            foreach ($userIds as $userId) {
-                $userInfoCache = new UserInfoCache($userId);
-                $userInfoCache->clearUserInfo();
-            }
+            // 清理部门下所有用户缓存
+            UserInfoCache::clearUserInfoByDeptId($dept_id);
         }
         if ($type == 'destroy') {
             $dept_ids = request()->input('ids', '');
-            if (is_array($dept_ids)) {
-                $userIds = SystemUser::whereIn('dept_id', $dept_ids)->column('id');
-                foreach ($userIds as $userId) {
-                    $userInfoCache = new UserInfoCache($userId);
-                    $userInfoCache->clearUserInfo();
-                }
-            }
+            // 清理部门下所有用户缓存
+            UserInfoCache::clearUserInfoByDeptId($dept_ids);
         }
     }
 

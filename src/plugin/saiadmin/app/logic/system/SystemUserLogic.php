@@ -6,6 +6,8 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\logic\system;
 
+use plugin\saiadmin\app\cache\UserAuthCache;
+use plugin\saiadmin\app\cache\UserMenuCache;
 use plugin\saiadmin\app\cache\UserInfoCache;
 use plugin\saiadmin\app\model\system\SystemDept;
 use plugin\saiadmin\app\model\system\SystemRole;
@@ -135,8 +137,9 @@ class SystemUserLogic extends BaseLogic
                 if (!empty($post_ids)) {
                     $user->posts()->save($post_ids);
                 }
-                $userInfoCache = new UserInfoCache($id);
-                $userInfoCache->clearUserInfo();
+                UserInfoCache::clearUserInfo($id);
+                UserAuthCache::clearUserAuth($id);
+                UserMenuCache::clearUserMenu($id);
             }
             return $result;
         });
@@ -166,8 +169,9 @@ class SystemUserLogic extends BaseLogic
         if ($user->isEmpty()) {
             throw new ApiException('没有权限操作该数据');
         }
-        $userInfoCache = new UserInfoCache($ids);
-        $userInfoCache->clearUserInfo();
+        UserInfoCache::clearUserInfo($ids);
+        UserAuthCache::clearUserAuth($ids);
+        UserMenuCache::clearUserMenu($ids);
         parent::destroy($ids);
     }
 

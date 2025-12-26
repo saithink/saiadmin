@@ -9,8 +9,7 @@ namespace plugin\saiadmin\app\logic\system;
 use plugin\saiadmin\basic\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemConfig;
-use plugin\saiadmin\app\model\system\SystemConfigGroup;
-use support\Cache;
+use plugin\saiadmin\app\cache\ConfigCache;
 use plugin\saiadmin\utils\Helper;
 
 /**
@@ -31,18 +30,7 @@ class SystemConfigLogic extends BaseLogic
      */
     public function getGroup($config)
     {
-        $prefix = 'cfg_';
-        $data = Cache::get($prefix . $config);
-        if (!is_null($data)) {
-            return $data;
-        }
-        $group = SystemConfigGroup::where('code', $config)->findOrEmpty();
-        if ($group->isEmpty()) {
-            throw new ApiException('配置组不存在');
-        }
-        $info = $this->model->where('group_id', $group->id)->select();
-        Cache::set($prefix . $config, $info->toArray());
-        return $info;
+        return ConfigCache::getConfig($config);
     }
 
 }
