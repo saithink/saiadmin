@@ -73,7 +73,7 @@ class DictCache
         $dict = static::packageDict($data, 'code');
 
         Cache::set($cache['tag'], $dict, $cache['expire']);
-        return $data;
+        return $dict;
     }
 
     /**
