@@ -3,11 +3,11 @@
 </p>
 <p align="center">
   <img src="https://svg.hamm.cn/badge.svg?key=License&value=MIT" />
-  <img src="https://svg.hamm.cn/badge.svg?key=Version&value=5.x" />
+  <img src="https://svg.hamm.cn/badge.svg?key=Version&value=6.x" />
 </p>
 
 <div style="padding:18px;max-width: 1024px;margin:0 auto;">
-<h1>SaiAdmin 5.x</h1>
+<h1>SaiAdmin 6.x</h1>
 
 基于<a href="https://www.workerman.net/doc/webman/" target="_blank">webman</a>(高性能HTTP服务框架)开箱即用的高质量中后台管理系统
 
@@ -65,20 +65,11 @@ composer require saithink/saiadmin
   <li>
     <a href="https://saithink.top" target="_blank">主页 / Home page</a>
   </li>
-  <li>
-    <a href="https://saithink.top/install/boot.html" target="_blank">快速安装 / install</a>
-  </li>
-  <li>
-    <a href="https://saithink.top/documents/v5/front/route.html" target="_blank">开发文档 / document</a>
-  </li>
-  <li>
-    <a href="https://saithink.top/question/" target="_blank">常见问题 / Question</a>
-  </li>
 </ul>
 
 
 <h1>演示地址</h1>
-<p>演示地址： <a href="http://admin.saithink.top">http://admin.saithink.top</a></p>
+<p>演示地址： <a href="http://v6.saithink.top">http://v6.saithink.top</a></p>
 <p>演示账号：admin</p>
 <p>演示密码：123456</p>
 
