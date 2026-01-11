@@ -11,6 +11,9 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use plugin\saiadmin\exception\ApiException;
 
+// 定义目录分隔符常量
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+
 /**
  * 代码生成引擎
  */
@@ -34,8 +37,8 @@ class CodeEngine
     private static function _getConfig(): array
     {
         return [
-            'template_path' => base_path().DIRECTORY_SEPARATOR.'plugin'.DIRECTORY_SEPARATOR.'saiadmin'.DIRECTORY_SEPARATOR.'utils'.DIRECTORY_SEPARATOR.'code'.DIRECTORY_SEPARATOR.'stub',
-            'generate_path' => runtime_path().DIRECTORY_SEPARATOR.'code_engine'.DIRECTORY_SEPARATOR.'saiadmin',
+            'template_path' => base_path() . DS . 'plugin' . DS . 'saiadmin' . DS . 'utils' . DS . 'code' . DS . 'stub',
+            'generate_path' => runtime_path() . DS . 'code_engine' . DS . 'saiadmin',
         ];
     }
 
@@ -77,7 +80,7 @@ class CodeEngine
     {
         $config = self::_getConfig();
 
-        $path = $config['template_path'].DIRECTORY_SEPARATOR.$this->stub.DIRECTORY_SEPARATOR.$path;
+        $path = $config['template_path'] . DS . $this->stub . DS . $path;
 
         $loader = new FilesystemLoader($path);
         $twig = new Environment($loader);
@@ -98,7 +101,7 @@ class CodeEngine
             }
         });
         $formatFilter = new TwigFilter('formatNumber', function ($value) {
-            if (ctype_digit((string)$value)) {
+            if (ctype_digit((string) $value)) {
                 return $value;
             } else {
                 return '1';
@@ -131,27 +134,26 @@ class CodeEngine
     {
         $outPath = '';
         if ($this->value['template'] == 'app') {
-            $rootPath = base_path() . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . $this->value['namespace'];
+            $rootPath = base_path() . DS . 'app' . DS . $this->value['namespace'];
+            $adminPath = '';
 
         } else {
-            $rootPath = base_path() . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . $this->value['namespace'] . DIRECTORY_SEPARATOR . 'app';
+            $rootPath = base_path() . DS . 'plugin' . DS . $this->value['namespace'] . DS . 'app';
+            $adminPath = DS . 'admin';
         }
-        $subPath = '';
-        if (!empty($this->value['package_name'])) {
-            $subPath = DIRECTORY_SEPARATOR . $this->value['package_name'];
-        }
+        $subPath = DS . $this->value['package_name'];
         switch ($action) {
             case 'controller':
-                $outPath = $rootPath . DIRECTORY_SEPARATOR . 'controller' . $subPath . DIRECTORY_SEPARATOR . $this->value['class_name'] . 'Controller.php';
+                $outPath = $rootPath . $adminPath . DS . 'controller' . $subPath . DS . $this->value['class_name'] . 'Controller.php';
                 break;
             case 'logic':
-                $outPath = $rootPath . DIRECTORY_SEPARATOR . 'logic' . $subPath . DIRECTORY_SEPARATOR . $this->value['class_name'] . 'Logic.php';
-                break;
-            case 'model':
-                $outPath = $rootPath . DIRECTORY_SEPARATOR . 'model' . $subPath . DIRECTORY_SEPARATOR . $this->value['class_name'] . '.php';
+                $outPath = $rootPath . $adminPath . DS . 'logic' . $subPath . DS . $this->value['class_name'] . 'Logic.php';
                 break;
             case 'validate':
-                $outPath = $rootPath . DIRECTORY_SEPARATOR . 'validate' . $subPath . DIRECTORY_SEPARATOR . $this->value['class_name'] . 'Validate.php';
+                $outPath = $rootPath . $adminPath . DS . 'validate' . $subPath . DS . $this->value['class_name'] . 'Validate.php';
+                break;
+            case 'model':
+                $outPath = $rootPath . DS . 'model' . $subPath . DS . $this->value['class_name'] . '.php';
                 break;
             default:
                 break;
@@ -172,25 +174,28 @@ class CodeEngine
      */
     public function generateFrontend($action, $content): void
     {
-        $rootPath = dirname(base_path()) . DIRECTORY_SEPARATOR . $this->value['generate_path'];
+        $rootPath = dirname(base_path()) . DS . $this->value['generate_path'];
         if (!is_dir($rootPath)) {
             throw new ApiException('前端目录查找失败，必须与后端目录为同级目录！');
         }
 
-        $rootPath = $rootPath . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->value['namespace'];
+        $rootPath = $rootPath . DS . 'src' . DS . 'views' . DS . 'plugin' . DS . $this->value['namespace'];
         $subPath = '';
         if (!empty($this->value['package_name'])) {
-            $subPath = DIRECTORY_SEPARATOR . $this->value['package_name'];
+            $subPath = DS . $this->value['package_name'];
         }
         switch ($action) {
             case 'index':
-                $outPath = $rootPath . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name'] . DIRECTORY_SEPARATOR . 'index.vue';
+                $outPath = $rootPath . $subPath . DS . $this->value['business_name'] . DS . 'index.vue';
                 break;
-            case 'edit':
-                $outPath = $rootPath . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name'] . DIRECTORY_SEPARATOR . 'edit.vue';
+            case 'edit-dialog':
+                $outPath = $rootPath . $subPath . DS . $this->value['business_name'] . DS . 'modules' . DS . 'edit-dialog.vue';
+                break;
+            case 'table-search':
+                $outPath = $rootPath . $subPath . DS . $this->value['business_name'] . DS . 'modules' . DS . 'table-search.vue';
                 break;
             case 'api':
-                $outPath = $rootPath . DIRECTORY_SEPARATOR . 'api' . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name'] . '.js';
+                $outPath = $rootPath . DS . 'api' . $subPath . DS . $this->value['business_name'] . '.ts';
                 break;
             default:
                 break;
@@ -214,56 +219,62 @@ class CodeEngine
         $config = self::_getConfig();
         $rootPath = $config['generate_path'];
 
-        $vuePath = $rootPath . DIRECTORY_SEPARATOR . 'vue' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->value['namespace'];
-        $phpPath = $rootPath . DIRECTORY_SEPARATOR . 'php';
-        $sqlPath = $rootPath . DIRECTORY_SEPARATOR . 'sql';
+        $vuePath = $rootPath . DS . 'vue' . DS . 'src' . DS . 'views' . DS . 'plugin' . DS . $this->value['namespace'];
+        $phpPath = $rootPath . DS . 'php';
+        $sqlPath = $rootPath . DS . 'sql';
         if ($this->value['template'] == 'app') {
-            $phpPath = $phpPath . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . $this->value['namespace'];
-
+            $phpPath = $phpPath . DS . 'app' . DS . $this->value['namespace'];
+            $adminPath = '';
         } else {
-            $phpPath = $phpPath . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . $this->value['namespace'] . DIRECTORY_SEPARATOR . 'app';
+            $phpPath = $phpPath . DS . 'plugin' . DS . $this->value['namespace'] . DS . 'app';
+            $adminPath = DS . 'admin';
         }
         $subPath = '';
         if (!empty($this->value['package_name'])) {
-            $subPath = DIRECTORY_SEPARATOR . $this->value['package_name'];
+            $subPath = DS . $this->value['package_name'];
         }
 
-        $indexOutPath = $vuePath . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name']. DIRECTORY_SEPARATOR . 'index.vue';
+        $indexOutPath = $vuePath . $subPath . DS . $this->value['business_name'] . DS . 'index.vue';
         $this->checkPath($indexOutPath);
         $indexContent = $this->renderContent('vue', 'index.stub');
         file_put_contents($indexOutPath, $indexContent);
 
-        $editOutPath = $vuePath . $subPath . DIRECTORY_SEPARATOR . $this->value['business_name']. DIRECTORY_SEPARATOR . 'edit.vue';
+        $editOutPath = $vuePath . $subPath . DS . $this->value['business_name'] . DS . 'modules' . DS . 'edit-dialog.vue';
         $this->checkPath($editOutPath);
-        $editContent = $this->renderContent('vue', 'edit.stub');
+        $editContent = $this->renderContent('vue', 'edit-dialog.stub');
         file_put_contents($editOutPath, $editContent);
 
-        $viewOutPath = $vuePath . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR . $this->value['business_name'] . '.js';
+        $searchOutPath = $vuePath . $subPath . DS . $this->value['business_name'] . DS . 'modules' . DS . 'table-search.vue';
+        $this->checkPath($searchOutPath);
+        $searchContent = $this->renderContent('vue', 'table-search.stub');
+        file_put_contents($searchOutPath, $searchContent);
+
+        $viewOutPath = $vuePath . DS . 'api' . DS . $this->value['business_name'] . '.ts';
         $this->checkPath($viewOutPath);
-        $viewContent = $this->renderContent('js', 'api.stub');
+        $viewContent = $this->renderContent('ts', 'api.stub');
         file_put_contents($viewOutPath, $viewContent);
 
-        $controllerOutPath = $phpPath . DIRECTORY_SEPARATOR . 'controller' . $subPath . DIRECTORY_SEPARATOR . $this->value['class_name'] . 'Controller.php';
+        $controllerOutPath = $phpPath . $adminPath . DS . 'controller' . $subPath . DS . $this->value['class_name'] . 'Controller.php';
         $this->checkPath($controllerOutPath);
         $controllerContent = $this->renderContent('php', 'controller.stub');
         file_put_contents($controllerOutPath, $controllerContent);
 
-        $logicOutPath = $phpPath . DIRECTORY_SEPARATOR . 'logic' . $subPath . DIRECTORY_SEPARATOR . $this->value['class_name'] . 'Logic.php';
+        $logicOutPath = $phpPath . $adminPath . DS . 'logic' . $subPath . DS . $this->value['class_name'] . 'Logic.php';
         $this->checkPath($logicOutPath);
         $logicContent = $this->renderContent('php', 'logic.stub');
         file_put_contents($logicOutPath, $logicContent);
 
-        $validateOutPath = $phpPath . DIRECTORY_SEPARATOR . 'validate' . $subPath . DIRECTORY_SEPARATOR . $this->value['class_name'] . 'Validate.php';
+        $validateOutPath = $phpPath . $adminPath . DS . 'validate' . $subPath . DS . $this->value['class_name'] . 'Validate.php';
         $this->checkPath($validateOutPath);
         $validateContent = $this->renderContent('php', 'validate.stub');
         file_put_contents($validateOutPath, $validateContent);
 
-        $modelOutPath = $phpPath . DIRECTORY_SEPARATOR . 'model' . $subPath . DIRECTORY_SEPARATOR . $this->value['class_name'] . '.php';
+        $modelOutPath = $phpPath . DS . 'model' . $subPath . DS . $this->value['class_name'] . '.php';
         $this->checkPath($modelOutPath);
         $modelContent = $this->renderContent('php', 'model.stub');
         file_put_contents($modelOutPath, $modelContent);
 
-        $sqlOutPath = $sqlPath . DIRECTORY_SEPARATOR . 'sql.sql';
+        $sqlOutPath = $sqlPath . DS . 'sql.sql';
         $this->checkPath($sqlOutPath);
         $sqlContent = $this->renderContent('sql', 'sql.stub');
         file_put_contents($sqlOutPath, $sqlContent);

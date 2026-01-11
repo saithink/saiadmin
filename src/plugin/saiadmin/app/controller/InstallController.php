@@ -36,9 +36,9 @@ class InstallController extends OpenController
     public function index()
     {
         $data['app'] = $this->app;
-        $data['version'] = config('plugin.saiadmin.app.version', $this->version);        
+        $data['version'] = config('plugin.saiadmin.app.version', $this->version);
 
-        $env = base_path() . DIRECTORY_SEPARATOR .'.env';
+        $env = base_path() . DIRECTORY_SEPARATOR . '.env';
 
         clearstatcache();
         if (is_file($env)) {
@@ -59,7 +59,7 @@ class InstallController extends OpenController
      */
     public function install(Request $request)
     {
-        $env = base_path() . DIRECTORY_SEPARATOR .'.env';
+        $env = base_path() . DIRECTORY_SEPARATOR . '.env';
 
         clearstatcache();
         if (is_file($env)) {
@@ -70,7 +70,7 @@ class InstallController extends OpenController
         $password = $request->post('password');
         $database = $request->post('database');
         $host = $request->post('host');
-        $port = (int)$request->post('port') ?: 3306;
+        $port = (int) $request->post('port') ?: 3306;
 
         try {
             $db = $this->getPdo($host, $user, $password, $port);
@@ -221,7 +221,7 @@ return [
     ]
 ];
 EOF;
-        file_put_contents(base_path() . '/config/cache.php', $cache_config);        
+        file_put_contents(base_path() . '/config/cache.php', $cache_config);
 
         // 3、redis配置文件
         $redis_config = <<<EOF
@@ -293,6 +293,41 @@ return [
 ];
 EOF;
         file_put_contents(base_path() . '/config/think-cache.php', $think_cache_config);
+
+        // 5、database配置文件
+        $database = <<<EOF
+<?php
+return [
+    'default' => 'mysql',
+    'connections' => [
+        'mysql' => [
+            'driver' => env('DB_TYPE', 'mysql'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', 3306),
+            'database' => env('DB_NAME', 'saiadmin'),
+            'username' => env('DB_USER', 'root'),
+            'password' => env('DB_PASSWORD', '123456'),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_general_ci'),
+            'prefix' => env('DB_PREFIX', ''),
+            'strict' => true,
+            'engine' => null,
+            'timezone' => '+08:00',
+            'options' => [
+                PDO::ATTR_EMULATE_PREPARES => false, // Must be false for Swoole and Swow drivers.
+            ],
+            'pool' => [
+                'max_connections' => 5,
+                'min_connections' => 1,
+                'wait_timeout' => 3,
+                'idle_timeout' => 60,
+                'heartbeat_interval' => 50,
+            ],
+        ],
+    ],
+];
+EOF;
+        file_put_contents(base_path() . '/config/database.php', $database);
 
     }
 

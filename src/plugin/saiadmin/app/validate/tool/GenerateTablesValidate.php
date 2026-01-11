@@ -6,21 +6,21 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\validate\tool;
 
-use think\Validate;
+use plugin\saiadmin\basic\BaseValidate;
 
 /**
  * 用户角色验证器
  */
-class GenerateTablesValidate extends Validate
+class GenerateTablesValidate extends BaseValidate
 {
     /**
      * 定义验证规则
      */
-    protected $rule =   [
+    protected $rule = [
         'table_name' => 'require',
         'table_comment' => 'require',
-        'class_name' => 'require|alpha',
-        'business_name' => 'require|alpha',
+        'class_name' => 'require|alphaDash',
+        'business_name' => 'require|alphaDash',
         'template' => 'require',
         'namespace' => 'require',
         'menu_name' => 'require',
@@ -29,13 +29,13 @@ class GenerateTablesValidate extends Validate
     /**
      * 定义错误信息
      */
-    protected $message  =   [
+    protected $message = [
         'table_name' => '表名称必须填写',
         'table_comment' => '表描述必须填写',
         'class_name.require' => '实体类必须填写',
-        'class_name.alpha' => '实体类必须是英文',
+        'class_name.alphaDash' => '实体类必须是英文',
         'business_name.require' => '实体别名必须填写',
-        'business_name.alpha' => '实体别名必须是英文',
+        'business_name.alphaDash' => '实体别名必须是英文',
         'template' => '模板必须填写',
         'namespace' => '命名空间必须填写',
         'menu_name' => '菜单名称必须填写',

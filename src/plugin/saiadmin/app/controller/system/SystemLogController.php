@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\controller\system;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemLoginLogLogic;
 use plugin\saiadmin\app\logic\system\SystemOperLogLogic;
+use plugin\saiadmin\service\Permission;
 use support\Request;
 use support\Response;
 
@@ -23,6 +24,7 @@ class SystemLogController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('登录日志列表', 'core:logs:login')]
     public function getLoginLogPageList(Request $request) : Response
     {
         $where = $request->more([
@@ -42,6 +44,7 @@ class SystemLogController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('登录日志删除', 'core:logs:deleteLogin')]
     public function deleteLoginLog(Request $request) : Response
     {
         $ids = $request->input('ids', '');
@@ -59,12 +62,14 @@ class SystemLogController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('操作日志列表', 'core:logs:Oper')]
     public function getOperLogPageList(Request $request) : Response
     {
         $where = $request->more([
             ['create_time', ''],
             ['username', ''],
             ['service_name', ''],
+            ['router', ''],
             ['ip', ''],
         ]);
         $logic = new SystemOperLogLogic();
@@ -79,6 +84,7 @@ class SystemLogController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('操作日志删除', 'core:logs:deleteOper')]
     public function deleteOperLog(Request $request) : Response
     {
         $ids = $request->input('ids', '');

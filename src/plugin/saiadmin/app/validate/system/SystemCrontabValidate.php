@@ -6,17 +6,17 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\validate\system;
 
-use think\Validate;
+use plugin\saiadmin\basic\BaseValidate;
 
 /**
  * 字典类型验证器
  */
-class SystemCrontabValidate extends Validate
+class SystemCrontabValidate extends BaseValidate
 {
     /**
      * 定义验证规则
      */
-    protected $rule =   [
+    protected $rule = [
         'name' => 'require',
         'type' => 'require',
         'rule' => 'require',
@@ -27,7 +27,7 @@ class SystemCrontabValidate extends Validate
     /**
      * 定义错误信息
      */
-    protected $message  =   [
+    protected $message = [
         'name' => '任务名称必须填写',
         'type' => '任务类型必须填写',
         'rule' => '任务规则必须填写',

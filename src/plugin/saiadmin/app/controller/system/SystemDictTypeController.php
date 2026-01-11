@@ -6,10 +6,12 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\controller\system;
 
+use plugin\saiadmin\app\cache\DictCache;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemDictTypeLogic;
 use plugin\saiadmin\app\validate\system\SystemDictTypeValidate;
-use plugin\saiadmin\app\cache\DictCache;
+use plugin\saiadmin\service\Permission;
+use support\Cache;
 use support\Request;
 use support\Response;
 
@@ -33,6 +35,7 @@ class SystemDictTypeController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('数据字典列表', 'core:dict:index')]
     public function index(Request $request) : Response
     {
         $where = $request->more([
@@ -46,37 +49,61 @@ class SystemDictTypeController extends BaseController
     }
 
     /**
-     * 修改状态
+     * 保存数据
      * @param Request $request
      * @return Response
      */
-    public function changeStatus(Request $request) : Response
+    #[Permission('数据字典管理', 'core:dict:edit')]
+    public function save(Request $request): Response
     {
-        $id = $request->input('id', '');
-        $status = $request->input('status', 1);
-        $model = $this->logic->findOrEmpty($id);
-        if ($model->isEmpty()) {
-            return $this->fail('未查找到信息');
-        }
-        $result = $model->save(['status' => $status]);
+        $data = $request->post();
+        $this->validate('save', $data);
+        $result = $this->logic->add($data);
         if ($result) {
-            $this->afterChange('changeStatus', $model);
-            return $this->success('操作成功');
+            DictCache::clear();
+            return $this->success('添加成功');
         } else {
-            return $this->fail('操作失败');
+            return $this->fail('添加失败');
         }
     }
 
     /**
-     * 数据改变后执行
-     * @param $type
-     * @param $args
-     * @return void
+     * 更新数据
+     * @param Request $request
+     * @return Response
      */
-    protected function afterChange($type, $args): void
+    #[Permission('数据字典管理', 'core:dict:edit')]
+    public function update(Request $request): Response
     {
-        if (in_array($type, ['save', 'update', 'destroy', 'changeStatus'])) {
+        $data = $request->post();
+        $this->validate('update', $data);
+        $result = $this->logic->edit($data['id'], $data);
+        if ($result) {
             DictCache::clear();
+            return $this->success('修改成功');
+        } else {
+            return $this->fail('修改失败');
+        }
+    }
+
+    /**
+     * 删除数据
+     * @param Request $request
+     * @return Response
+     */
+    #[Permission('数据字典管理', 'core:dict:edit')]
+    public function destroy(Request $request) : Response
+    {
+        $ids = $request->post('ids', '');
+        if (empty($ids)) {
+            return $this->fail('请选择要删除的数据');
+        }
+        $result = $this->logic->destroy($ids);
+        if ($result) {
+            DictCache::clear();
+            return $this->success('删除成功');
+        } else {
+            return $this->fail('删除失败');
         }
     }
 

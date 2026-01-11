@@ -6,11 +6,11 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\middleware;
 
-use ReflectionClass;
 use Webman\Http\Request;
 use Webman\Http\Response;
 use Webman\MiddlewareInterface;
 use plugin\saiadmin\app\cache\UserAuthCache;
+use plugin\saiadmin\app\cache\ReflectionCache;
 use plugin\saiadmin\exception\SystemException;
 
 /**
@@ -18,21 +18,24 @@ use plugin\saiadmin\exception\SystemException;
  */
 class CheckAuth implements MiddlewareInterface
 {
+
     public function process(Request $request, callable $handler) : Response
     {
+        $controller = $request->controller;
+        $action = $request->action;
+
         // 通过反射获取控制器哪些方法不需要登录
-        $controller = new ReflectionClass($request->controller);
-        $noNeedLogin = $controller->getDefaultProperties()['noNeedLogin'] ?? [];
+        $noNeedLogin = ReflectionCache::getNoNeedLogin($controller);
 
         // 不登录访问，无需权限验证
-        if (in_array($request->action, $noNeedLogin)) {
+        if (in_array($action, $noNeedLogin)) {
             return $handler($request);
         }
 
         // 登录信息
         $token = getCurrentInfo();
         if ($token === false) {
-            throw new SystemException('权限不足，无法访问或操作');
+            throw new SystemException('用户信息读取失败，无法访问或操作');
         }
 
         // 系统默认超级管理员，无需权限验证
@@ -40,41 +43,28 @@ class CheckAuth implements MiddlewareInterface
             return $handler($request);
         }
 
-        // 接口请求权限判断
-        $path = $request->path();
+        // 2. 获取接口权限属性 (使用缓存类)
+        $permissions = ReflectionCache::getPermissionAttributes($controller, $action);
 
-        // 处理接口路由替换
-        $replace = config('plugin.saiadmin.saithink.route_replace');
-        if (isset($replace[$path])) {
-            $path = $replace[$path];
-        }
-        $path = strtolower($path);
-        
-        // 全部路由文件
-        $routes = $this->formatUrl(UserAuthCache::getAllAuth());
-        // 请求接口有权限配置则进行验证
-        if (in_array($path, $routes)) {
-
+        if (!empty($permissions) && !empty($permissions['slug'])) {
             // 用户权限缓存
-            $allowCodes = UserAuthCache::getUserAuth($token['id']) ?? [];
-            $allowCodes = $this->formatUrl($allowCodes);
-            if (!in_array($path, $allowCodes)) {
+            $auth = UserAuthCache::getUserAuth($token['id']);
+
+            if (!$this->checkPermissions($permissions, $auth)) {
                 throw new SystemException('权限不足，无法访问或操作');
             }
         }
+
         return $handler($request);
     }
 
     /**
-     * 格式化URL
-     * @param array $data
-     * @return array|string[]
+     * 检查权限
      */
-    public function formatUrl(array $data): array
+    private function checkPermissions(array $attr, array $userPermissions): bool
     {
-        return array_map(function ($item) {
-            return strtolower($item);
-        }, $data);
+        // 直接对比 slug
+        return in_array($attr['slug'], $userPermissions);
     }
 
 }

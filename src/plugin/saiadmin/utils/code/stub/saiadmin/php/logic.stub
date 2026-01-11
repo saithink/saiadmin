@@ -6,10 +6,14 @@
 // +----------------------------------------------------------------------
 namespace {{namespace_start}}logic{{namespace_end}};
 
-use plugin\saiadmin\basic\BaseLogic;
+{% if stub == 'eloquent' %}
+use plugin\saiadmin\basic\eloquent\BaseLogic;
+{% else %}
+use plugin\saiadmin\basic\think\BaseLogic;
+{% endif %}
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Helper;
-use {{namespace_start}}model{{namespace_end}}\{{class_name}};
+use {{namespace_start_model}}model{{namespace_end}}\{{class_name}};
 
 /**
  * {{menu_name}}逻辑层
@@ -46,13 +50,13 @@ class {{class_name}}Logic extends BaseLogic
      * 删除数据
      * @param $ids
      */
-    public function destroy($ids)
+    public function destroy($ids): bool
     {
-        $num = $this->model->where('{{options.tree_parent_id}}', 'in', $ids)->count();
+        $num = $this->model->whereIn('{{options.tree_parent_id}}', $ids)->count();
         if ($num > 0) {
             throw new ApiException('该分类下存在子分类，请先删除子分类');
         } else {
-            parent::destroy($ids);
+            return parent::destroy($ids);
         }
     }
 
@@ -62,8 +66,13 @@ class {{class_name}}Logic extends BaseLogic
     public function tree($where)
     {
         $query = $this->search($where);
-        if (request()->input('tree', 'false') === 'true') {
+        $request = request();
+        if ($request && $request->input('tree', 'false') === 'true') {
+{% if stub == 'eloquent' %}
+            $query->select('{{options.tree_id}}', '{{options.tree_id}} as value', '{{options.tree_name}} as label', '{{options.tree_parent_id}}');
+{% else %}
             $query->field('{{options.tree_id}}, {{options.tree_id}} as value, {{options.tree_name}} as label, {{options.tree_parent_id}}');
+{% endif %}
         }
 {% if options.relations != null %}
         $query->with([

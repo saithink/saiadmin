@@ -19,9 +19,9 @@ class EmailService
 {
     /**
      * 读取配置
-     * @return array|mixed|null
+     * @return array
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         $logic = new SystemConfigLogic();
         $config = $logic->getGroup('email_config');

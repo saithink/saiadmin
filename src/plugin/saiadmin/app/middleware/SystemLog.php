@@ -6,12 +6,12 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\middleware;
 
-use ReflectionClass;
 use Webman\Event\Event;
 use Webman\Http\Request;
 use Webman\Http\Response;
 use Webman\MiddlewareInterface;
 use plugin\saiadmin\exception\ApiException;
+use plugin\saiadmin\app\cache\ReflectionCache;
 
 class SystemLog implements MiddlewareInterface
 {
@@ -22,11 +22,8 @@ class SystemLog implements MiddlewareInterface
      */
     public function process(Request $request, callable $handler): Response
     {
-
         // 通过反射获取控制器哪些方法不需要登录
-        $controller = new ReflectionClass($request->controller);
-        $noNeedLogin = $controller->getDefaultProperties()['noNeedLogin'] ?? [];
-
+        $noNeedLogin = ReflectionCache::getNoNeedLogin($request->controller);
         // 访问的方法需要登录
         if (!in_array($request->action, $noNeedLogin)) {
             try {
@@ -36,7 +33,6 @@ class SystemLog implements MiddlewareInterface
                 throw new ApiException('登录凭获取失败，请检查');
             }
         }
-
         return $handler($request);
     }
 }

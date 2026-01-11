@@ -6,17 +6,17 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\validate\system;
 
-use think\Validate;
+use plugin\saiadmin\basic\BaseValidate;
 
 /**
  * 系统公告验证器
  */
-class SystemNoticeValidate extends Validate
+class SystemNoticeValidate extends BaseValidate
 {
     /**
      * 定义验证规则
      */
-    protected $rule =   [
+    protected $rule = [
         'title' => 'require|min:4',
         'content' => 'require',
         'type' => 'require',
@@ -25,9 +25,9 @@ class SystemNoticeValidate extends Validate
     /**
      * 定义错误信息
      */
-    protected $message  =   [
+    protected $message = [
         'title.require' => '公告标题必须填写',
-        'title.min'     => '公告标题必须大于4个字符',
+        'title.min' => '公告标题必须大于4个字符',
         'content' => '公告内容必须填写',
         'type' => '公告类型必须填写',
     ];

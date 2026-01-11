@@ -33,11 +33,11 @@ class UploadService
         $file = current(request()->file());
         $ext = $file->getUploadExtension() ?: null;
         $file_size = $file->getSize();
-        if ($file_size > Arr::getConfigValue($uploadConfig,'upload_size')) {
+        if ($file_size > Arr::getConfigValue($uploadConfig, 'upload_size')) {
             throw new ApiException('文件大小超过限制');
         }
-        $allow_file = Arr::getConfigValue($uploadConfig,'upload_allow_file');
-        $allow_image = Arr::getConfigValue($uploadConfig,'upload_allow_image');
+        $allow_file = Arr::getConfigValue($uploadConfig, 'upload_allow_file');
+        $allow_image = Arr::getConfigValue($uploadConfig, 'upload_allow_image');
         if ($upload == 'image') {
             if (!in_array($ext, explode(',', $allow_image))) {
                 throw new ApiException('不支持该格式的文件上传');
@@ -52,27 +52,25 @@ class UploadService
                 // 本地
                 $config = [
                     'adapter' => \Tinywan\Storage\Adapter\LocalAdapter::class,
-                    'root' => Arr::getConfigValue($uploadConfig,'local_root'),
+                    'root' => Arr::getConfigValue($uploadConfig, 'local_root'),
                     'dirname' => function () {
                         return date('Ymd');
                     },
-                    'domain' => Arr::getConfigValue($uploadConfig,'local_domain'),
+                    'domain' => Arr::getConfigValue($uploadConfig, 'local_domain'),
                     'uri' => Arr::getConfigValue($uploadConfig, 'local_uri'),
                     'algo' => 'sha1',
-                    'single_limit'=> Arr::getconfigValue($uploadConfig, 'upload_size'),
-                    'total_limit'=> Arr::getconfigValue($uploadConfig, 'upload_size')
                 ];
                 break;
             case 2:
                 // 阿里云
                 $config = [
                     'adapter' => \Tinywan\Storage\Adapter\OssAdapter::class,
-                    'accessKeyId' => Arr::getConfigValue($uploadConfig,'oss_accessKeyId'),
-                    'accessKeySecret' => Arr::getConfigValue($uploadConfig,'oss_accessKeySecret'),
-                    'bucket' => Arr::getConfigValue($uploadConfig,'oss_bucket'),
-                    'dirname' => Arr::getConfigValue($uploadConfig,'oss_dirname'),
-                    'domain' => Arr::getConfigValue($uploadConfig,'oss_domain'),
-                    'endpoint' => Arr::getConfigValue($uploadConfig,'oss_endpoint'),
+                    'accessKeyId' => Arr::getConfigValue($uploadConfig, 'oss_accessKeyId'),
+                    'accessKeySecret' => Arr::getConfigValue($uploadConfig, 'oss_accessKeySecret'),
+                    'bucket' => Arr::getConfigValue($uploadConfig, 'oss_bucket'),
+                    'dirname' => Arr::getConfigValue($uploadConfig, 'oss_dirname'),
+                    'domain' => Arr::getConfigValue($uploadConfig, 'oss_domain'),
+                    'endpoint' => Arr::getConfigValue($uploadConfig, 'oss_endpoint'),
                     'algo' => 'sha1',
                 ];
                 break;
@@ -80,47 +78,48 @@ class UploadService
                 // 七牛
                 $config = [
                     'adapter' => \Tinywan\Storage\Adapter\QiniuAdapter::class,
-                    'accessKey' => Arr::getConfigValue($uploadConfig,'qiniu_accessKey'),
-                    'secretKey' => Arr::getConfigValue($uploadConfig,'qiniu_secretKey'),
-                    'bucket' => Arr::getConfigValue($uploadConfig,'qiniu_bucket'),
-                    'dirname' => Arr::getConfigValue($uploadConfig,'qiniu_dirname'),
-                    'domain' => Arr::getConfigValue($uploadConfig,'qiniu_domain'),
+                    'accessKey' => Arr::getConfigValue($uploadConfig, 'qiniu_accessKey'),
+                    'secretKey' => Arr::getConfigValue($uploadConfig, 'qiniu_secretKey'),
+                    'bucket' => Arr::getConfigValue($uploadConfig, 'qiniu_bucket'),
+                    'dirname' => Arr::getConfigValue($uploadConfig, 'qiniu_dirname'),
+                    'domain' => Arr::getConfigValue($uploadConfig, 'qiniu_domain'),
                 ];
                 break;
             case 4:
                 // 腾讯云
                 $config = [
                     'adapter' => \Tinywan\Storage\Adapter\CosAdapter::class,
-                    'secretId' => Arr::getConfigValue($uploadConfig,'cos_secretId'),
-                    'secretKey' => Arr::getConfigValue($uploadConfig,'cos_secretKey'),
-                    'bucket' => Arr::getConfigValue($uploadConfig,'cos_bucket'),
-                    'dirname' => Arr::getConfigValue($uploadConfig,'cos_dirname'),
-                    'domain' => Arr::getConfigValue($uploadConfig,'cos_domain'),
-                    'region' => Arr::getConfigValue($uploadConfig,'cos_region'),
+                    'secretId' => Arr::getConfigValue($uploadConfig, 'cos_secretId'),
+                    'secretKey' => Arr::getConfigValue($uploadConfig, 'cos_secretKey'),
+                    'bucket' => Arr::getConfigValue($uploadConfig, 'cos_bucket'),
+                    'dirname' => Arr::getConfigValue($uploadConfig, 'cos_dirname'),
+                    'domain' => Arr::getConfigValue($uploadConfig, 'cos_domain'),
+                    'region' => Arr::getConfigValue($uploadConfig, 'cos_region'),
                 ];
                 break;
             case 5:
                 // s3 亚马逊
                 $config = [
                     'adapter' => \Tinywan\Storage\Adapter\S3Adapter::class,
-                    'key' => Arr::getConfigValue($uploadConfig,'s3_key'),
-                    'secret' => Arr::getConfigValue($uploadConfig,'s3_secret'),
-                    'bucket' => Arr::getConfigValue($uploadConfig,'s3_bucket'),
-                    'dirname' => Arr::getConfigValue($uploadConfig,'s3_dirname'),
-                    'domain' => Arr::getConfigValue($uploadConfig,'s3_domain'),
-                    'region' => Arr::getConfigValue($uploadConfig,'s3_region'),
-                    'version' => Arr::getConfigValue($uploadConfig,'s3_version'),
+                    'key' => Arr::getConfigValue($uploadConfig, 's3_key'),
+                    'secret' => Arr::getConfigValue($uploadConfig, 's3_secret'),
+                    'bucket' => Arr::getConfigValue($uploadConfig, 's3_bucket'),
+                    'dirname' => Arr::getConfigValue($uploadConfig, 's3_dirname'),
+                    'domain' => Arr::getConfigValue($uploadConfig, 's3_domain'),
+                    'region' => Arr::getConfigValue($uploadConfig, 's3_region'),
+                    'version' => Arr::getConfigValue($uploadConfig, 's3_version'),
                     // 'use_path_style_endpoint' => Arr::getConfigValue($uploadConfig,'s3_use_path_style_endpoint'),
-                    'use_path_style_endpoint' => filter_var(Arr::getConfigValue($uploadConfig,'s3_use_path_style_endpoint'), FILTER_VALIDATE_BOOLEAN),
-                    'endpoint' => Arr::getConfigValue($uploadConfig,'s3_endpoint'),
-                    'acl' => Arr::getConfigValue($uploadConfig,'s3_acl'),
+                    'use_path_style_endpoint' => filter_var(Arr::getConfigValue($uploadConfig, 's3_use_path_style_endpoint'), FILTER_VALIDATE_BOOLEAN),
+                    'endpoint' => Arr::getConfigValue($uploadConfig, 's3_endpoint'),
+                    'acl' => Arr::getConfigValue($uploadConfig, 's3_acl'),
                 ];
-                break;    
+                break;
             default:
                 throw new ApiException('该上传模式不存在');
         }
         return new $config['adapter'](array_merge(
-            $config, ['_is_file_upload' => $_is_file_upload]
+            $config,
+            ['_is_file_upload' => $_is_file_upload]
         ));
     }
 

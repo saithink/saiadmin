@@ -6,11 +6,11 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\middleware;
 
-use ReflectionClass;
 use Webman\Http\Request;
 use Webman\Http\Response;
 use Webman\MiddlewareInterface;
 use Tinywan\Jwt\JwtToken;
+use plugin\saiadmin\app\cache\ReflectionCache;
 use plugin\saiadmin\exception\ApiException;
 
 /**
@@ -21,9 +21,7 @@ class CheckLogin implements MiddlewareInterface
     public function process(Request $request, callable $handler): Response
     {
         // 通过反射获取控制器哪些方法不需要登录
-        $controller = new ReflectionClass($request->controller);
-        $noNeedLogin = $controller->getDefaultProperties()['noNeedLogin'] ?? [];
-
+        $noNeedLogin = ReflectionCache::getNoNeedLogin($request->controller);
         // 访问的方法需要登录
         if (!in_array($request->action, $noNeedLogin)) {
             try {

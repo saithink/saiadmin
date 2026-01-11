@@ -4,6 +4,8 @@
 // +----------------------------------------------------------------------
 // | Author: sai <1430792918@qq.com>
 // +----------------------------------------------------------------------
+declare(strict_types=1);
+
 namespace plugin\saiadmin\app\cache;
 
 use plugin\saiadmin\app\logic\system\SystemMenuLogic;
@@ -64,7 +66,7 @@ class UserMenuCache
         if ($uid == 1) {
             $data = $logic->getAllMenus();
         } else {
-            $roleIds = SystemUserRole::where('user_id', $uid)->column('role_id');
+            $roleIds = SystemUserRole::getRoleIds($uid);
             $data = $logic->getMenuByRole($roleIds);
             if (empty($data)) {
                 return [];

@@ -6,12 +6,12 @@
 // +----------------------------------------------------------------------
 namespace {{namespace_start}}validate{{namespace_end}};
 
-use think\Validate;
+use plugin\saiadmin\basic\BaseValidate;
 
 /**
  * {{menu_name}}验证器
  */
-class {{class_name}}Validate extends Validate
+class {{class_name}}Validate extends BaseValidate
 {
     /**
      * 定义验证规则

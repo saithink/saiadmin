@@ -8,6 +8,7 @@ namespace plugin\saiadmin\app\controller\system;
 
 use plugin\saiadmin\app\logic\system\DatabaseLogic;
 use plugin\saiadmin\basic\BaseController;
+use plugin\saiadmin\service\Permission;
 use support\Request;
 use support\Response;
 
@@ -26,10 +27,21 @@ class DataBaseController extends BaseController
     }
 
     /**
+     * 数据源列表
+     * @return Response
+     */
+    public function source(): Response
+    {
+        $data = $this->logic->getDbSource();
+        return $this->success($data);
+    }
+
+    /**
      * 数据列表
      * @param Request $request
      * @return Response
      */
+    #[Permission('数据表列表', 'core:database:index')]
     public function index(Request $request): Response
     {
         $where = $request->more([
@@ -41,20 +53,11 @@ class DataBaseController extends BaseController
     }
 
     /**
-     * 数据源列表
-     * @return Response
-     */
-    public function source(): Response
-    {
-        $list = dbSourceList();
-        return $this->success($list);
-    }
-
-    /**
      * 回收站数据
      * @param Request $request
      * @return Response
      */
+    #[Permission('回收站数据', 'core:recycle:index')]
     public function recycle(Request $request): Response
     {
         $table = $request->input('table', '');
@@ -67,6 +70,7 @@ class DataBaseController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('回收站销毁', 'core:recycle:edit')]
     public function delete(Request $request): Response
     {
         $table = $request->input('table', '');
@@ -87,6 +91,7 @@ class DataBaseController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('回收站恢复', 'core:recycle:edit')]
     public function recovery(Request $request): Response
     {
         $table = $request->input('table', '');
@@ -107,6 +112,7 @@ class DataBaseController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('数据表字段', 'core:database:index')]
     public function detailed(Request $request): Response
     {
         $table = $request->input('table', '');
@@ -119,6 +125,7 @@ class DataBaseController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('数据表优化表', 'core:database:edit')]
     public function optimize(Request $request): Response
     {
         $tables = $request->input('tables', []);
@@ -129,6 +136,7 @@ class DataBaseController extends BaseController
     /**
      * 清理表碎片
      */
+    #[Permission('数据表清理碎片', 'core:database:edit')]
     public function fragment(Request $request): Response
     {
         $tables = $request->input('tables', []);

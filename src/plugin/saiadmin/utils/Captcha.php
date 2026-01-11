@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\utils;
 
-use support\think\Cache;
+use support\Cache;
 use Ramsey\Uuid\Uuid;
 use Webman\Captcha\CaptchaBuilder;
 use Webman\Captcha\PhraseBuilder;
@@ -43,7 +43,10 @@ class Captcha
                 ];
             }
         } else {
-            request()->session()->set($key, $code);
+            $request = request();
+            if ($request) {
+                $request->session()->set($key, $code);
+            }
         }
         $img_content = $captcha->get();
         return [
@@ -61,7 +64,7 @@ class Captcha
      */
     public static function numberCaptcha(string $key, int $length = 4): array
     {
-        $code   = str_pad(rand(0, 999999), $length, '0', STR_PAD_LEFT);
+        $code = str_pad(rand(0, 999999), $length, '0', STR_PAD_LEFT);
         $mode = config('plugin.saiadmin.saithink.captcha.mode', 'session');
         $expire = config('plugin.saiadmin.saithink.captcha.expire', 300);
         if ($mode === 'cache') {
@@ -74,11 +77,14 @@ class Captcha
                 ];
             }
         } else {
-            request()->session()->set($key, $code);
+            $request = request();
+            if ($request) {
+                $request->session()->set($key, $code);
+            }
         }
         return [
             'result' => 1,
-            'uuid'  => $key,
+            'uuid' => $key,
             'code' => $code,
         ];
     }

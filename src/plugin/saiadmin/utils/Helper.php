@@ -97,6 +97,59 @@ class Helper
         return $tree;
     }
 
+
+    /**
+     * 生成Artd菜单
+     * @param array $data
+     * @param string $childrenname
+     * @param string $keyName
+     * @param string $pidName
+     * @return array
+     */
+    public static function makeArtdMenus(array $data, string $childrenname = 'children', string $keyName = 'id', string $pidName = 'parent_id')
+    {
+        $list = [];
+        foreach ($data as $value) {
+            $component = '';
+            if ($value['type'] === 1) {
+                $component = '/index/index';
+            }
+            if ($value['type'] === 2) {
+                $component = $value['component'];
+            }
+            $temp = [
+                $keyName => $value[$keyName],
+                $pidName => $value[$pidName],
+                'name' => $value['code'],
+                'path' => $value['path'],
+                'component' => $component,
+                'meta' => [
+                    'title' => $value['name'],
+                    'icon' => $value['icon'],
+                    'isIframe' => $value['is_iframe'] === 1,
+                    'keepAlive' => $value['is_keep_alive'] === 1,
+                    'isHide' => $value['is_hidden'] === 1,
+                    'fixedTab' => $value['is_fixed_tab'] === 1,
+                    'isFullPage' => $value['is_full_page'] === 1,
+                ],
+            ];
+            if ($value['type'] === 4) {
+                $temp['path'] = '/outside/Iframe';
+                $temp['meta']['link'] = $value['link_url'];
+            }
+            $list[$value[$keyName]] = $temp;
+        }
+        $tree = [];
+        foreach ($list as $item) {
+            if (isset($list[$item[$pidName]])) {
+                $list[$item[$pidName]][$childrenname][] = &$list[$item[$keyName]];
+            } else {
+                $tree[] = &$list[$item[$keyName]];
+            }
+        }
+        return $tree;
+    }
+
     /**
      * 下划线转驼峰
      */

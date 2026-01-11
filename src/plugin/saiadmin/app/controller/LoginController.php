@@ -57,4 +57,5 @@ class LoginController extends BaseController
         $data = $logic->login($username, $password, $type);
         return $this->success($data);
     }
+
 }

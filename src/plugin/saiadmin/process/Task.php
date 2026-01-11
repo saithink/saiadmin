@@ -39,13 +39,13 @@ class Task
     public function initStart()
     {
         $logic = new CrontabLogic();
-        $taskList = $logic->where('status', 1)->select();
+        $taskList = $logic->getAll($logic->search(['status' => 1]));
         foreach ($taskList as $item) {
-            $crontab = new Crontab($item->rule, function () use ($item) {
-                $this->logic->run($item->id);
+            $crontab = new Crontab($item['rule'], function () use ($item) {
+                $this->logic->run($item['id']);
             });
-            $this->crontabIds[intval($item->id)] = $crontab->getId(); //存储定时任务表主键id => Crontab对象id
-            echo date('Y-m-d H:i:s')." => 定时任务[".$item->id."][".$item->name."]:启动成功".PHP_EOL;
+            $this->crontabIds[intval($item['id'])] = $crontab->getId(); //存储定时任务表主键id => Crontab对象id
+            echo PHP_EOL . date('Y-m-d H:i:s') . " => 定时任务[" . $item['id'] . "][" . $item['name'] . "]:启动成功" . PHP_EOL;
         }
     }
 
@@ -55,15 +55,15 @@ class Task
         if (isset($this->crontabIds[$id])) {
             Crontab::remove($this->crontabIds[$id]);
             unset($this->crontabIds[$id]); //删除定时任务表主键id => Crontab对象id
-            echo date('Y-m-d H:i:s')." => 定时任务[".$id."]:移除成功".PHP_EOL;
+            echo PHP_EOL . date('Y-m-d H:i:s') . " => 定时任务[" . $id . "]:移除成功" . PHP_EOL;
         }
-        $item = $this->logic->findOrEmpty($id);// 查询定时任务表数据
-        if (!$item->isEmpty() && $item->status == 1) {
-            $crontab = new Crontab($item->rule, function () use ($item) {
-                $this->logic->run($item->id);
+        $item = $this->logic->read($id);// 查询定时任务表数据
+        if ($item && $item['status'] == 1) {
+            $crontab = new Crontab($item['rule'], function () use ($item) {
+                $this->logic->run($item['id']);
             });
             $this->crontabIds[$id] = $crontab->getId(); //存储定时任务表主键id => Crontab对象id
-            echo date('Y-m-d H:i:s')." => 定时任务[".$item->id."][".$item->name."]:启动成功".PHP_EOL;
+            echo PHP_EOL . date('Y-m-d H:i:s') . " => 定时任务[" . $item['id'] . "][" . $item['name'] . "]:启动成功" . PHP_EOL;
         }
     }
 }

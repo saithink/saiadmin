@@ -1,15 +1,14 @@
 <?php
-
 // +----------------------------------------------------------------------
 // | saiadmin [ saiadmin快速开发框架 ]
 // +----------------------------------------------------------------------
 // | Author: sai <1430792918@qq.com>
 // +----------------------------------------------------------------------
+declare(strict_types=1);
 
 namespace plugin\saiadmin\app\cache;
 
-use plugin\saiadmin\app\model\system\SystemConfig;
-use plugin\saiadmin\app\model\system\SystemConfigGroup;
+use plugin\saiadmin\app\logic\system\SystemConfigLogic;
 use support\think\Cache;
 
 /**
@@ -61,11 +60,10 @@ class ConfigCache
     {
         $cache = static::cacheConfig();
 
-        $group = SystemConfigGroup::where('code', $code)->findOrEmpty();
-        if ($group->isEmpty()) {
+        $data = (new SystemConfigLogic())->getData($code);
+        if (empty($data)) {
             return [];
         }
-        $data = SystemConfig::where('group_id', $group->id)->select()->toArray();
 
         $tag = [];
         $tag[] = $cache['tag'];

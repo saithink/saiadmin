@@ -1,10 +1,10 @@
 <?php
-
 // +----------------------------------------------------------------------
 // | saiadmin [ saiadmin快速开发框架 ]
 // +----------------------------------------------------------------------
 // | Author: sai <1430792918@qq.com>
 // +----------------------------------------------------------------------
+declare(strict_types=1);
 
 namespace plugin\saiadmin\app\cache;
 
@@ -62,7 +62,7 @@ class UserAuthCache
     public static function setUserAuth($uid): array
     {
         // 从缓存获取，直接返回
-        $roleIds = SystemUserRole::where('user_id', $uid)->column('role_id');
+        $roleIds = SystemUserRole::getRoleIds($uid);
 
         // 获取角色关联的菜单权限
         $data = (new SystemMenuLogic())->getAuthByRole($roleIds);
@@ -97,7 +97,7 @@ class UserAuthCache
             return $auth;
         }
 
-        $all = (new SystemMenuLogic())->getAllCode();
+        $all = (new SystemMenuLogic())->getAllAuth();
 
         // 设置权限并返回
         Cache::tag($cache['tag'])->set($cache['all'], $all, $cache['expire']);

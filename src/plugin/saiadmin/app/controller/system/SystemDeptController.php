@@ -6,10 +6,10 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\controller\system;
 
-use plugin\saiadmin\app\cache\UserInfoCache;
 use plugin\saiadmin\app\validate\system\SystemDeptValidate;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\system\SystemDeptLogic;
+use plugin\saiadmin\service\Permission;
 use support\Request;
 use support\Response;
 
@@ -33,12 +33,12 @@ class SystemDeptController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('部门数据列表', 'core:dept:index')]
     public function index(Request $request) : Response
     {
         $where = $request->more([
             ['name', ''],
-            ['leader', ''],
-            ['phone', ''],
+            ['code', ''],
             ['status', ''],
         ]);
         $data = $this->logic->tree($where);
@@ -46,23 +46,76 @@ class SystemDeptController extends BaseController
     }
 
     /**
-     * 数据改变后执行
-     * @param $type
-     * @param $args
-     * @return void
+     * 读取数据
+     * @param Request $request
+     * @return Response
      */
-    protected function afterChange($type, $args): void
+    #[Permission('部门数据读取', 'core:dept:read')]
+    public function read(Request $request) : Response
     {
-        // 批量清理用户缓存
-        if ($type == 'update') {
-            $dept_id = request()->input('id', '');
-            // 清理部门下所有用户缓存
-            UserInfoCache::clearUserInfoByDeptId($dept_id);
+        $id = $request->input('id', '');
+        $model = $this->logic->read($id);
+        if ($model) {
+            $data = is_array($model) ? $model : $model->toArray();
+            return $this->success($data);
+        } else {
+            return $this->fail('未查找到信息');
         }
-        if ($type == 'destroy') {
-            $dept_ids = request()->input('ids', '');
-            // 清理部门下所有用户缓存
-            UserInfoCache::clearUserInfoByDeptId($dept_ids);
+    }
+
+    /**
+     * 保存数据
+     * @param Request $request
+     * @return Response
+     */
+    #[Permission('部门数据添加', 'core:dept:save')]
+    public function save(Request $request): Response
+    {
+        $data = $request->post();
+        $this->validate('save', $data);
+        $result = $this->logic->add($data);
+        if ($result) {
+            return $this->success('添加成功');
+        } else {
+            return $this->fail('添加失败');
+        }
+    }
+
+    /**
+     * 更新数据
+     * @param Request $request
+     * @return Response
+     */
+    #[Permission('部门数据修改','core:dept:update')]
+    public function update(Request $request): Response
+    {
+        $data = $request->post();
+        $this->validate('update', $data);
+        $result = $this->logic->edit($data['id'], $data);
+        if ($result) {
+            return $this->success('修改成功');
+        } else {
+            return $this->fail('修改失败');
+        }
+    }
+
+    /**
+     * 删除数据
+     * @param Request $request
+     * @return Response
+     */
+    #[Permission('部门数据删除','core:dept:destroy')]
+    public function destroy(Request $request) : Response
+    {
+        $ids = $request->post('ids', '');
+        if (empty($ids)) {
+            return $this->fail('请选择要删除的数据');
+        }
+        $result = $this->logic->destroy($ids);
+        if ($result) {
+            return $this->success('删除成功');
+        } else {
+            return $this->fail('删除失败');
         }
     }
 
@@ -78,53 +131,4 @@ class SystemDeptController extends BaseController
         return $this->success($data);
     }
 
-    /**
-     * 部门领导列表
-     * @param Request $request
-     * @return Response
-     */
-    public function leaders(Request $request) : Response
-    {
-        $where = $request->more([
-            ['dept_id', ''],
-            ['username', ''],
-            ['nickname', ''],
-            ['status', ''],
-        ]);
-        $data = $this->logic->leaders($where);
-        return $this->success($data);
-    }
-
-    /**
-     * 添加部门领导
-     * @param Request $request
-     * @return Response
-     */
-    public function addLeader(Request $request) : Response
-    {
-        $id = $request->post('id');
-        $users = $request->post('users');
-        if (empty($users)) {
-            return $this->fail('请选择人员');
-        }
-        $this->logic->addLeader($id, $users);
-        return $this->success('操作成功');
-    }
-
-    /**
-     * 删除部门领导
-     * @param Request $request
-     * @return Response
-     */
-    public function delLeader(Request $request) : Response
-    {
-        $id = $request->post('id');
-        $ids = $request->post('ids');
-        if (!empty($id)) {
-            $this->logic->delLeader($id, $ids);
-            return $this->success('操作成功');
-        } else {
-            return $this->fail('参数错误，请检查');
-        }
-    }
 }

@@ -15,11 +15,6 @@ use support\Response;
 class OpenController
 {
     /**
-     * 逻辑层注入
-     */
-    protected $logic;
-
-    /**
      * 构造方法
      * @access public
      */
@@ -36,7 +31,7 @@ class OpenController
      * @param int $option
      * @return Response
      */
-    public function success(array | string $data = [], string $msg = 'success', $option = JSON_UNESCAPED_UNICODE): Response
+    public function success(array | string $data = [], string $msg = 'success', int $option = JSON_UNESCAPED_UNICODE): Response
     {
         if (is_string($data)) {
             $msg = $data;

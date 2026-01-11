@@ -31,7 +31,7 @@ if (!function_exists('getCurrentInfo')) {
 
 if (!function_exists('fastRoute')) {
     /**
-     * 快速注册路由[index|save|update|read|changeStatus|destroy|import|export]
+     * 快速注册路由[index|save|update|read|destroy|import|export]
      * @param string $name
      * @param string $controller
      * @return void
@@ -39,14 +39,20 @@ if (!function_exists('fastRoute')) {
     function fastRoute(string $name, string $controller): void
     {
         $name = trim($name, '/');
-        if (method_exists($controller, 'index')) Route::get("/$name/index", [$controller, 'index']);
-        if (method_exists($controller, 'save')) Route::post("/$name/save", [$controller, 'save']);
-        if (method_exists($controller, 'update')) Route::put("/$name/update", [$controller, 'update']);
-        if (method_exists($controller, 'read')) Route::get("/$name/read", [$controller, 'read']);
-        if (method_exists($controller, 'changeStatus')) Route::post("/$name/changeStatus", [$controller, 'changeStatus']);
-        if (method_exists($controller, 'destroy')) Route::delete("/$name/destroy", [$controller, 'destroy']);
-        if (method_exists($controller, 'import')) Route::post("/$name/import", [$controller, 'import']);
-        if (method_exists($controller, 'export')) Route::post("/$name/export", [$controller, 'export']);
+        if (method_exists($controller, 'index'))
+            Route::get("/$name/index", [$controller, 'index']);
+        if (method_exists($controller, 'save'))
+            Route::post("/$name/save", [$controller, 'save']);
+        if (method_exists($controller, 'update'))
+            Route::put("/$name/update", [$controller, 'update']);
+        if (method_exists($controller, 'read'))
+            Route::get("/$name/read", [$controller, 'read']);
+        if (method_exists($controller, 'destroy'))
+            Route::delete("/$name/destroy", [$controller, 'destroy']);
+        if (method_exists($controller, 'import'))
+            Route::post("/$name/import", [$controller, 'import']);
+        if (method_exists($controller, 'export'))
+            Route::post("/$name/export", [$controller, 'export']);
     }
 }
 
@@ -58,9 +64,9 @@ if (!function_exists('downloadFile')) {
      */
     function downloadFile($file_name): Response
     {
-        $base_dir = config('plugin.saiadmin.saithink.template',base_path().'/public/template');
-        if (file_exists($base_dir. DIRECTORY_SEPARATOR.$file_name)) {
-            return response()->download($base_dir. DIRECTORY_SEPARATOR.$file_name, urlencode($file_name));
+        $base_dir = config('plugin.saiadmin.saithink.template', base_path() . '/public/template');
+        if (file_exists($base_dir . DIRECTORY_SEPARATOR . $file_name)) {
+            return response()->download($base_dir . DIRECTORY_SEPARATOR . $file_name, urlencode($file_name));
         } else {
             throw new ApiException('模板不存在');
         }
@@ -87,9 +93,9 @@ if (!function_exists('getConfigGroup')) {
     /**
      * 读取配置组
      * @param $group
-     * @return mixed
+     * @return array
      */
-    function getConfigGroup($group): mixed
+    function getConfigGroup($group): array
     {
         return ConfigCache::getConfig($group);
     }
@@ -104,54 +110,5 @@ if (!function_exists('dictDataList')) {
     function dictDataList(string $code): array
     {
         return DictCache::getDict($code);
-    }
-}
-
-if (!function_exists('dbSourceList')) {
-    /**
-     * 数据源列表
-     * @return array
-     */
-    function dbSourceList(): array
-    {
-        $data = config('think-orm.connections');
-        if (empty($data)) {
-            $data = config('thinkorm.connections');
-        }
-        $list = [];
-        foreach ($data as $k => $v) {
-            $list[] = $k;
-        }
-        return $list;
-    }
-}
-
-if (!function_exists('defaultDbSource')) {
-    /**
-     * 获取默认数据源
-     * @return string
-     */
-    function defaultDbSource(): string
-    {
-        $config = config('think-orm');
-        if (empty($config)) {
-            $config = config('thinkorm');
-        }
-        return $config['default'] ?? 'mysql';
-    }
-}
-
-if (!function_exists('dbSource')) {
-    /**
-     * 数据源
-     * @return array
-     */
-    function dbSource(): array
-    {
-        $data = config('think-orm.connections');
-        if (empty($data)) {
-            $data = config('thinkorm.connections');
-        }
-        return $data;
     }
 }

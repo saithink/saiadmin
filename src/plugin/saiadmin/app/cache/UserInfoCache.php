@@ -4,9 +4,11 @@
 // +----------------------------------------------------------------------
 // | Author: sai <1430792918@qq.com>
 // +----------------------------------------------------------------------
+declare(strict_types=1);
+
 namespace plugin\saiadmin\app\cache;
 
-use plugin\saiadmin\app\model\system\SystemUser;
+use plugin\saiadmin\app\logic\system\SystemUserLogic;
 use support\think\Cache;
 
 /**
@@ -59,12 +61,7 @@ class UserInfoCache
      */
     public static function setUserInfo($uid): array
     {
-        $admin = SystemUser::where('id', $uid)->findOrEmpty();
-        $data = $admin->hidden(['password'])->toArray();
-        $data['roleList'] = $admin->roles->toArray() ?: [];
-        $data['postList'] = $admin->posts->toArray() ?: [];
-        $data['deptList'] = $admin->depts ? $admin->depts->toArray() : [];
-
+        $data = (new SystemUserLogic())->getUser($uid);
         $cache = static::cacheConfig();
 
         $tags = [];

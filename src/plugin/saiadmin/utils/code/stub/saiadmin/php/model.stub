@@ -4,10 +4,13 @@
 // +----------------------------------------------------------------------
 // | Author: your name
 // +----------------------------------------------------------------------
-namespace {{namespace_start}}model{{namespace_end}};
+namespace {{namespace_start_model}}model{{namespace_end}};
 
-{% if generate_model == 1 %}
-use plugin\saiadmin\basic\BaseModel;
+{% if stub == 'eloquent' %}
+use plugin\saiadmin\basic\eloquent\BaseModel;
+{% else %}
+use plugin\saiadmin\basic\think\BaseModel;
+{% endif %}
 
 /**
  * {{menu_name}}模型
@@ -19,26 +22,16 @@ use plugin\saiadmin\basic\BaseModel;
 {% endfor %}
  */
 class {{class_name}} extends BaseModel
-{% else %}
-use plugin\saiadmin\basic\BaseNormalModel;
-
-/**
- * {{menu_name}}模型
- *
- * {{table_name}} {{table_comment}}
- *
-{% for column in columns %}
- * @property {{column.php_type}} ${{column.column_name}} {{column.column_comment}}
-{% endfor %}
- */
-class {{class_name}} extends BaseNormalModel
-{% endif %}
 {
     /**
      * 数据表主键
      * @var string
      */
+{% if stub == 'eloquent' %}
+    protected $primaryKey = '{{pk}}';
+{% else %}
     protected $pk = '{{pk}}';
+{% endif %}
 
     /**
      * 数据库表名称
@@ -54,8 +47,35 @@ class {{class_name}} extends BaseNormalModel
     protected $connection = '{{source}}';
 
 {% endif %}
+{% if stub == 'eloquent' %}
+    /**
+     * 属性转换
+     */
+    protected function casts(): array
+    {
+        return array_merge(parent::casts(), [
 {% for column in columns %}
-{% if column.view_type == 'inputTag' or column.view_type == 'checkbox' or column.view_type == 'cityLinkage' or column.view_type == 'userSelect' %}
+{% if column.view_type == 'inputTag' or column.view_type == 'checkbox' %}
+            '{{column.column_name}}' => 'array',
+{% endif %}
+{% if column.view_type == 'uploadImage' and column.options.limit > 1 %}
+            '{{column.column_name}}' => 'array',
+{% endif %}
+{% if column.view_type == 'imagePicker' and column.options.limit > 1 %}
+            '{{column.column_name}}' => 'array',
+{% endif %}
+{% if column.view_type == 'uploadFile' and column.options.limit > 1 %}
+            '{{column.column_name}}' => 'array',
+{% endif %}
+{% if column.view_type == 'chunkUpload' and column.options.limit > 1 %}
+            '{{column.column_name}}' => 'array',
+{% endif %}
+{% endfor %}
+        ]);
+    }
+{% else %}
+{% for column in columns %}
+{% if column.view_type == 'inputTag' or column.view_type == 'checkbox' %}
     /**
      * {{column.column_comment}} 保存数组转换
      */
@@ -73,7 +93,7 @@ class {{class_name}} extends BaseNormalModel
     }
 
 {% endif %}
-{% if column.view_type == 'uploadImage' and column.options.multiple == true %}
+{% if column.view_type == 'uploadImage' and column.options.limit > 1 %}
     /**
      * {{column.column_comment}} 保存数组转换
      */
@@ -91,7 +111,43 @@ class {{class_name}} extends BaseNormalModel
     }
 
 {% endif %}
-{% if column.view_type == 'uploadFile' and column.options.multiple == true %}
+{% if column.view_type == 'imagePicker' and column.options.limit > 1 %}
+    /**
+     * {{column.column_comment}} 保存数组转换
+     */
+    public function set{{column.column_name | camel}}Attr($value)
+    {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * {{column.column_comment}} 读取数组转换
+     */
+    public function get{{column.column_name | camel}}Attr($value)
+    {
+        return json_decode($value ?? '', true);
+    }
+
+{% endif %}
+{% if column.view_type == 'uploadFile' and column.options.limit > 1 %}
+    /**
+     * {{column.column_comment}} 保存数组转换
+     */
+    public function set{{column.column_name | camel}}Attr($value)
+    {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * {{column.column_comment}} 读取数组转换
+     */
+    public function get{{column.column_name | camel}}Attr($value)
+    {
+        return json_decode($value ?? '', true);
+    }
+
+{% endif %}
+{% if column.view_type == 'chunkUpload' and column.options.limit > 1 %}
     /**
      * {{column.column_comment}} 保存数组转换
      */
@@ -110,6 +166,7 @@ class {{class_name}} extends BaseNormalModel
 
 {% endif %}
 {% endfor %}
+{% endif %}
 {% for column in columns %}
 {% if column.is_query == 2 and column.query_type == 'neq' %}
     /**
@@ -177,7 +234,7 @@ class {{class_name}} extends BaseNormalModel
      */
     public function search{{column.column_name | camel}}Attr($query, $value)
     {
-        $query->where('{{column.column_name}}', 'in', $value);
+        $query->whereIn('{{column.column_name}}', $value);
     }
 
 {% endif %}
@@ -187,7 +244,7 @@ class {{class_name}} extends BaseNormalModel
      */
     public function search{{column.column_name | camel}}Attr($query, $value)
     {
-        $query->where('{{column.column_name}}', 'not in', $value);
+        $query->whereNotIn('{{column.column_name}}', $value);
     }
 
 {% endif %}
@@ -197,7 +254,7 @@ class {{class_name}} extends BaseNormalModel
      */
     public function search{{column.column_name | camel}}Attr($query, $value)
     {
-        $query->whereTime('{{column.column_name}}', 'between', $value);
+        $query->whereBetween('{{column.column_name}}', $value);
     }
 
 {% endif %}
@@ -223,13 +280,23 @@ class {{class_name}} extends BaseNormalModel
     }
 
 {% endif %}
-{% if item.type == 'belongsToMany' %}
+{% if item.type == 'belongsToMany' and stub == 'think' %}
     /**
      * 关联模型 {{item.name}}
      */
     public function {{item.name}}()
     {
         return $this->{{item.type}}({{item.model}}::class, {{item.table}}::class, '{{item.localKey}}', '{{item.foreignKey}}');
+    }
+
+{% endif %}
+{% if item.type == 'belongsToMany' and stub == 'eloquent' %}
+    /**
+     * 关联模型 {{item.name}}
+     */
+    public function {{item.name}}()
+    {
+        return $this->{{item.type}}({{item.model}}::class, {{item.table}}::class, '{{item.foreignKey}}', '{{item.localKey}}');
     }
 
 {% endif %}

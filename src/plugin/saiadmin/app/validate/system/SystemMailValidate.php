@@ -6,17 +6,17 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\validate\system;
 
-use think\Validate;
+use plugin\saiadmin\basic\BaseValidate;
 
 /**
  * 邮件验证器
  */
-class SystemMailValidate extends Validate
+class SystemMailValidate extends BaseValidate
 {
     /**
      * 定义验证规则
      */
-    protected $rule =   [
+    protected $rule = [
         'gateway' => 'require',
         'from' => 'require',
         'email' => 'require',
@@ -25,7 +25,7 @@ class SystemMailValidate extends Validate
     /**
      * 定义错误信息
      */
-    protected $message  =   [
+    protected $message = [
         'gateway' => '网关必须填写',
         'from' => '发件人必须填写',
         'email' => '接收人必须填写',

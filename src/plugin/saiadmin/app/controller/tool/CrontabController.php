@@ -10,6 +10,7 @@ use plugin\saiadmin\app\logic\tool\CrontabLogic;
 use plugin\saiadmin\app\logic\tool\CrontabLogLogic;
 use plugin\saiadmin\app\validate\tool\CrontabValidate;
 use plugin\saiadmin\basic\BaseController;
+use plugin\saiadmin\service\Permission;
 use Webman\Channel\Client;
 use support\Request;
 use support\Response;
@@ -34,6 +35,7 @@ class CrontabController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('定时任务列表', 'tool:crontab:index')]
     public function index(Request $request) : Response
     {
         $where = $request->more([
@@ -48,54 +50,79 @@ class CrontabController extends BaseController
     }
 
     /**
-     * 修改状态
+     * 保存数据
      * @param Request $request
      * @return Response
      */
-    public function changeStatus(Request $request) : Response
+    #[Permission('定时任务添加', 'tool:crontab:edit')]
+    public function save(Request $request): Response
     {
-        $id = $request->input('id', '');
-        $status = $request->input('status', 1);
-        $model = $this->logic->findOrEmpty($id);
-        if ($model->isEmpty()) {
-            return $this->fail('未查找到信息');
-        }
-        $result = $model->save(['status' => $status]);
+        $data = $request->post();
+        $this->validate('save', $data);
+        $result = $this->logic->add($data);
         if ($result) {
-            $this->afterChange('changeStatus', $id);
-            return $this->success('操作成功');
+            return $this->success('添加成功');
         } else {
-            return $this->fail('操作失败');
+            return $this->fail('添加失败');
         }
     }
 
     /**
-     * 更新crontab任务
-     * @param $type
-     * @param $args
-     * @return void
+     * 更新数据
+     * @param Request $request
+     * @return Response
      */
-    protected function afterChange($type, $args): void
+    #[Permission('定时任务修改', 'tool:crontab:edit')]
+    public function update(Request $request): Response
     {
-        // 连接到Channel服务
-        Client::connect();
-
-        if ($type == 'save' || $type == 'changeStatus') {
-            $id = $args;
-            Client::publish('crontab', ['args' => $id]);
+        $data = $request->post();
+        $this->validate('update', $data);
+        $result = $this->logic->edit($data['id'], $data);
+        if ($result) {
+            return $this->success('修改成功');
+        } else {
+            return $this->fail('修改失败');
         }
+    }
 
-        if ($type == 'destroy') {
-            if(is_array($args)){
-                foreach ($args as $id){
-                    Client::publish('crontab', ['args' => $id]);
-                }
-            }
+    /**
+     * 删除数据
+     * @param Request $request
+     * @return Response
+     */
+    #[Permission('定时任务删除', 'tool:crontab:edit')]
+    public function destroy(Request $request) : Response
+    {
+        $ids = $request->post('ids', '');
+        if (empty($ids)) {
+            return $this->fail('请选择要删除的数据');
         }
+        $result = $this->logic->destroy($ids);
+        if ($result) {
+            return $this->success('删除成功');
+        } else {
+            return $this->fail('删除失败');
+        }
+    }
 
-        if ($type == 'update') {
-            $id = request()->input('id', '');
-            Client::publish('crontab', ['args' => $id]);
+    /**
+     * 修改状态
+     * @param Request $request
+     * @return Response
+     */
+    #[Permission('定时任务状态修改', 'tool:crontab:edit')]
+    public function changeStatus(Request $request) : Response
+    {
+        $id = $request->input('id', '');
+        $status = $request->input('status', 1);
+        if (empty($id)) {
+            return $this->fail('参数错误，请检查');
+        }
+        $result = $this->logic->changeStatus($id, $status);
+        if ($result) {
+            return $this->success('操作成功');
+        } else {
+            return $this->fail('操作失败');
         }
     }
 
@@ -104,6 +131,7 @@ class CrontabController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('定时任务执行', 'tool:crontab:run')]
     public function run(Request $request) : Response
     {
         $id = $request->input('id', '');
@@ -120,10 +148,12 @@ class CrontabController extends BaseController
      * @param Request $request
      * @return Response
      */
+    #[Permission('定时任务日志', 'tool:crontab:index')]
     public function logPageList(Request $request) : Response
     {
         $where = $request->more([
             ['crontab_id', ''],
+            ['create_time', []]
         ]);
         $logic = new CrontabLogLogic();
         $query = $logic->search($where);
@@ -132,10 +162,11 @@ class CrontabController extends BaseController
     }
 
     /**
-     * 删除定时任务日志数据
+     * 定时任务日志删除
      * @param Request $request
      * @return Response
      */
+    #[Permission('定时任务日志删除', 'tool:crontab:edit')]
     public function deleteCrontabLog(Request $request) : Response
     {
         $ids = $request->input('ids', '');

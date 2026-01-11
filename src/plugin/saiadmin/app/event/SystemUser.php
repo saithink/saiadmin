@@ -6,9 +6,9 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\event;
 
+use plugin\saiadmin\app\cache\ReflectionCache;
 use plugin\saiadmin\app\model\system\SystemLoginLog;
 use plugin\saiadmin\app\model\system\SystemOperLog;
-use plugin\saiadmin\app\model\system\SystemMenu;
 
 class SystemUser
 {
@@ -18,8 +18,9 @@ class SystemUser
      */
     public function login($item)
     {
-        $ip = request()->getRealIp();
-        $http_user_agent = request()->header('user-agent');
+        $request = request();
+        $ip = $request ? $request->getRealIp() : '127.0.0.1';
+        $http_user_agent = $request ? $request->header('user-agent') : '';
         $data['username'] = $item['username'];
         $data['ip'] = $ip;
         $data['ip_location'] = self::getIpLocation($ip);
@@ -40,21 +41,25 @@ class SystemUser
      */
     public function operateLog(): bool
     {
-        if (request()->method() === 'GET') {
+        $request = request();
+        if (!$request) {
+            return false;
+        }
+        if ($request->method() === 'GET') {
             return false;
         }
         $info = getCurrentInfo();
-        $ip = request()->getRealIp();
-        $module = request()->plugin;
-        $rule = trim(strtolower(request()->uri()));
+        $ip = $request->getRealIp();
+        $module = $request->plugin;
+        $rule = trim($request->uri());
         $data['username'] = $info['username'];
-        $data['method'] = request()->method();
+        $data['method'] = $request->method();
         $data['router'] = $rule;
         $data['service_name'] = self::getServiceName();
         $data['app'] = $module;
         $data['ip'] = $ip;
         $data['ip_location'] = self::getIpLocation($ip);
-        $data['request_data'] = $this->filterParams(request()->all());
+        $data['request_data'] = $this->filterParams($request->all());
         SystemOperLog::create($data);
         return true;
     }
@@ -64,10 +69,13 @@ class SystemUser
      */
     protected function getServiceName(): string
     {
-        $path = request()->path();
-        $menu = SystemMenu::where('code', $path)->findOrEmpty();
-        if (!$menu->isEmpty()) {
-            return $menu->getAttr('name');
+        $request = request();
+        if (!$request) {
+            return '未命名业务';
+        }
+        $permissions = ReflectionCache::getPermissionAttributes($request->controller, $request->action);
+        if (!empty($permissions)) {
+            return $permissions['title'] ?? '未命名业务';
         } else {
             return '未命名业务';
         }
@@ -103,7 +111,7 @@ class SystemUser
             return $network;
         }
         if ($country == '中国') {
-            return $province.'-'.$city.':'.$network;
+            return $province . '-' . $city . ':' . $network;
         } else if ($country == '0') {
             return '未知';
         } else {

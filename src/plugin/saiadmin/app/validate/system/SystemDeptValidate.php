@@ -6,27 +6,26 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\validate\system;
 
-use think\Validate;
+use plugin\saiadmin\basic\BaseValidate;
 
 /**
  * 部门验证器
  */
-class SystemDeptValidate extends Validate
+class SystemDeptValidate extends BaseValidate
 {
     /**
      * 定义验证规则
      */
-    protected $rule =   [
-        'name' => 'require|max:16',
+    protected $rule = [
+        'name' => 'require',
         'status' => 'require',
     ];
 
     /**
      * 定义错误信息
      */
-    protected $message  =   [
-        'name.require' => '部门名称必须填写',
-        'name.max'     => '部门名称最多不能超过16个字符',
+    protected $message = [
+        'name' => '部门名称必须填写',
         'status' => '状态必须填写',
     ];
 
