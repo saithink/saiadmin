@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\logic\system;
 
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemCategory;
 use plugin\saiadmin\utils\Helper;
@@ -28,10 +28,10 @@ class SystemCategoryLogic extends BaseLogic
     /**
      * 添加数据
      */
-    public function add($data): mixed
+    public function add($data): bool
     {
         $data = $this->handleData($data);
-        return $this->model->create($data);
+        return $this->model->save($data);
     }
 
     /**
@@ -46,11 +46,11 @@ class SystemCategoryLogic extends BaseLogic
         if (in_array($id, explode(',', $data['level']))) {
             throw new ApiException('不能将上级分类设置为当前分类的子分类');
         }
-        $model = $this->model->find($id);
-        if (!$model) {
+        $model = $this->model->findOrEmpty($id);
+        if ($model->isEmpty()) {
             throw new ApiException('数据不存在');
         }
-        return $model->update($data);
+        return $model->save($data);
     }
 
     /**
@@ -58,7 +58,7 @@ class SystemCategoryLogic extends BaseLogic
      */
     public function destroy($ids): bool
     {
-        $num = $this->model->whereIn('parent_id', $ids)->count();
+        $num = $this->model->where('parent_id', 'in', $ids)->count();
         if ($num > 0) {
             throw new ApiException('该部门下存在子分类，请先删除子分类');
         } else {
@@ -75,7 +75,7 @@ class SystemCategoryLogic extends BaseLogic
             $data['level'] = '0';
             $data['parent_id'] = 0;
         } else {
-            $parentMenu = SystemCategory::find($data['parent_id']);
+            $parentMenu = SystemCategory::findOrEmpty($data['parent_id']);
             $data['level'] = $parentMenu['level'] . $parentMenu['id'] . ',';
         }
         return $data;
@@ -91,9 +91,9 @@ class SystemCategoryLogic extends BaseLogic
         $query = $this->search($where);
         $request = request();
         if ($request && $request->input('tree', 'false') === 'true') {
-            $query->select('id', 'id as value', 'category_name as label', 'parent_id', 'category_name', 'sort');
+            $query->field('id, id as value, category_name as label, parent_id, category_name, sort');
         }
-        $query->orderBy('sort', 'desc');
+        $query->order('sort', 'desc');
         $data = $this->getAll($query);
         return Helper::makeTree($data);
     }

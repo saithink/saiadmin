@@ -9,7 +9,7 @@ namespace plugin\saiadmin\app\logic\system;
 use Exception;
 use plugin\saiadmin\app\model\system\SystemAttachment;
 use plugin\saiadmin\app\model\system\SystemCategory;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\service\storage\ChunkUploadService;
 use plugin\saiadmin\service\storage\UploadService;
@@ -36,8 +36,8 @@ class SystemAttachmentLogic extends BaseLogic
      */
     public function move($category_id, $ids): mixed
     {
-        $category = SystemCategory::where('id', $category_id)->first();
-        if (!$category) {
+        $category = SystemCategory::where('id', $category_id)->findOrEmpty();
+        if ($category->isEmpty()) {
             throw new ApiException('目标分类不存在');
         }
         return $this->model->whereIn('id', $ids)->update(['category_id' => $category_id]);
@@ -130,7 +130,7 @@ class SystemAttachmentLogic extends BaseLogic
             $info['size_byte'] = $size;
             $info['size_info'] = formatBytes($size);
             $info['url'] = $baseUrl . $object_name;
-            $this->model->create($info);
+            $this->model->save($info);
             return $info;
         }
     }
@@ -154,8 +154,8 @@ class SystemAttachmentLogic extends BaseLogic
         $hash = $data['unique_id'];
         $hash_check = config('plugin.saiadmin.saithink.file_hash', false);
         if ($hash_check) {
-            $model = $this->model->where('hash', $hash)->first();
-            if ($model) {
+            $model = $this->model->where('hash', $hash)->findOrEmpty();
+            if (!$model->isEmpty()) {
                 return $model->toArray();
             }
         }
@@ -172,7 +172,7 @@ class SystemAttachmentLogic extends BaseLogic
         $info['size_byte'] = $data['size'];
         $info['size_info'] = formatBytes($data['size']);
         $info['url'] = $url;
-        $this->model->create($info);
+        $this->model->save($info);
         return $info;
     }
 
@@ -185,8 +185,8 @@ class SystemAttachmentLogic extends BaseLogic
     {
         $chunkService = new ChunkUploadService();
         if ($data['index'] == 0) {
-            $model = $this->model->where('hash', $data['hash'])->first();
-            if ($model) {
+            $model = $this->model->where('hash', $data['hash'])->findOrEmpty();
+            if (!$model->isEmpty()) {
                 return $model->toArray();
             } else {
                 return $chunkService->checkChunk($data);

@@ -8,7 +8,7 @@ namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\cache\UserMenuCache;
 use plugin\saiadmin\app\model\system\SystemRole;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Helper;
 use support\think\Cache;
@@ -30,10 +30,10 @@ class SystemRoleLogic extends BaseLogic
     /**
      * 添加数据
      */
-    public function add($data): mixed
+    public function add($data): bool
     {
         $data = $this->handleData($data);
-        return $this->model->create($data);
+        return $this->model->save($data);
     }
 
     /**
@@ -41,12 +41,12 @@ class SystemRoleLogic extends BaseLogic
      */
     public function edit($id, $data): bool
     {
-        $model = $this->model->find($id);
-        if (!$model) {
+        $model = $this->model->findOrEmpty($id);
+        if ($model->isEmpty()) {
             throw new ApiException('数据不存在');
         }
         $data = $this->handleData($data);
-        return $model->update($data);
+        return $model->save($data);
     }
 
     /**
@@ -92,7 +92,7 @@ class SystemRoleLogic extends BaseLogic
         $levelArr = array_column($this->adminInfo['roleList'], 'level');
         $maxLevel = max($levelArr);
         $query->where('level', '<', $maxLevel);
-        $query->orderBy('sort', 'desc');
+        $query->order('sort', 'desc');
         return $this->getAll($query);
     }
 
@@ -105,9 +105,9 @@ class SystemRoleLogic extends BaseLogic
     {
         if (empty($ids))
             return [];
-        return $this->model->whereIn('id', $ids)->with([
+        return $this->model->where('id', 'in', $ids)->with([
             'menus' => function ($query) {
-                $query->where('status', 1)->orderBy('sort', 'desc');
+                $query->where('status', 1)->order('sort', 'desc');
             }
         ])->select()->toArray();
 
@@ -120,7 +120,7 @@ class SystemRoleLogic extends BaseLogic
      */
     public function getMenuByRole($id): array
     {
-        $role = $this->model->find($id);
+        $role = $this->model->findOrEmpty($id);
         $menus = $role->menus ?: [];
         return [
             'id' => $id,
@@ -137,9 +137,13 @@ class SystemRoleLogic extends BaseLogic
     public function saveMenuPermission($id, $menu_ids): mixed
     {
         return $this->transaction(function () use ($id, $menu_ids) {
-            $role = $this->model->find($id);
+            $role = $this->model->findOrEmpty($id);
             if ($role) {
-                $role->menus()->sync($menu_ids);
+                $role->menus()->detach();
+                $data = array_map(function ($menu_id) use ($id) {
+                    return ['menu_id' => $menu_id, 'role_id' => $id];
+                }, $menu_ids);
+                Db::name('sa_system_role_menu')->limit(100)->insertAll($data);
             }
             $cache = config('plugin.saiadmin.saithink.button_cache');
             $tag = $cache['role'] . $id;

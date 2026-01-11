@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\tool;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 定时任务日志模型
@@ -32,7 +32,5 @@ class CrontabLog extends BaseModel
     protected $pk = 'id';
 
     protected $table = 'sa_tool_crontab_log';
-
-    protected $guarded = ['created_by', 'updated_by'];
 
 }

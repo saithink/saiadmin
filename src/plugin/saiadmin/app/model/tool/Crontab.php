@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\tool;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 定时任务模型

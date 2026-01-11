@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\tool;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 代码生成业务模型
@@ -20,5 +20,10 @@ class GenerateTables extends BaseModel
     protected $pk = 'id';
 
     protected $table = 'sa_tool_generate_tables';
+
+    public function getOptionsAttr($value)
+    {
+        return json_decode($value ?? '', true);
+    }
 
 }

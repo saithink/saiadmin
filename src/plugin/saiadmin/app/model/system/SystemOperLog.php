@@ -7,7 +7,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 操作日志模型
@@ -35,7 +35,7 @@ class SystemOperLog extends BaseModel
      * 数据表主键
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
 
     protected $table = 'sa_system_oper_log';
 

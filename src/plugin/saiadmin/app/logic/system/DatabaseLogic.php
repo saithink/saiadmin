@@ -6,9 +6,9 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\logic\system;
 
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
-use support\Db;
+use support\think\Db;
 
 /**
  * 数据表维护逻辑层
@@ -21,7 +21,7 @@ class DatabaseLogic extends BaseLogic
      */
     public function getDbSource(): array
     {
-        $data = config('database.connections');
+        $data = config('think-orm.connections');
         $list = [];
         foreach ($data as $k => $v) {
             $list[] = $k;
@@ -51,32 +51,32 @@ class DatabaseLogic extends BaseLogic
         if (!empty($query['source'])) {
             if (!empty($query['name'])) {
                 $sql = 'show table status where name=:name ';
-                $list = Db::connection($query['source'])->select($sql, ['name' => $query['name']]);
+                $list = Db::connect($query['source'])->query($sql, ['name' => $query['name']]);
             } else {
-                $list = Db::connection($query['source'])->select('show table status');
+                $list = Db::connect($query['source'])->query('show table status');
             }
         } else {
             if (!empty($query['name'])) {
                 $sql = 'show table status where name=:name ';
-                $list = Db::select($sql, ['name' => $query['name']]);
+                $list = Db::query($sql, ['name' => $query['name']]);
             } else {
-                $list = Db::select('show table status');
+                $list = Db::query('show table status');
             }
         }
 
         $data = [];
         foreach ($list as $item) {
             $data[] = [
-                'name' => $item->Name,
-                'engine' => $item->Engine,
-                'rows' => $item->Rows,
-                'data_free' => $item->Data_free,
-                'data_length' => $item->Data_length,
-                'index_length' => $item->Index_length,
-                'collation' => $item->Collation,
-                'create_time' => $item->Create_time,
-                'update_time' => $item->Update_time,
-                'comment' => $item->Comment,
+                'name' => $item['Name'],
+                'engine' => $item['Engine'],
+                'rows' => $item['Rows'],
+                'data_free' => $item['Data_free'],
+                'data_length' => $item['Data_length'],
+                'index_length' => $item['Index_length'],
+                'collation' => $item['Collation'],
+                'create_time' => $item['Create_time'],
+                'update_time' => $item['Update_time'],
+                'comment' => $item['Comment'],
             ];
         }
         $total = count($data);
@@ -100,20 +100,20 @@ class DatabaseLogic extends BaseLogic
         $columnList = [];
         if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
             if (!empty($source)) {
-                $list = Db::connection($source)->select('SHOW FULL COLUMNS FROM `' . $table . '`');
+                $list = Db::connect($source)->query('SHOW FULL COLUMNS FROM `' . $table . '`');
             } else {
-                $list = Db::select('SHOW FULL COLUMNS FROM `' . $table . '`');
+                $list = Db::query('SHOW FULL COLUMNS FROM `' . $table . '`');
             }
             foreach ($list as $column) {
-                preg_match('/^\w+/', $column->Type, $matches);
+                preg_match('/^\w+/', $column['Type'], $matches);
                 $columnList[] = [
-                    'column_key' => $column->Key,
-                    'column_name' => $column->Field,
+                    'column_key' => $column['Key'],
+                    'column_name' => $column['Field'],
                     'column_type' => $matches[0],
-                    'column_comment' => trim(preg_replace("/\([^()]*\)/", "", $column->Comment)),
-                    'extra' => $column->Extra,
-                    'default_value' => $column->Default,
-                    'is_nullable' => $column->Null,
+                    'column_comment' => trim(preg_replace("/\([^()]*\)/", "", $column['Comment'])),
+                    'extra' => $column['Extra'],
+                    'default_value' => $column['Default'],
+                    'is_nullable' => $column['Null'],
                 ];
             }
         }
@@ -127,7 +127,7 @@ class DatabaseLogic extends BaseLogic
     {
         foreach ($tables as $table) {
             if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
-                Db::statement('OPTIMIZE TABLE `' . $table . '`');
+                Db::execute('OPTIMIZE TABLE `' . $table . '`');
             }
         }
     }
@@ -139,7 +139,7 @@ class DatabaseLogic extends BaseLogic
     {
         foreach ($tables as $table) {
             if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
-                Db::statement('ANALYZE TABLE `' . $table . '`');
+                Db::execute('ANALYZE TABLE `' . $table . '`');
             }
         }
     }
@@ -152,7 +152,7 @@ class DatabaseLogic extends BaseLogic
         if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
             // 查询表字段
             $sql = 'SHOW COLUMNS FROM `' . $table . '` where Field = "delete_time"';
-            $columns = Db::select($sql);
+            $columns = Db::query($sql);
             $isDeleteTime = false;
             if (count($columns) > 0) {
                 $isDeleteTime = true;
@@ -162,19 +162,11 @@ class DatabaseLogic extends BaseLogic
             }
             // 查询软删除数据
             $request = request();
-            $page = $request ? ($request->input('page') ?: 1) : 1;
             $limit = $request ? ($request->input('limit') ?: 10) : 10;
-            $list = Db::table($table)->whereNotNull('delete_time')
-                ->orderBy('delete_time', 'desc')
-                ->paginate($limit, ['*'], 'page', $page);
-            return [
-                'current_page' => $list->currentPage(),
-                'per_page' => $list->perPage(),
-                'last_page' => $list->lastPage(),
-                'has_more' => $list->hasMorePages(),
-                'total' => $list->total(),
-                'data' => $list->items(),
-            ];
+            return Db::table($table)->whereNotNull('delete_time')
+                ->order('delete_time', 'desc')
+                ->paginate($limit)
+                ->toArray();
         } else {
             return [];
         }
@@ -189,7 +181,7 @@ class DatabaseLogic extends BaseLogic
     public function delete($table, $ids)
     {
         if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
-            $count = Db::table($table)->whereIn('id', $ids)->delete();
+            $count = Db::table($table)->whereIn('id', $ids)->delete($ids);
             return $count > 0;
         } else {
             return false;
@@ -206,7 +198,7 @@ class DatabaseLogic extends BaseLogic
     {
         if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
             $count = Db::table($table)
-                ->whereIn('id', $ids)
+                ->where('id', 'in', $ids)
                 ->update(['delete_time' => null]);
             return $count > 0;
         } else {

@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 用户信息模型
@@ -41,7 +41,7 @@ class SystemUser extends BaseModel
      * 数据表主键
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
 
     /**
      * 数据表完整名称
@@ -49,13 +49,10 @@ class SystemUser extends BaseModel
      */
     protected $table = 'sa_system_user';
 
-    /**
-     * 关键字搜索
-     */
     public function searchKeywordAttr($query, $value)
     {
         if ($value) {
-            $query->whereAny(['username', 'realname', 'phone'], 'like', '%' . $value . '%');
+            $query->where('username|realname|phone', 'like', '%' . $value . '%');
         }
     }
 
@@ -67,7 +64,7 @@ class SystemUser extends BaseModel
         if (!empty($value)) {
             $deptIds = [$value['id']];
             $deptLevel = $value['level'] . $value['id'] . ',';
-            $dept_ids = SystemDept::where('level', 'like', $deptLevel . '%')->pluck('id')->toArray();
+            $dept_ids = SystemDept::whereLike('level', $deptLevel . '%')->column('id');
             $deptIds = array_merge($deptIds, $dept_ids);
             $query->whereIn('dept_id', $deptIds);
         }
@@ -78,7 +75,7 @@ class SystemUser extends BaseModel
      */
     public function roles()
     {
-        return $this->belongsToMany(SystemRole::class, SystemUserRole::class, 'user_id', 'role_id');
+        return $this->belongsToMany(SystemRole::class, SystemUserRole::class, 'role_id', 'user_id');
     }
 
     /**
@@ -86,7 +83,7 @@ class SystemUser extends BaseModel
      */
     public function posts()
     {
-        return $this->belongsToMany(SystemPost::class, SystemUserPost::class, 'user_id', 'post_id');
+        return $this->belongsToMany(SystemPost::class, SystemUserPost::class, 'post_id', 'user_id');
     }
 
     /**

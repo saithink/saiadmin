@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\tool;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 代码生成业务字段模型
@@ -21,6 +21,9 @@ class GenerateColumns extends BaseModel
 
     protected $table = 'sa_tool_generate_columns';
 
-    protected $guarded = ['is_cover'];
+    public function getOptionsAttr($value)
+    {
+        return json_decode($value ?? '', true);
+    }
 
 }

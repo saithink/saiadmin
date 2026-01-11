@@ -9,7 +9,7 @@ namespace plugin\saiadmin\app\logic\system;
 use plugin\saiadmin\app\model\system\SystemMenu;
 use plugin\saiadmin\app\model\system\SystemRoleMenu;
 use plugin\saiadmin\app\model\system\SystemUserRole;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Arr;
 use plugin\saiadmin\utils\Helper;
@@ -33,7 +33,7 @@ class SystemMenuLogic extends BaseLogic
     public function add($data): mixed
     {
         $data = $this->handleData($data);
-        return $this->model->create($data);
+        return $this->model->save($data);
     }
 
     /**
@@ -45,7 +45,7 @@ class SystemMenuLogic extends BaseLogic
         if ($data['parent_id'] == $id) {
             throw new ApiException('不能设置父级为自身');
         }
-        return $this->model->where('id', $id)->update($data);
+        return $this->model->update($data, ['id' => $id]);
     }
 
     /**
@@ -53,7 +53,7 @@ class SystemMenuLogic extends BaseLogic
      */
     public function destroy($ids): bool
     {
-        $num = $this->model->whereIn('parent_id', $ids)->count();
+        $num = $this->model->where('parent_id', 'in', $ids)->count();
         if ($num > 0) {
             throw new ApiException('该菜单下存在子菜单，请先删除子菜单');
         } else {
@@ -68,7 +68,11 @@ class SystemMenuLogic extends BaseLogic
     {
         // 处理上级菜单
         if (empty($data['parent_id']) || $data['parent_id'] == 0) {
+            $data['level'] = '0';
             $data['parent_id'] = 0;
+        } else {
+            $parentMenu = $this->model->findOrEmpty($data['parent_id']);
+            $data['level'] = $parentMenu['level'] . $parentMenu['id'] . ',';
         }
         return $data;
     }
@@ -83,9 +87,9 @@ class SystemMenuLogic extends BaseLogic
         $query = $this->search($where);
         $request = request();
         if ($request && $request->input('tree', 'false') === 'true') {
-            $query->select('id', 'id as value', 'name as label', 'parent_id', 'type');
+            $query->field('id, id as value, name as label, parent_id, type');
         }
-        $query->orderBy('sort', 'desc');
+        $query->order('sort', 'desc');
         $data = $this->getAll($query);
         return Helper::makeTree($data);
     }
@@ -101,10 +105,10 @@ class SystemMenuLogic extends BaseLogic
         $roles = $roleLogic->getMenuIdsByRoleIds($role_ids);
         $ids = $this->filterMenuIds($roles);
         $query = $this->model
-            ->select('id', 'id as value', 'name as label', 'parent_id', 'type')
+            ->field('id, id as value, name as label, parent_id, type')
             ->where('status', 1)
-            ->whereIn('id', $ids)
-            ->orderBy('sort', 'desc');
+            ->where('id', 'in', $ids)
+            ->order('sort', 'desc');
         $data = $this->getAll($query);
         return Helper::makeTree($data);
     }
@@ -114,7 +118,7 @@ class SystemMenuLogic extends BaseLogic
      */
     public function getAllMenus(): array
     {
-        $query = $this->search(['status' => 1, 'type' => [1, 2, 4]])->orderBy('sort', 'desc');
+        $query = $this->search(['status' => 1, 'type' => [1, 2, 4]])->order('sort', 'desc');
         $data = $this->getAll($query);
         return Helper::makeArtdMenus($data);
     }
@@ -127,8 +131,7 @@ class SystemMenuLogic extends BaseLogic
     {
         return SystemMenu::where('type', 3)
             ->where('status', 1)
-            ->pluck('slug')
-            ->toArray();
+            ->column('slug');
     }
 
     /**
@@ -138,14 +141,13 @@ class SystemMenuLogic extends BaseLogic
      */
     public function getAuthByRole($roleIds): array
     {
-        $menuId = SystemRoleMenu::whereIn('role_id', $roleIds)->pluck('menu_id')->toArray();
+        $menuId = SystemRoleMenu::whereIn('role_id', $roleIds)->column('menu_id');
 
-        return SystemMenu::distinct()
+        return SystemMenu::distinct(true)
             ->where('type', 3)
             ->where('status', 1)
-            ->whereIn('id', array_unique($menuId))
-            ->pluck('slug')
-            ->toArray();
+            ->where('id', 'in', array_unique($menuId))
+            ->column('slug');
     }
 
     /**
@@ -155,14 +157,14 @@ class SystemMenuLogic extends BaseLogic
      */
     public function getMenuByRole($roleIds): array
     {
-        $menuId = SystemRoleMenu::whereIn('role_id', $roleIds)->pluck('menu_id')->toArray();
+        $menuId = SystemRoleMenu::whereIn('role_id', $roleIds)->column('menu_id');
 
-        $data = SystemMenu::distinct()
+        $data = SystemMenu::distinct(true)
             ->where('status', 1)
-            ->whereIn('type', [1, 2, 4])
-            ->whereIn('id', array_unique($menuId))
-            ->orderBy('sort', 'desc')
-            ->get()
+            ->where('type', 'in', [1, 2, 4])
+            ->where('id', 'in', array_unique($menuId))
+            ->order('sort', 'desc')
+            ->select()
             ->toArray();
         return Helper::makeArtdMenus($data);
     }

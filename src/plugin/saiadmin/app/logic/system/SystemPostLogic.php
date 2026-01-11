@@ -7,7 +7,7 @@
 namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\model\system\SystemPost;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\service\OpenSpoutWriter;
 use OpenSpout\Reader\XLSX\Reader;
@@ -33,7 +33,7 @@ class SystemPostLogic extends BaseLogic
     public function accessPost(array $where = []): array
     {
         $query = $this->search($where);
-        $query->select('id', 'id as value', 'name as label', 'name', 'code');
+        $query->field('id, id as value, name as label, name, code');
         return $this->getAll($query);
     }
 
@@ -74,7 +74,7 @@ class SystemPostLogic extends BaseLogic
      */
     public function export($where = [])
     {
-        $query = $this->search($where)->pluck('id', 'name', 'code', 'sort', 'status', 'create_time');
+        $query = $this->search($where)->field('id,name,code,sort,status,create_time');
         $data = $this->getAll($query);
         $file_name = '岗位数据.xlsx';
         $header = ['编号', '岗位名称', '岗位标识', '排序', '状态', '创建时间'];

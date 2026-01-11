@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\logic\system;
 
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemDictData;
 use plugin\saiadmin\app\model\system\SystemDictType;
@@ -33,12 +33,12 @@ class SystemDictDataLogic extends BaseLogic
      */
     public function add($data): mixed
     {
-        $type = SystemDictType::find($data['type_id']);
-        if (!$type) {
+        $type = SystemDictType::where('id', $data['type_id'])->findOrEmpty();
+        if ($type->isEmpty()) {
             throw new ApiException('字典类型不存在');
         }
         $data['code'] = $type->code;
-        $this->model->create($data);
+        $this->model->save($data);
         DictCache::clear();
         return $this->model->getKey();
     }

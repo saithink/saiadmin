@@ -9,7 +9,7 @@ namespace plugin\saiadmin\app\logic\system;
 use plugin\saiadmin\app\cache\ConfigCache;
 use plugin\saiadmin\app\model\system\SystemConfig;
 use plugin\saiadmin\app\model\system\SystemConfigGroup;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\utils\Helper;
 
@@ -76,7 +76,7 @@ class SystemConfigLogic extends BaseLogic
             ];
         }
         // upsert: 根据 id 更新，如果不存在则插入
-        $this->model->upsert($saveData, ['id'], ['value']);
+        $this->model->saveAll($saveData);
         ConfigCache::clearConfig($group->code);
         return true;
     }
@@ -88,11 +88,11 @@ class SystemConfigLogic extends BaseLogic
      */
     public function getData($code): array
     {
-        $group = SystemConfigGroup::where('code', $code)->first();
+        $group = SystemConfigGroup::where('code', $code)->findOrEmpty();
         if (empty($group)) {
             return [];
         }
-        $config = SystemConfig::where('group_id', $group['id'])->get()->toArray();
+        $config = SystemConfig::where('group_id', $group['id'])->select()->toArray();
         return $config;
     }
 

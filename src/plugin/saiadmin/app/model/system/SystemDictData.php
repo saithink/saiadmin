@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 字典数据模型
@@ -33,7 +33,7 @@ class SystemDictData extends BaseModel
      * 数据表主键
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
 
     protected $table = 'sa_system_dict_data';
 

@@ -7,7 +7,7 @@
 namespace plugin\saiadmin\app\logic\tool;
 
 use plugin\saiadmin\app\model\tool\GenerateColumns;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\utils\Helper;
 
 /**
@@ -94,7 +94,7 @@ class GenerateColumnsLogic extends BaseLogic
         $data['is_query'] = $data['is_query'] ? 2 : 1;
         $data['is_sort'] = $data['is_sort'] ? 2 : 1;
         $data['is_required'] = $data['is_required'] ? 2 : 1;
-        $this->model->where($where)->update($data);
+        $this->model->update($data, $where);
     }
 
     private function fieldDispose(array $column): array

@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use think\model\Pivot;
 
 /**
  * 用户角色关联模型
@@ -19,7 +19,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class SystemUserRole extends Pivot
 {
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
+
     protected $table = 'sa_system_user_role';
 
     /**
@@ -29,6 +30,6 @@ class SystemUserRole extends Pivot
      */
     public static function getRoleIds($user_id): array
     {
-        return static::where('user_id', $user_id)->pluck('role_id')->toArray();
+        return static::where('user_id', $user_id)->column('role_id');
     }
 }

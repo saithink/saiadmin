@@ -7,7 +7,7 @@
 namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\model\system\SystemMail;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\utils\Helper;
 
 /**

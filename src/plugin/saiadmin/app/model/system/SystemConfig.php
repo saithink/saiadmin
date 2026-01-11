@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 参数配置模型
@@ -33,15 +33,13 @@ class SystemConfig extends BaseModel
      * 数据表主键
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
 
     protected $table = 'sa_system_config';
 
-    protected function casts(): array
+    public function getConfigSelectDataAttr($value)
     {
-        return array_merge(parent::casts(), [
-            'config_select_data' => 'array',
-        ]);
+        return json_decode($value ?? '', true);
     }
 
 }

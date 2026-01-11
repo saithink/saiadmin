@@ -7,7 +7,7 @@
 namespace plugin\saiadmin\app\logic\tool;
 
 use plugin\saiadmin\app\model\tool\CrontabLog;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 
 /**
  * 定时任务日志逻辑层

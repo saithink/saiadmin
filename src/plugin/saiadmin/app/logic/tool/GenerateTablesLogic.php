@@ -12,7 +12,7 @@ use plugin\saiadmin\app\model\system\SystemMenu;
 use plugin\saiadmin\app\model\tool\GenerateTables;
 use plugin\saiadmin\app\model\tool\GenerateColumns;
 use plugin\saiadmin\exception\ApiException;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\utils\Helper;
 use plugin\saiadmin\utils\code\CodeZip;
 use plugin\saiadmin\utils\code\CodeEngine;
@@ -36,13 +36,6 @@ class GenerateTablesLogic extends BaseLogic
         $this->dataLogic = new DatabaseLogic();
     }
 
-    public function read($id): GenerateTables
-    {
-        $data = parent::read($id);
-        $data['options'] = $data['options'] ? json_decode($data['options'], true) : [];
-        return $data;
-    }
-
     /**
      * 删除表和字段信息
      * @param $ids
@@ -52,7 +45,9 @@ class GenerateTablesLogic extends BaseLogic
     {
         return $this->transaction(function () use ($ids) {
             parent::destroy($ids);
-            GenerateColumns::whereIn('table_id', $ids)->delete();
+            GenerateColumns::destroy(function ($query) use ($ids) {
+                $query->where('table_id', 'in', $ids);
+            });
             return true;
         });
     }
@@ -65,7 +60,7 @@ class GenerateTablesLogic extends BaseLogic
      */
     public function loadTable($names, $source): void
     {
-        $data = config('database.connections');
+        $data = config('think-orm.connections');
         $config = $data[$source];
         if (!$config) {
             throw new ApiException('数据库配置读取失败');
@@ -110,7 +105,7 @@ class GenerateTablesLogic extends BaseLogic
      */
     public function sync($id)
     {
-        $model = $this->model->find($id);
+        $model = $this->model->findOrEmpty($id);
         // 拉取已有数据表信息
         $queryModel = $this->columnLogic->model->where('table_id', $id);
         $columnLogicData = $this->columnLogic->getAll($queryModel);
@@ -148,11 +143,7 @@ class GenerateTablesLogic extends BaseLogic
                             'is_cover'
                         ];
                         if (in_array($key, $array)) {
-                            if ($key == 'options') {
-                                $column[$key] = json_decode($item, true);
-                            } else {
-                                $column[$key] = $item;
-                            }
+                            $column[$key] = $item;
                         }
                     }
                 }
@@ -267,7 +258,7 @@ class GenerateTablesLogic extends BaseLogic
      */
     protected function renderData($id): array
     {
-        $table = $this->model->find($id);
+        $table = $this->model->findOrEmpty($id);
         if (!in_array($table['template'], ["plugin", "app"])) {
             throw new ApiException('应用类型必须为plugin或者app');
         }
@@ -276,10 +267,9 @@ class GenerateTablesLogic extends BaseLogic
         }
 
         $columns = $this->columnLogic->where('table_id', $id)
-            ->orderBy('sort', 'desc')
-            ->get()
+            ->order('sort', 'desc')
+            ->select()
             ->toArray();
-
         $pk = 'id';
         foreach ($columns as &$column) {
             if ($column['is_pk'] == 2) {
@@ -288,7 +278,6 @@ class GenerateTablesLogic extends BaseLogic
             if ($column['column_name'] == 'delete_time') {
                 unset($column['column_name']);
             }
-            $column['options'] = json_decode($column['options'], true);
         }
 
         // 处理特殊变量
@@ -306,7 +295,7 @@ class GenerateTablesLogic extends BaseLogic
             $route = '';
         }
 
-        $config = config('database');
+        $config = config('think-orm');
 
         $data = $table->toArray();
         $data['pk'] = $pk;
@@ -319,8 +308,6 @@ class GenerateTablesLogic extends BaseLogic
         $data['columns'] = $columns;
         $data['db_source'] = $config['default'] ?? 'mysql';
 
-        $data['options'] = $data['options'] ? json_decode($data['options'], true) : [];
-
         return $data;
     }
 
@@ -329,8 +316,8 @@ class GenerateTablesLogic extends BaseLogic
      */
     public function generateFile($id)
     {
-        $table = $this->model->find($id);
-        if (!$table) {
+        $table = $this->model->where('id', $id)->findOrEmpty();
+        if ($table->isEmpty()) {
             throw new ApiException('请选择要生成的表');
         }
         $debug = config('app.debug', true);
@@ -348,7 +335,7 @@ class GenerateTablesLogic extends BaseLogic
     public function generate($idsArr): array
     {
         $zip = new CodeZip();
-        $tables = $this->model->whereIn('id', $idsArr)->get()->toArray();
+        $tables = $this->model->where('id', 'in', $idsArr)->select()->toArray();
         foreach ($idsArr as $table_id) {
             $data = $this->renderData($table_id);
             $data['tables'] = $tables;
@@ -376,7 +363,7 @@ class GenerateTablesLogic extends BaseLogic
 
         /*先获取一下已有的路由中是否包含当前ID的路由的核心信息*/
         $model = new SystemMenu();
-        $tableMenu = $model->where('generate_id', $tables['id'])->first();
+        $tableMenu = $model->where('generate_id', $tables['id'])->findOrEmpty();
         $fistMenu = [
             'parent_id' => $tables['belong_menu_id'],
             'name' => $tables['menu_name'],
@@ -393,12 +380,12 @@ class GenerateTablesLogic extends BaseLogic
             'is_full_page' => 2,
             'generate_id' => $tables['id']
         ];
-        if (!$tableMenu) {
+        if ($tableMenu->isEmpty()) {
             $temp = SystemMenu::create($fistMenu);
             $fistMenuId = $temp->id;
         } else {
             $fistMenu['id'] = $tableMenu['id'];
-            $tableMenu->update($fistMenu);
+            $tableMenu->save($fistMenu);
             $fistMenuId = $tableMenu['id'];
         }
         /*开始进行子权限的判定操作*/
@@ -411,7 +398,7 @@ class GenerateTablesLogic extends BaseLogic
         ];
 
         foreach ($childNodes as $node) {
-            $nodeData = $model->where('parent_id', $fistMenuId)->where('generate_key', $node['key'])->first();
+            $nodeData = $model->where('parent_id', $fistMenuId)->where('generate_key', $node['key'])->findOrEmpty();
             $childNodeData = [
                 'parent_id' => $fistMenuId,
                 'name' => $node['name'],
@@ -425,11 +412,12 @@ class GenerateTablesLogic extends BaseLogic
                 'is_full_page' => 2,
                 'generate_key' => $node['key']
             ];
-            if ($nodeData) {
+            if (!empty($nodeData)) {
                 $childNodeData['id'] = $nodeData['id'];
-                $nodeData->update($childNodeData);
+                $nodeData->save($childNodeData);
             } else {
-                SystemMenu::create($childNodeData);
+                $menuModel = new SystemMenu();
+                $menuModel->save($childNodeData);
             }
         }
     }
@@ -442,11 +430,7 @@ class GenerateTablesLogic extends BaseLogic
     public function getTableColumns($table_id): mixed
     {
         $query = $this->columnLogic->where('table_id', $table_id);
-        $data = $this->columnLogic->getAll($query);
-        foreach ($data as $key => $value) {
-            $data[$key]['options'] = json_decode($value['options'], true);
-        }
-        return $data;
+        return $this->columnLogic->getAll($query);
     }
 
     /**
@@ -473,24 +457,18 @@ class GenerateTablesLogic extends BaseLogic
             unset($data['options']);
         }
 
-        $data['options'] = json_encode($data['options']);
+        $data['options'] = json_encode($data['options'], JSON_UNESCAPED_UNICODE);
 
         // 更新业务表
-        $this->model->where('id', $id)->update($data);
+        $this->update($data, ['id' => $id]);
 
-        // 更新业务字段表（批量）
-        $updateData = [];
+        // 更新业务字段表
         foreach ($columns as $column) {
-            $column['is_required'] = $column['is_required'] ? 2 : 1;
-            $column['is_insert'] = $column['is_insert'] ? 2 : 1;
-            $column['is_edit'] = $column['is_edit'] ? 2 : 1;
-            $column['is_list'] = $column['is_list'] ? 2 : 1;
-            $column['is_query'] = $column['is_query'] ? 2 : 1;
-            $column['is_sort'] = $column['is_sort'] ? 2 : 1;
-            $column['options'] = json_encode($column['options']);
-            $updateData[] = $column;
+            if ($column['options']) {
+                $column['options'] = json_encode($column['options'], JSON_NUMERIC_CHECK);
+            }
+            $this->columnLogic->update($column, ['id' => $column['id']]);
         }
-        GenerateColumns::upsert($updateData, ['id']);
 
         return true;
     }

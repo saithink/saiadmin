@@ -12,7 +12,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Webman\Channel\Client as ChannelClient;
 use plugin\saiadmin\app\model\tool\Crontab;
 use plugin\saiadmin\app\model\tool\CrontabLog;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 
 /**
@@ -99,12 +99,12 @@ class CrontabLogic extends BaseLogic
         };
 
         // 查询任务数据
-        $model = $this->model->find($id);
-        if (!$model) {
+        $model = $this->model->findOrEmpty($id);
+        if ($model->isEmpty()) {
             throw new ApiException('数据不存在');
         }
 
-        $result = $model->update([
+        $result = $model->save([
             'name' => $data['name'],
             'type' => $data['type'],
             'task_style' => $data['task_style'],
@@ -155,11 +155,11 @@ class CrontabLogic extends BaseLogic
      */
     public function changeStatus($id, $status): bool
     {
-        $model = $this->model->find($id);
-        if (!$model) {
+        $model = $this->model->findOrEmpty($id);
+        if ($model->isEmpty()) {
             throw new ApiException('数据不存在');
         }
-        $result = $model->update(['status' => $status]);
+        $result = $model->save(['status' => $status]);
         if ($result) {
             // 连接到Channel服务
             ChannelClient::connect();
@@ -175,8 +175,8 @@ class CrontabLogic extends BaseLogic
      */
     public function run($id): bool
     {
-        $info = $this->model->where('status', 1)->find($id);
-        if (!$info) {
+        $info = $this->model->where('status', 1)->findOrEmpty($id);
+        if ($info->isEmpty()) {
             return false;
         }
         $data['crontab_id'] = $info->id;

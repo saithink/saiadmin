@@ -13,10 +13,9 @@ use plugin\saiadmin\app\model\system\SystemDept;
 use plugin\saiadmin\app\model\system\SystemRole;
 use plugin\saiadmin\app\model\system\SystemUser;
 use plugin\saiadmin\exception\ApiException;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use Webman\Event\Event;
 use Tinywan\Jwt\JwtToken;
-use Illuminate\Support\Arr;
 
 /**
  * 用户信息逻辑层
@@ -53,7 +52,7 @@ class SystemUserLogic extends BaseLogic
     public function openUserList($where): array
     {
         $query = $this->search($where);
-        $query->select('id', 'username', 'realname', 'avatar', 'phone', 'email');
+        $query->field('id, username, realname, avatar, phone, email');
         return $this->getList($query);
     }
 
@@ -64,8 +63,8 @@ class SystemUserLogic extends BaseLogic
      */
     public function getUser($id): array
     {
-        $admin = $this->model->find($id);
-        $data = $admin->makeHidden(['password'])->toArray();
+        $admin = $this->model->findOrEmpty($id);
+        $data = $admin->hidden(['password'])->toArray();
         $data['roleList'] = $admin->roles->toArray() ?: [];
         $data['postList'] = $admin->posts->toArray() ?: [];
         $data['deptList'] = $admin->depts ? $admin->depts->toArray() : [];
@@ -110,12 +109,13 @@ class SystemUserLogic extends BaseLogic
                     throw new ApiException('没有权限操作该角色数据');
                 }
             }
-            unset($data['password_confirm']);
-            unset($data['role_ids']);
-            unset($data['post_ids']);
             $user = SystemUser::create($data);
-            $user->roles()->sync($role_ids);
-            $user->posts()->sync($post_ids);
+            $user->roles()->detach();
+            $user->posts()->detach();
+            $user->roles()->saveAll($role_ids);
+            if (!empty($post_ids)) {
+                $user->posts()->save($post_ids);
+            }
             return $user;
         });
     }
@@ -135,8 +135,8 @@ class SystemUserLogic extends BaseLogic
             // 仅可修改当前部门和子部门的用户
             $query = $this->model->where('id', $id);
             $query->auth($this->adminInfo['deptList']);
-            $user = $query->first();
-            if (!$user) {
+            $user = $query->findOrEmpty();
+            if ($user->isEmpty()) {
                 throw new ApiException('没有权限操作该数据');
             }
             if ($this->adminInfo['id'] > 1) {
@@ -149,13 +149,14 @@ class SystemUserLogic extends BaseLogic
                     throw new ApiException('没有权限操作该角色数据');
                 }
             }
-            unset($data['password_confirm']);
-            unset($data['role_ids']);
-            unset($data['post_ids']);
             $result = parent::edit($id, $data);
             if ($result) {
-                $user->roles()->sync($role_ids);
-                $user->posts()->sync($post_ids);
+                $user->roles()->detach();
+                $user->posts()->detach();
+                $user->roles()->saveAll($role_ids);
+                if (!empty($post_ids)) {
+                    $user->posts()->save($post_ids);
+                }
                 UserInfoCache::clearUserInfo($id);
                 UserAuthCache::clearUserAuth($id);
                 UserMenuCache::clearUserMenu($id);
@@ -182,8 +183,8 @@ class SystemUserLogic extends BaseLogic
         }
         $query = $this->model->where('id', $ids);
         $query->auth($this->adminInfo['deptList']);
-        $user = $query->first();
-        if (!$user) {
+        $user = $query->findOrEmpty();
+        if ($user->isEmpty()) {
             throw new ApiException('没有权限操作该数据');
         }
         if ($this->adminInfo['id'] > 1) {
@@ -210,10 +211,10 @@ class SystemUserLogic extends BaseLogic
      */
     public function login(string $username, string $password, string $type): array
     {
-        $adminInfo = $this->model->where('username', $username)->first();
+        $adminInfo = $this->model->where('username', $username)->findOrEmpty();
         $status = 1;
         $message = '登录成功';
-        if (!$adminInfo) {
+        if ($adminInfo->isEmpty()) {
             $message = '账号或密码错误，请重新输入!';
             throw new ApiException($message);
         }
@@ -256,9 +257,7 @@ class SystemUserLogic extends BaseLogic
      */
     public function updateInfo($id, $data): bool
     {
-        $allowFields = ['realname', 'gender', 'phone', 'email', 'avatar', 'signed'];
-        $updateData = Arr::only($data, $allowFields);
-        $this->model->where('id', $id)->update($updateData);
+        $this->model->update($data, ['id' => $id], ['realname', 'gender', 'phone', 'email', 'avatar', 'signed']);
         return true;
     }
 
@@ -271,7 +270,7 @@ class SystemUserLogic extends BaseLogic
      */
     public function modifyPassword($adminId, $oldPassword, $newPassword): bool
     {
-        $model = $this->model->find($adminId);
+        $model = $this->model->findOrEmpty($adminId);
         if (password_verify($oldPassword, $model->password)) {
             $model->password = password_hash($newPassword, PASSWORD_DEFAULT);
             return $model->save();
@@ -289,8 +288,8 @@ class SystemUserLogic extends BaseLogic
             // 判断用户是否可以操作
             $query = SystemUser::where('id', $id);
             $query->auth($this->adminInfo['deptList']);
-            $user = $query->first();
-            if (!$user) {
+            $user = $query->findOrEmpty();
+            if ($user->isEmpty()) {
                 throw new ApiException('没有权限操作该数据');
             }
         }
@@ -308,7 +307,7 @@ class SystemUserLogic extends BaseLogic
         // 部门保护
         $deptIds = [$dept['id']];
         $deptLevel = $dept['level'] . $dept['id'] . ',';
-        $dept_ids = SystemDept::where('level', 'like', $deptLevel . '%')->pluck('id')->toArray();
+        $dept_ids = SystemDept::whereLike('level', $deptLevel . '%')->column('id');
         $deptIds = array_merge($deptIds, $dept_ids);
         if (!in_array($dept_id, $deptIds)) {
             return false;

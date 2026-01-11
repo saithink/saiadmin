@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 菜单模型
@@ -44,7 +44,7 @@ class SystemMenu extends BaseModel
     // 完整数据库表名称
     protected $table = 'sa_system_menu';
     // 主键
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
 
     /**
      * Id搜索
@@ -54,25 +54,16 @@ class SystemMenu extends BaseModel
         $query->whereIn('id', $value);
     }
 
-    /**
-     * 名称搜索
-     */
     public function searchNameAttr($query, $value)
     {
         $query->where('name', 'like', '%' . $value . '%');
     }
 
-    /**
-     * 路径搜索
-     */
     public function searchPathAttr($query, $value)
     {
         $query->where('path', 'like', '%' . $value . '%');
     }
 
-    /**
-     * 菜单搜索
-     */
     public function searchMenuAttr($query, $value)
     {
         if (!empty($value)) {
@@ -81,7 +72,7 @@ class SystemMenu extends BaseModel
     }
 
     /**
-     * 类型搜索
+     * Type搜索
      */
     public function searchTypeAttr($query, $value)
     {
@@ -91,4 +82,5 @@ class SystemMenu extends BaseModel
             $query->where('type', $value);
         }
     }
+
 }

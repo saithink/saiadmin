@@ -7,9 +7,9 @@
 namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\model\system\SystemLoginLog;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\utils\Helper;
-use support\Db;
+use support\think\Db;
 
 /**
  * 登录日志逻辑层
@@ -45,7 +45,7 @@ class SystemLoginLogLogic extends BaseLogic
             GROUP BY d.date
             ORDER BY d.date ASC;
         ";
-        $data = Db::select($sql);
+        $data = Db::query($sql);
         return [
             'login_count' => array_column($data, 'login_count'),
             'login_date' => array_column($data, 'login_date'),
@@ -78,7 +78,7 @@ class SystemLoginLogLogic extends BaseLogic
             ORDER BY
                 m.month_num ASC;
         ";
-        $data = Db::select($sql);
+        $data = Db::query($sql);
         return [
             'login_count' => array_column($data, 'login_count'),
             'login_month' => array_column($data, 'login_month'),

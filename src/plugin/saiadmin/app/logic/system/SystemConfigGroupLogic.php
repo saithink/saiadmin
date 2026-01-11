@@ -8,7 +8,7 @@ namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\cache\ConfigCache;
 use plugin\saiadmin\app\model\system\SystemConfigGroup;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemConfig;
 use support\think\Db;
@@ -32,8 +32,8 @@ class SystemConfigGroupLogic extends BaseLogic
     public function destroy($ids): bool
     {
         $id = $ids[0];
-        $model = $this->model->find($id);
-        if (!$model) {
+        $model = $this->model->where('id', $id)->findOrEmpty();
+        if ($model->isEmpty()) {
             throw new ApiException('配置数据未找到');
         }
         if (in_array(intval($id), [1, 2, 3])) {
@@ -44,7 +44,7 @@ class SystemConfigGroupLogic extends BaseLogic
             // 删除配置组
             $model->delete();
             // 删除配置组数据
-            $typeIds = SystemConfig::where('group_id', $id)->pluck('id')->toArray();
+            $typeIds = SystemConfig::where('group_id', $id)->column('id');
             SystemConfig::destroy($typeIds);
             ConfigCache::clearConfig($model->code);
             Db::commit();

@@ -7,7 +7,7 @@
 namespace plugin\saiadmin\app\logic\system;
 
 use plugin\saiadmin\app\model\system\SystemOperLog;
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\utils\Helper;
 
 /**
@@ -31,7 +31,7 @@ class SystemOperLogLogic extends BaseLogic
     public function getOwnOperLogList($where): array
     {
         $query = $this->search($where);
-        $query->select('id', 'username', 'method', 'router', 'service_name', 'ip', 'ip_location', 'create_time');
+        $query->field('id, username, method, router, service_name, ip, ip_location, create_time');
         return $this->getList($query);
     }
 

@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 部门模型
@@ -33,7 +33,7 @@ class SystemDept extends BaseModel
      * 数据表主键
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
 
     protected $table = 'sa_system_dept';
 
@@ -45,7 +45,7 @@ class SystemDept extends BaseModel
         if (!empty($value)) {
             $deptIds = [$value['id']];
             $deptLevel = $value['level'] . $value['id'] . ',';
-            $ids = static::where('level', 'like', $deptLevel . '%')->pluck('id')->toArray();
+            $ids = static::whereLike('level', $deptLevel . '%')->column('id');
             $deptIds = array_merge($deptIds, $ids);
             $query->whereIn('id', $deptIds);
         }

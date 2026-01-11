@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\logic\system;
 
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemDictType;
 use plugin\saiadmin\app\model\system\SystemDictData;
@@ -26,6 +26,18 @@ class SystemDictTypeLogic extends BaseLogic
     }
 
     /**
+     * 添加数据
+     */
+    public function add($data): mixed
+    {
+        $model = $this->model->where('code', $data['code'])->findOrEmpty();
+        if (!$model->isEmpty()) {
+            throw new ApiException('该字典标识已存在');
+        }
+        return $this->model->save($data);
+    }
+
+    /**
      * 数据更新
      */
     public function edit($id, $data): mixed
@@ -33,9 +45,9 @@ class SystemDictTypeLogic extends BaseLogic
         Db::startTrans();
         try {
             // 修改数据字典类型
-            $result = $this->model->where('id', $id)->update($data);
+            $result = $this->model->update($data, ['id' => $id]);
             // 更新数据字典数据
-            SystemDictData::where('type_id', $id)->update(['code' => $data['code']]);
+            SystemDictData::update(['code' => $data['code']], ['type_id' => $id]);
             Db::commit();
             return $result;
         } catch (\Exception $e) {
@@ -54,7 +66,7 @@ class SystemDictTypeLogic extends BaseLogic
             // 删除数据字典类型
             $result = $this->model->destroy($ids);
             // 删除数据字典数据
-            $typeIds = SystemDictData::whereIn('type_id', $ids)->pluck('id')->toArray();
+            $typeIds = SystemDictData::where('type_id', 'in', $ids)->column('id');
             SystemDictData::destroy($typeIds);
             Db::commit();
             return $result;
@@ -70,12 +82,12 @@ class SystemDictTypeLogic extends BaseLogic
      */
     public function getDictAll(): array
     {
-        $data = $this->model->where('status', 1)->select('id', 'name', 'code', 'remark')
+        $data = $this->model->where('status', 1)->field('id, name, code, remark')
             ->with([
                 'dicts' => function ($query) {
-                    $query->where('status', 1)->select('id', 'type_id', 'label', 'value', 'color', 'code', 'sort')->orderBy('sort', 'desc');
+                    $query->where('status', 1)->field('id, type_id, label, value, color, code, sort')->order('sort', 'desc');
                 }
-            ])->get()->toArray();
+            ])->select()->toArray();
         return $this->packageDict($data, 'code');
     }
 

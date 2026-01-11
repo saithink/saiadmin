@@ -6,13 +6,12 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\logic\system;
 
-use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\basic\think\BaseLogic;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\app\model\system\SystemDept;
 use plugin\saiadmin\app\model\system\SystemUser;
 use plugin\saiadmin\utils\Helper;
 use plugin\saiadmin\utils\Arr;
-use support\Db;
 
 /**
  * 部门逻辑层
@@ -33,7 +32,8 @@ class SystemDeptLogic extends BaseLogic
     public function add($data): mixed
     {
         $data = $this->handleData($data);
-        return $this->model->create($data);
+        $this->model->save($data);
+        return $this->model->getKey();
     }
 
     /**
@@ -50,13 +50,11 @@ class SystemDeptLogic extends BaseLogic
             throw new ApiException('不能将上级部门设置为当前部门的子部门');
         }
         $newLevel = $data['level'] . $id . ',';
-        $deptIds = $this->model->where('level', 'like', $oldLevel . '%')->pluck('id')->toArray();
+        $deptIds = $this->model->where('level', 'like', $oldLevel . '%')->column('id');
 
         return $this->transaction(function () use ($deptIds, $oldLevel, $newLevel, $data, $id) {
-            $this->model->whereIn('id', $deptIds)->update([
-                'level' => Db::raw("REPLACE(level, '$oldLevel', '$newLevel')")
-            ]);
-            return $this->model->where('id', $id)->update($data);
+            $this->model->whereIn('id', $deptIds)->exp('level', "REPLACE(level, '$oldLevel', '$newLevel')")->update([]);
+            return $this->model->update($data, ['id' => $id]);
         });
     }
 
@@ -65,11 +63,11 @@ class SystemDeptLogic extends BaseLogic
      */
     public function destroy($ids): bool
     {
-        $num = $this->model->whereIn('parent_id', $ids)->count();
+        $num = $this->model->where('parent_id', 'in', $ids)->count();
         if ($num > 0) {
             throw new ApiException('该部门下存在子部门，请先删除子部门');
         } else {
-            $count = SystemUser::whereIn('dept_id', $ids)->count();
+            $count = SystemUser::where('dept_id', 'in', $ids)->count();
             if ($count > 0) {
                 throw new ApiException('该部门下存在用户，请先删除或者转移用户');
             }
@@ -87,7 +85,7 @@ class SystemDeptLogic extends BaseLogic
             $data['level'] = '0';
             $data['parent_id'] = 0;
         } else {
-            $parentMenu = SystemDept::find($data['parent_id']);
+            $parentMenu = SystemDept::findOrEmpty($data['parent_id']);
             $data['level'] = $parentMenu['level'] . $parentMenu['id'] . ',';
         }
         return $data;
@@ -103,9 +101,9 @@ class SystemDeptLogic extends BaseLogic
         $query = $this->search($where);
         $request = request();
         if ($request && $request->input('tree', 'false') === 'true') {
-            $query->select('id', 'id as value', 'name as label', 'parent_id');
+            $query->field('id, id as value, name as label, parent_id');
         }
-        $query->orderBy('sort', 'desc');
+        $query->order('sort', 'desc');
         $query->with(['leader']);
         $data = $this->getAll($query);
         return Helper::makeTree($data);
@@ -120,8 +118,8 @@ class SystemDeptLogic extends BaseLogic
     {
         $query = $this->search($where);
         $query->auth($this->adminInfo['deptList']);
-        $query->select('id', 'id as value', 'name as label', 'parent_id');
-        $query->orderBy('sort', 'desc');
+        $query->field('id, id as value, name as label, parent_id');
+        $query->order('sort', 'desc');
         $data = $this->getAll($query);
         return Helper::makeTree($data);
     }

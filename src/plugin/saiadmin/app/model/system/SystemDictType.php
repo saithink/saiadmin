@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 字典类型模型
@@ -29,7 +29,7 @@ class SystemDictType extends BaseModel
      * 数据表主键
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
 
     protected $table = 'sa_system_dict_type';
 
@@ -39,22 +39,6 @@ class SystemDictType extends BaseModel
     public function dicts()
     {
         return $this->hasMany(SystemDictData::class, 'type_id', 'id');
-    }
-
-    /**
-     * 名称搜索
-     */
-    public function searchNameAttr($query, $value)
-    {
-        return $query->where('name', 'like', '%' . $value . '%');
-    }
-
-    /**
-     * 编码搜索
-     */
-    public function searchCodeAttr($query, $value)
-    {
-        return $query->where('code', 'like', '%' . $value . '%');
     }
 
 }

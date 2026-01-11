@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\model\system;
 
-use plugin\saiadmin\basic\eloquent\BaseModel;
+use plugin\saiadmin\basic\think\BaseModel;
 
 /**
  * 角色模型
@@ -33,7 +33,7 @@ class SystemRole extends BaseModel
      * 数据表主键
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $pk = 'id';
 
     /**
      * 数据表完整名称
@@ -52,7 +52,7 @@ class SystemRole extends BaseModel
             $ids = [];
             foreach ($roles as $item) {
                 $ids[] = $item['id'];
-                $temp = static::whereRaw('FIND_IN_SET("' . $item['id'] . '", level) > 0')->pluck('id')->toArray();
+                $temp = static::whereRaw('FIND_IN_SET("' . $item['id'] . '", level) > 0')->column('id');
                 $ids = array_merge($ids, $temp);
             }
             $query->where('id', 'in', array_unique($ids));
@@ -64,7 +64,7 @@ class SystemRole extends BaseModel
      */
     public function menus()
     {
-        return $this->belongsToMany(SystemMenu::class, SystemRoleMenu::class, 'role_id', 'menu_id');
+        return $this->belongsToMany(SystemMenu::class, SystemRoleMenu::class, 'menu_id', 'role_id');
     }
 
     /**
@@ -72,7 +72,7 @@ class SystemRole extends BaseModel
      */
     public function depts()
     {
-        return $this->belongsToMany(SystemDept::class, SystemRoleDept::class, 'role_id', 'dept_id');
+        return $this->belongsToMany(SystemDept::class, SystemRoleDept::class, 'dept_id', 'role_id');
     }
 
 }
