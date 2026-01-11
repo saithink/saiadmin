@@ -312,7 +312,6 @@ return [
             'prefix' => env('DB_PREFIX', ''),
             'strict' => true,
             'engine' => null,
-            'timezone' => '+08:00',
             'options' => [
                 PDO::ATTR_EMULATE_PREPARES => false, // Must be false for Swoole and Swow drivers.
             ],
