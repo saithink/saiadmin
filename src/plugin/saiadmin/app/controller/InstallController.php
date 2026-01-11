@@ -100,7 +100,7 @@ class InstallController extends OpenController
             return $this->fail('数据库已经安装，请勿重复安装');
         }
 
-        $sql_file = base_path() . '/plugin/saiadmin/db/saiadmin-5.0.sql';
+        $sql_file = base_path() . '/plugin/saiadmin/db/saiadmin-6.0.sql';
         if (!is_file($sql_file)) {
             return $this->fail('数据库SQL文件不存在');
         }
