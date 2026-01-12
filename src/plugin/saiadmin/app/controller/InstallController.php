@@ -71,6 +71,7 @@ class InstallController extends OpenController
         $database = $request->post('database');
         $host = $request->post('host');
         $port = (int) $request->post('port') ?: 3306;
+        $dataType = $request->post('dataType', 'demo');
 
         try {
             $db = $this->getPdo($host, $user, $password, $port);
@@ -100,7 +101,12 @@ class InstallController extends OpenController
             return $this->fail('数据库已经安装，请勿重复安装');
         }
 
-        $sql_file = base_path() . '/plugin/saiadmin/db/saiadmin-6.0.sql';
+        if ($dataType == 'demo') {
+            $sql_file = base_path() . '/plugin/saiadmin/db/saiadmin-6.0.sql';
+        } else {
+            $sql_file = base_path() . '/plugin/saiadmin/db/saiadmin-pure.sql';
+        }
+
         if (!is_file($sql_file)) {
             return $this->fail('数据库SQL文件不存在');
         }

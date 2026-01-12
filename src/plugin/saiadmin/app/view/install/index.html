@@ -708,6 +708,25 @@
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label class="form-label">数据库数据</label>
+                                        <div class="radio-group" style="display: flex; gap: 20px;">
+                                            <label class="radio-label" style="display: flex; align-items: center; cursor: pointer; padding: 10px 15px; border: 2px solid #F5F3FF; border-radius: 10px; background: #F8FAFC; transition: all 0.3s ease;">
+                                                <input type="radio" name="dataType" id="dataTypeDemo" value="demo" checked style="width: 18px; height: 18px; margin-right: 10px; accent-color: #7166f0;">
+                                                <span style="display: flex; flex-direction: column;">
+                                                    <strong style="color: #1e293b; font-size: 14px;">附带演示数据</strong>
+                                                </span>
+                                            </label>
+                                            <label class="radio-label" style="display: flex; align-items: center; cursor: pointer; padding: 10px 15px; border: 2px solid #F5F3FF; border-radius: 10px; background: #F8FAFC; transition: all 0.3s ease;">
+                                                <input type="radio" name="dataType" id="dataTypePure" value="pure" style="width: 18px; height: 18px; margin-right: 10px; accent-color: #7166f0;">
+                                                <span style="display: flex; flex-direction: column;">
+                                                    <strong style="color: #1e293b; font-size: 14px;">纯净数据</strong>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label for="dbHost" class="form-label">数据库主机</label>
                                         <div class="custom-input-group">
                                             <input type="text" class="form-control" id="dbHost" value="127.0.0.1" required>
@@ -799,7 +818,7 @@
                             <h2 class="completed-title">安装成功</h2>
                             <p class="completed-subtitle">恭喜！已成功安装系统，请重启webman，启动前端项目进行访问。</p>
                             <div class="action-buttons">
-                                <a href="http://localhost:8888" class="btn btn-primary">
+                                <a href="http://localhost:3006" class="btn btn-primary">
                                     <i class="fas fa-tachometer-alt"></i>
                                     <span>进入管理后台</span>
                                 </a>
@@ -917,7 +936,8 @@
                 database: $('#dbName').val(),
                 username: $('#dbUser').val(),
                 password: $('#dbPassword').val(),
-                prefix: $('#dbPrefix').val()
+                prefix: $('#dbPrefix').val(),
+                dataType: $('input[name="dataType"]:checked').val()
             };
 
             // 模拟安装过程
