@@ -56,7 +56,7 @@ class DictCache
     public static function getDict($code): array
     {
         $data = static::getDictAll();
-        if (isset($data['code'])) {
+        if (isset($data[$code])) {
             return $data[$code];
         } else {
             return [];
