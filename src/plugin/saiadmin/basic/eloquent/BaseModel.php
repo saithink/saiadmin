@@ -121,7 +121,11 @@ class BaseModel extends Model implements ModelInterface
      */
     public function searchCreateTimeAttr($query, $value)
     {
-        $query->whereBetween('create_time', $value);
+        if (is_array($value)) {
+            $query->whereBetween('create_time', $value);
+        } else {
+            $query->where('create_time', '=', $value);
+        }
     }
 
     /**
@@ -131,7 +135,11 @@ class BaseModel extends Model implements ModelInterface
      */
     public function searchUpdateTimeAttr($query, $value)
     {
-        $query->whereBetween('update_time', $value);
+        if (is_array($value)) {
+            $query->whereBetween('update_time', $value);
+        } else {
+            $query->where('update_time', '=', $value);
+        }
     }
 
     /**
