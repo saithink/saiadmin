@@ -180,10 +180,7 @@ class CodeEngine
         }
 
         $rootPath = $rootPath . DS . 'src' . DS . 'views' . DS . 'plugin' . DS . $this->value['namespace'];
-        $subPath = '';
-        if (!empty($this->value['package_name'])) {
-            $subPath = DS . $this->value['package_name'];
-        }
+        $subPath = DS . $this->value['package_name'];
         switch ($action) {
             case 'index':
                 $outPath = $rootPath . $subPath . DS . $this->value['business_name'] . DS . 'index.vue';
@@ -229,10 +226,7 @@ class CodeEngine
             $phpPath = $phpPath . DS . 'plugin' . DS . $this->value['namespace'] . DS . 'app';
             $adminPath = DS . 'admin';
         }
-        $subPath = '';
-        if (!empty($this->value['package_name'])) {
-            $subPath = DS . $this->value['package_name'];
-        }
+        $subPath = DS . $this->value['package_name'];
 
         $indexOutPath = $vuePath . $subPath . DS . $this->value['business_name'] . DS . 'index.vue';
         $this->checkPath($indexOutPath);
@@ -249,7 +243,7 @@ class CodeEngine
         $searchContent = $this->renderContent('vue', 'table-search.stub');
         file_put_contents($searchOutPath, $searchContent);
 
-        $viewOutPath = $vuePath . DS . 'api' . DS . $this->value['business_name'] . '.ts';
+        $viewOutPath = $vuePath . DS . 'api' . $subPath . DS . $this->value['business_name'] . '.ts';
         $this->checkPath($viewOutPath);
         $viewContent = $this->renderContent('ts', 'api.stub');
         file_put_contents($viewOutPath, $viewContent);
