@@ -19,6 +19,6 @@ class CrontabLog extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'tool_crontab_log';
+    protected $name = 'tool_crontab_log';
 
 }
