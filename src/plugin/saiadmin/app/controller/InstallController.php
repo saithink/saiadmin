@@ -140,7 +140,7 @@ REDIS_DB = 0
 CAPTCHA_MODE = cache
 
 #前端目录
-FRONTEND_DIR = saiadmin-vue
+FRONTEND_DIR = saiadmin-artd
 EOF;
         file_put_contents(base_path() . DIRECTORY_SEPARATOR . '.env', $env_config);
 
