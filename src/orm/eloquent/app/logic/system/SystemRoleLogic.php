@@ -109,7 +109,7 @@ class SystemRoleLogic extends BaseLogic
             'menus' => function ($query) {
                 $query->where('status', 1)->orderBy('sort', 'desc');
             }
-        ])->select()->toArray();
+        ])->get()->toArray();
 
     }
 
