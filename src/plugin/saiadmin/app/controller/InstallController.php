@@ -28,7 +28,7 @@ class InstallController extends OpenController
      */
     protected string $app = 'saiadmin';
 
-    protected string $version = '5.0.0';
+    protected string $version = '6.0.0';
 
     /**
      * 安装首页
