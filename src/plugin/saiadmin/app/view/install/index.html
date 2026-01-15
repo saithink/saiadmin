@@ -761,6 +761,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dbPrefix" class="form-label">表前缀</label>
+                                        <div class="custom-input-group">
+                                            <input type="text" class="form-control" id="dbPrefix" value="sa_" required>
+                                            <div class="custom-input-icon">
+                                                <i class="fas fa-table"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="button" class="btn btn-primary" onclick="nextStep(1)">
@@ -899,7 +910,7 @@
 
         // 验证数据库配置
         function validateDbConfig() {
-            const required = ['dbHost', 'dbName', 'dbUser', 'dbPassword'];
+            const required = ['dbHost', 'dbName', 'dbUser', 'dbPassword', 'dbPrefix'];
             for (const field of required) {
                 if (!$(`#${field}`).val()) {
                     showNotification('error', '请填写所有必填字段');

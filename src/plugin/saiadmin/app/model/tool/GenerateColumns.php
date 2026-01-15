@@ -20,7 +20,7 @@ class GenerateColumns extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_tool_generate_columns';
+    protected $table = 'tool_generate_columns';
 
     public function getOptionsAttr($value)
     {

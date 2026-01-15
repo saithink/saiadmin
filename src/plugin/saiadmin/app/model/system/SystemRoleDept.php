@@ -13,5 +13,5 @@ use think\model\Pivot;
  */
 class SystemRoleDept extends Pivot
 {
-    protected $table = 'sa_system_role_dept';
+    protected $table = 'system_role_dept';
 }

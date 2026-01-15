@@ -19,7 +19,7 @@ class SystemAttachment extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_attachment';
+    protected $name = 'system_attachment';
 
     public function searchOriginNameAttr($query, $value)
     {

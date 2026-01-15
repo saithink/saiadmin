@@ -71,6 +71,7 @@ class InstallController extends OpenController
         $database = $request->post('database');
         $host = $request->post('host');
         $port = (int)$request->post('port') ?: 3306;
+        $prefix = $request->post('prefix', 'sa_');
 
         try {
             $db = $this->getPdo($host, $user, $password, $port);
@@ -94,7 +95,7 @@ class InstallController extends OpenController
 
         $db->exec("use $database");
 
-        $smt = $db->query("show tables like 'sa_system_menu';");
+        $smt = $db->query("show tables like '{$prefix}system_menu';");
         $tables = $smt->fetchAll();
         if (count($tables) > 0) {
             return $this->fail('数据库已经安装，请勿重复安装');
@@ -106,6 +107,7 @@ class InstallController extends OpenController
         }
 
         $sql_query = file_get_contents($sql_file);
+        $sql_query = str_replace('__PREFIX__', $prefix, $sql_query);
 
         $db->exec($sql_query);
 
@@ -119,7 +121,7 @@ DB_PORT = $port
 DB_NAME = $database
 DB_USER = $user
 DB_PASSWORD = $password
-DB_PREFIX = 
+DB_PREFIX = $prefix
 
 # 缓存方式
 CACHE_MODE = file

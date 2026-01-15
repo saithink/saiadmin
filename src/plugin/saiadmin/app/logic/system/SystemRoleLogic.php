@@ -231,7 +231,7 @@ class SystemRoleLogic extends BaseLogic
                 $data = array_map(function($menu_id) use ($id) {
                     return ['menu_id' => $menu_id, 'role_id' => $id];
                 }, $menu_ids);
-                Db::table('sa_system_role_menu')->limit(100)->insertAll($data);
+                Db::table('system_role_menu')->limit(100)->insertAll($data);
             }
             UserInfoCache::clearUserInfoByRoleId($id);
             UserAuthCache::clearUserAuthByRoleId($id);

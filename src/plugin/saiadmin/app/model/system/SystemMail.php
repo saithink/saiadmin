@@ -19,7 +19,7 @@ class SystemMail extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_mail';
+    protected $name = 'system_mail';
 
     public function searchFromAttr($query, $value)
     {

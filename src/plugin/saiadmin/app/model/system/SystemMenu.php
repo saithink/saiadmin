@@ -14,7 +14,7 @@ use plugin\saiadmin\basic\BaseModel;
 class SystemMenu extends BaseModel
 {
     // 完整数据库表名称
-    protected $table  = 'sa_system_menu';
+    protected $name = 'system_menu';
     // 主键
     protected $pk = 'id';
 

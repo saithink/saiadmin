@@ -20,7 +20,7 @@ class SystemLoginLog extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_login_log';
+    protected $name = 'system_login_log';
 
     /**
      * 时间范围搜索

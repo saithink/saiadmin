@@ -19,7 +19,7 @@ class SystemDictData extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_dict_data';
+    protected $name = 'system_dict_data';
 
     /**
      * 关键字搜索

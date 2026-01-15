@@ -19,7 +19,7 @@ class SystemDictType extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_dict_type';
+    protected $name = 'system_dict_type';
 
     public function dicts()
     {

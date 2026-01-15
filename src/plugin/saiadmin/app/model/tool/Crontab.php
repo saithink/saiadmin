@@ -19,6 +19,6 @@ class Crontab extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_tool_crontab';
+    protected $table = 'tool_crontab';
 
 }

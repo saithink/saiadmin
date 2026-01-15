@@ -19,7 +19,7 @@ class SystemConfigGroup extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_config_group';
+    protected $name = 'system_config_group';
 
     public function configs()
     {

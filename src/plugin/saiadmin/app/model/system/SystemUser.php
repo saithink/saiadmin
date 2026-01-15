@@ -24,7 +24,7 @@ class SystemUser extends BaseModel
      * 数据表完整名称
      * @var string
      */
-    protected $table  = 'sa_system_user';
+    protected $name = 'system_user';
 
     /**
      * 获取器
@@ -60,7 +60,7 @@ class SystemUser extends BaseModel
      */
     public function searchPostIdAttr($query, $value)
     {
-        $query->join('sa_system_user_post post', 'sa_system_user.id = post.user_id')
+        $query->join('system_user_post post', 'system_user.id = post.user_id')
             ->where('post.post_id', $value);
     }
 
@@ -69,7 +69,7 @@ class SystemUser extends BaseModel
      */
     public function searchRoleIdAttr($query, $value)
     {
-        $query->whereRaw('id in (SELECT user_id FROM sa_system_user_role WHERE role_id =?)', [$value]);
+        $query->whereRaw('id in (SELECT user_id FROM system_user_role WHERE role_id =?)', [$value]);
     }
 
     /**

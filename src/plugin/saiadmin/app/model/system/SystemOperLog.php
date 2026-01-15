@@ -20,6 +20,6 @@ class SystemOperLog extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_oper_log';
+    protected $name = 'system_oper_log';
 
 }

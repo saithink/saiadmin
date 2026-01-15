@@ -14,7 +14,7 @@ use plugin\saiadmin\basic\BaseModel;
 class SystemNotice extends BaseModel
 {
     // 完整数据库表名称
-    protected $table  = 'sa_system_notice';
+    protected $name = 'system_notice';
     // 主键
     protected $pk = 'id';
 

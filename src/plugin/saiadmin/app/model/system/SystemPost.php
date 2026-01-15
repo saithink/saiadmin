@@ -19,6 +19,6 @@ class SystemPost extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_post';
+    protected $name = 'system_post';
 
 }

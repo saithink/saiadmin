@@ -137,7 +137,7 @@ class SystemDeptLogic extends BaseLogic
         $dept_id = $where['dept_id'];
         unset($where['dept_id']);
         $logic = new SystemUserLogic();
-        $query = $logic->search($where)->alias('user')->join('sa_system_dept_leader dept', 'user.id = dept.user_id')
+        $query = $logic->search($where)->alias('user')->join('system_dept_leader dept', 'user.id = dept.user_id')
             ->where('dept.dept_id', $dept_id);
         return $logic->getList($query);
     }

@@ -40,7 +40,7 @@ class SystemLoginLogLogic extends BaseLogic
                        UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
                        UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
                  ) d
-            LEFT JOIN sa_system_login_log l
+            LEFT JOIN system_login_log l
                 ON DATE(l.login_time) = d.date
             GROUP BY d.date
             ORDER BY d.date ASC;
