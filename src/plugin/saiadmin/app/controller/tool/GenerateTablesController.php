@@ -136,7 +136,6 @@ class GenerateTablesController extends BaseController
     {
         $id = $request->input('id', '');
         $data = $this->logic->preview($id);
-        UserMenuCache::clearMenuCache();
         return $this->success($data);
     }
 
@@ -159,6 +158,7 @@ class GenerateTablesController extends BaseController
     {
         $id = $request->input('id', '');
         $this->logic->generateFile($id);
+        UserMenuCache::clearMenuCache();
         return $this->success('操作成功');
     }
 
