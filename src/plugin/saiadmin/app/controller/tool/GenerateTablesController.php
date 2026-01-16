@@ -9,6 +9,7 @@ namespace plugin\saiadmin\app\controller\tool;
 use plugin\saiadmin\basic\BaseController;
 use plugin\saiadmin\app\logic\tool\GenerateTablesLogic;
 use plugin\saiadmin\app\validate\tool\GenerateTablesValidate;
+use plugin\saiadmin\app\cache\UserMenuCache;
 use support\Request;
 use support\Response;
 
@@ -94,6 +95,7 @@ class GenerateTablesController extends BaseController
     {
         $id = $request->input('id', '');
         $this->logic->generateFile($id);
+        UserMenuCache::clearMenuCache();
         return $this->success('操作成功');
     }
 
