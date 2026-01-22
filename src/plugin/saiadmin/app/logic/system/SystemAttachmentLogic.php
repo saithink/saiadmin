@@ -120,7 +120,7 @@ class SystemAttachmentLogic extends BaseLogic
             $baseUrl = $domain . $uri . $folder . '/';
 
             $info['storage_mode'] = 1;
-            $info['category_id'] = 1;
+            $info['category_id'] = request()->input('category_id', 1);
             $info['origin_name'] = $filename;
             $info['object_name'] = $object_name;
             $info['hash'] = $hash;
@@ -162,7 +162,7 @@ class SystemAttachmentLogic extends BaseLogic
         $url = str_replace('\\', '/', $data['url']);
         $savePath = str_replace('\\', '/', $data['save_path']);
         $info['storage_mode'] = $type;
-        $info['category_id'] = 1;
+        $info['category_id'] = request()->input('category_id', 1);
         $info['origin_name'] = $data['origin_name'];
         $info['object_name'] = $data['save_name'];
         $info['hash'] = $data['unique_id'];
