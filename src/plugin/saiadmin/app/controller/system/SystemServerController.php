@@ -77,6 +77,7 @@ class SystemServerController extends BaseController
         if (empty($tag)) {
             return $this->fail('请选择要删除的缓存');
         }
+        Cache::tag($tag)->clear();
         Cache::delete($tag);
         return $this->success('删除成功');
     }
