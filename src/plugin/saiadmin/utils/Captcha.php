@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\utils;
 
-use support\Cache;
+use support\think\Cache;
 use Ramsey\Uuid\Uuid;
 use Webman\Captcha\CaptchaBuilder;
 use Webman\Captcha\PhraseBuilder;
