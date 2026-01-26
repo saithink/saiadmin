@@ -1,0 +1,38 @@
+Index: src/plugin/saiadmin/app/cache/DictCache.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n// +----------------------------------------------------------------------\n// | saiadmin [ saiadmin快速开发框架 ]\n// +----------------------------------------------------------------------\n// | Author: sai <1430792918@qq.com>\n// +----------------------------------------------------------------------\nnamespace plugin\\saiadmin\\app\\cache;\n\nuse plugin\\saiadmin\\app\\model\\system\\SystemDictType;\nuse support\\think\\Cache;\n\n/**\n * 字典信息缓存\n */\nclass DictCache\n{\n    /**\n     * 读取缓存配置\n     * @return array\n     */\n    public static function cacheConfig(): array\n    {\n        return config('plugin.saiadmin.saithink.dict_cache', [\n            'expire' => 60 * 60 * 24 * 365,\n            'tag' => 'saiadmin:dict_cache',\n        ]);\n    }\n\n    /**\n     * 获取全部字典\n     */\n    public static function getDictAll(): array\n    {\n        $cache = static::cacheConfig();\n        // 直接从缓存获取\n        $data = Cache::get($cache['tag']);\n        if ($data) {\n            return $data;\n        }\n\n        // 获取信息并返回\n        $data = static::setDictAll();\n        if ($data) {\n            return $data;\n        }\n\n        return [];\n    }\n\n    /**\n     * 获取单个字典\n     */\n    public static function getDict($code): array\n    {\n        $data = static::getDictAll();\n        if (isset($data['code'])) {\n            return $data[$code];\n        } else {\n            return [];\n        }\n    }\n\n    /**\n     * 设置全部字典\n     */\n    public static function setDictAll(): array\n    {\n        $cache = static::cacheConfig();\n        $data = SystemDictType::where('status', 1)->field('id, name, code, remark')\n            ->with(['dicts' => function ($query) {\n                $query->where('status', 1)->withoutField(['created_by', 'updated_by', 'create_time', 'update_time'])->order('sort desc');\n            }])->select()->toArray();\n        $dict = static::packageDict($data, 'code');\n\n        Cache::set($cache['tag'], $dict, $cache['expire']);\n        return $dict;\n    }\n\n    /**\n     * 组合数据\n     * @param $array\n     * @param $field\n     * @return array\n     */\n    private static function packageDict($array, $field): array\n    {\n        $result = [];\n        foreach ($array as $item) {\n            if (isset($item[$field])) {\n                if (isset($result[$item[$field]])) {\n                    $result[$item[$field]] = [($result[$item[$field]])];\n                    $result[$item[$field]][] = $item['dicts'];\n                } else {\n                    $result[$item[$field]] = $item['dicts'];\n                }\n            }\n        }\n        return $result;\n    }\n\n    /**\n     * 清除全部字典信息\n     */\n    public static function clear(): bool\n    {\n        $cache = static::cacheConfig();\n        return Cache::delete($cache['tag']);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/plugin/saiadmin/app/cache/DictCache.php b/src/plugin/saiadmin/app/cache/DictCache.php
+--- a/src/plugin/saiadmin/app/cache/DictCache.php	(revision 8a2632569e27a0c890b37a249cab8cb1eda8dd78)
++++ b/src/plugin/saiadmin/app/cache/DictCache.php	(date 1769429673000)
+@@ -53,7 +53,7 @@
+     public static function getDict($code): array
+     {
+         $data = static::getDictAll();
+-        if (isset($data['code'])) {
++        if (isset($code)) {
+             return $data[$code];
+         } else {
+             return [];
+Index: .idea/saiadmin.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module type=\"WEB_MODULE\" version=\"4\">\n  <component name=\"NewModuleRootManager\">\n    <content url=\"file://$MODULE_DIR$\">\n      <sourceFolder url=\"file://$MODULE_DIR$/src\" isTestSource=\"false\" packagePrefix=\"Webman\\saiadmin\\\" />\n    </content>\n    <orderEntry type=\"inheritedJdk\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n  </component>\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/saiadmin.iml b/.idea/saiadmin.iml
+--- a/.idea/saiadmin.iml	(revision 8a2632569e27a0c890b37a249cab8cb1eda8dd78)
++++ b/.idea/saiadmin.iml	(date 1769430349164)
+@@ -1,6 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <module type="WEB_MODULE" version="4">
+-  <component name="NewModuleRootManager">
++  <component name="NewModuleRootManager" inherit-compiler-output="true">
++    <exclude-output />
+     <content url="file://$MODULE_DIR$">
+       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="Webman\saiadmin\" />
+     </content>

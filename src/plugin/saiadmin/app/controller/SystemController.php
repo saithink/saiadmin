@@ -174,7 +174,18 @@ class SystemController extends BaseController
         $logic = new SystemAttachmentLogic();
         $model = $logic->find($id);
         $object_name = $model->object_name;
-        return response()->download($model->storage_path, $object_name);
+        
+        if ($model->storage_mode == 1) {
+            return response()->download(base_path() . DIRECTORY_SEPARATOR . $model->storage_path, $object_name);
+        } else {
+            $fileContent = file_get_contents($model->url);
+            if ($fileContent === false) {
+                return $this->fail('文件下载失败');
+            }
+            return response()->withBody($fileContent)
+                ->withHeader('Content-Disposition', 'attachment; filename="' . $object_name . '"')
+                ->withHeader('Content-Type', $model->mime_type);
+        }
     }
 
     /**
@@ -188,7 +199,18 @@ class SystemController extends BaseController
         $logic = new SystemAttachmentLogic();
         $model = $logic->where('hash', $hash)->find();
         $object_name = $model->object_name;
-        return response()->download($model->storage_path, $object_name);
+        
+        if ($model->storage_mode == 1) {
+            return response()->download(base_path() . DIRECTORY_SEPARATOR . $model->storage_path, $object_name);
+        } else {
+            $fileContent = file_get_contents($model->url);
+            if ($fileContent === false) {
+                return $this->fail('文件下载失败');
+            }
+            return response()->withBody($fileContent)
+                ->withHeader('Content-Disposition', 'attachment; filename="' . $object_name . '"')
+                ->withHeader('Content-Type', $model->mime_type);
+        }
     }
 
     /**
