@@ -38,9 +38,9 @@ class SystemDictDataLogic extends BaseLogic
             throw new ApiException('字典类型不存在');
         }
         $data['code'] = $type->code;
-        $this->model->save($data);
+        $model = $this->model->create($data);
         DictCache::clear();
-        return $this->model->getKey();
+        return $model->getKey();
     }
 
 }
