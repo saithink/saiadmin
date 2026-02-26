@@ -43,7 +43,7 @@ class ReflectionCache
         $key = $cache['no_need'] . md5($controller);
 
         $data = Cache::get($key);
-        if ($data) {
+        if ($data !== null) {
             return $data;
         }
 
