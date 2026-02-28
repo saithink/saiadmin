@@ -77,7 +77,7 @@ class InstallController extends OpenController
             $db = $this->getPdo($host, $user, $password, $port);
             $smt = $db->query("show databases like '$database'");
             if (empty($smt->fetchAll())) {
-                $db->exec("create database $database CHARSET utf8mb4 COLLATE utf8mb4_general_ci");
+                $db->exec("create database `$database` CHARSET utf8mb4 COLLATE utf8mb4_general_ci");
             }
         } catch (\Throwable $e) {
             $message = $e->getMessage();
@@ -93,7 +93,7 @@ class InstallController extends OpenController
             throw $e;
         }
 
-        $db->exec("use $database");
+        $db->exec("use `$database`");
 
         $smt = $db->query("show tables like 'sa_system_menu';");
         $tables = $smt->fetchAll();
