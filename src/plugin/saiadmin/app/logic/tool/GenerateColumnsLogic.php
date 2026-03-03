@@ -121,7 +121,8 @@ class GenerateColumnsLogic extends BaseLogic
                     case 'datetime':
                         $column['view_type'] = 'date';
                         $options = [
-                            'mode' => 'datetime'
+                            'mode' => 'datetime',
+                            'value_format' => 'YYYY-MM-DD HH:mm:ss'
                         ];
                         $column['options'] = $options;
                         $column['query_type'] = 'between';
@@ -129,7 +130,8 @@ class GenerateColumnsLogic extends BaseLogic
                     case 'date':
                         $column['view_type'] = 'date';
                         $options = [
-                            'mode' => 'date'
+                            'mode' => 'date',
+                            'value_format' => 'YYYY-MM-DD'
                         ];
                         $column['options'] = $options;
                         $column['query_type'] = 'between';
