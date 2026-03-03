@@ -129,7 +129,6 @@ class GenerateTablesLogic extends BaseLogic
                         $array = [
                             'column_comment',
                             'column_type',
-                            'default_value',
                             'is_pk',
                             'is_required',
                             'is_insert',
