@@ -108,7 +108,7 @@ class CodeEngine
             }
         });
         $defaultFilter = new TwigFilter('parseNumber', function ($value) {
-            if ($value) {
+            if (\is_numeric($value)) {
                 return $value;
             } else {
                 return 'null';
