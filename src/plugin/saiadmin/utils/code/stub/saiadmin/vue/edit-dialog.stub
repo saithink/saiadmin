@@ -99,7 +99,7 @@
 {% endif %}
 {% if column.view_type == 'date' %}
       <el-form-item label="{{column.column_comment}}" prop="{{column.column_name}}">
-        <el-date-picker v-model="formData.{{column.column_name}}" type="{{column.options.mode}}" placeholder="请选择{{column.column_comment}}" />
+        <el-date-picker v-model="formData.{{column.column_name}}" type="{{column.options.mode}}" value-format="{{column.options.value_format}}" placeholder="请选择{{column.column_comment}}" />
       </el-form-item>
 {% endif %}
 {% if column.view_type == 'time' %}
