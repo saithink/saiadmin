@@ -135,13 +135,13 @@
         { prop: '{{column.column_name}}', label: '{{column.column_comment}}', saiType: 'image' },
 {% else %}
 {% if column.is_sort == 2 %}
-{% if column.view_type == 'saSelect' or column.view_type == 'radio' %}
+{% if column.view_type == 'saSelect' or column.view_type == 'radio' or column.view_type == 'checkbox' %}
         { prop: '{{column.column_name}}', label: '{{column.column_comment}}', saiType: 'dict', saiDict: '{{column.dict_type}}', sortable: true },
 {% else %}
         { prop: '{{column.column_name}}', label: '{{column.column_comment}}', sortable: true },
 {% endif %}
 {% else %}
-{% if column.view_type == 'saSelect' or column.view_type == 'radio' %}
+{% if column.view_type == 'saSelect' or column.view_type == 'radio' or column.view_type == 'checkbox' %}
         { prop: '{{column.column_name}}', label: '{{column.column_comment}}', saiType: 'dict', saiDict: '{{column.dict_type}}' },
 {% else %}
         { prop: '{{column.column_name}}', label: '{{column.column_comment}}' },
