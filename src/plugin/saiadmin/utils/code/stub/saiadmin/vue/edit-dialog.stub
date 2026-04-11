@@ -223,7 +223,7 @@
     {{column.column_name}}: {{column.default_value | parseNumber}},
 {% elseif column.view_type == 'inputTag' or column.view_type == 'checkbox' or column.options.limit > 1 %}
     {{column.column_name}}: [],
-{% elseif column.view_type == 'userSelect' %}
+{% elseif column.view_type == 'userSelect' or column.view_type == 'date' %}
     {{column.column_name}}: null,
 {% else %}
     {{column.column_name}}: '{{column.default_value}}',
