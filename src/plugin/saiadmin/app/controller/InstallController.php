@@ -135,6 +135,7 @@ REDIS_HOST = 127.0.0.1
 REDIS_PORT = 6379
 REDIS_PASSWORD = ''
 REDIS_DB = 0
+DB_CHARSET = utf8mb4
 
 # 验证码配置
 CAPTCHA_MODE = cache
@@ -185,7 +186,7 @@ return [
                 \PDO::ATTR_TIMEOUT => 3,
             ],
             // 数据库编码默认采用utf8
-            'charset' => 'utf8',
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
             // 数据库表前缀
             'prefix' => env('DB_PREFIX', ''),
             // 断线重连
