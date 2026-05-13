@@ -42,4 +42,9 @@ class SystemConfig extends BaseModel
         return json_decode($value ?? '', true);
     }
 
+    public function setConfigSelectDataAttr($value)
+    {
+        return json_encode($value);
+    }
+
 }
