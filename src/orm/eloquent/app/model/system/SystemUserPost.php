@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * 用户岗位关联模型
  *
- * sa_system_user_post 用户与岗位关联表
+ * system_user_post 用户与岗位关联表
  *
  * @property  $id 主键
  * @property  $user_id 用户主键
@@ -21,5 +21,5 @@ class SystemUserPost extends Pivot
 {
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_user_post';
+    protected $table = 'system_user_post';
 }

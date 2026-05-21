@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
 /**
  * 字典类型模型
  *
- * sa_system_dict_type 字典类型表
+ * system_dict_type 字典类型表
  *
  * @property  $id 主键
  * @property  $name 字典名称
@@ -31,7 +31,7 @@ class SystemDictType extends BaseModel
      */
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_dict_type';
+    protected $table = 'system_dict_type';
 
     /**
      * 关联字典数据

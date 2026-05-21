@@ -11,7 +11,7 @@ use think\model\Pivot;
 /**
  * 角色部门关联模型
  *
- * sa_system_role_dept 角色-自定义数据权限关联
+ * system_role_dept 角色-自定义数据权限关联
  *
  * @property  $id 
  * @property  $role_id 
@@ -21,5 +21,5 @@ class SystemRoleDept extends Pivot
 {
     protected $pk = 'id';
 
-    protected $table = 'sa_system_role_dept';
+    protected $name = 'system_role_dept';
 }

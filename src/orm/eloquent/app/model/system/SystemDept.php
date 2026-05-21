@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
 /**
  * 部门模型
  *
- * sa_system_dept 部门表
+ * system_dept 部门表
  *
  * @property  $id 编号
  * @property  $parent_id 父级ID，0为根节点
@@ -35,7 +35,7 @@ class SystemDept extends BaseModel
      */
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_dept';
+    protected $table = 'system_dept';
 
     /**
      * 权限范围

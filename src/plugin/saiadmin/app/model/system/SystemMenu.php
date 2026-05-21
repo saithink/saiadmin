@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\think\BaseModel;
 /**
  * 菜单模型
  *
- * sa_system_menu 菜单权限表
+ * system_menu 菜单权限表
  *
  * @property  $id 
  * @property  $parent_id 父级ID
@@ -42,7 +42,7 @@ use plugin\saiadmin\basic\think\BaseModel;
 class SystemMenu extends BaseModel
 {
     // 完整数据库表名称
-    protected $table = 'sa_system_menu';
+    protected $name = 'system_menu';
     // 主键
     protected $pk = 'id';
 

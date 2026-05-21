@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
 /**
  * 附件模型
  *
- * sa_system_attachment 附件信息表
+ * system_attachment 附件信息表
  *
  * @property  $id 主键
  * @property  $category_id 文件分类
@@ -39,7 +39,7 @@ class SystemAttachment extends BaseModel
      */
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_attachment';
+    protected $table = 'system_attachment';
 
     /**
      * 文件名搜索

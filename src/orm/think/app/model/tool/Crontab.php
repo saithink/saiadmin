@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\think\BaseModel;
 /**
  * 定时任务模型
  *
- * sa_tool_crontab 定时任务信息表
+ * tool_crontab 定时任务信息表
  *
  * @property  $id 主键
  * @property  $name 任务名称
@@ -35,6 +35,6 @@ class Crontab extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_tool_crontab';
+    protected $name = 'tool_crontab';
 
 }

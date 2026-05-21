@@ -30,6 +30,8 @@ class SystemLoginLogLogic extends BaseLogic
      */
     public function loginChart(): array
     {
+        $prefix = config('database.connections.mysql.prefix');
+
         $sql = "
             SELECT
                 d.date AS login_date,
@@ -40,7 +42,7 @@ class SystemLoginLogLogic extends BaseLogic
                        UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
                        UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
                  ) d
-            LEFT JOIN sa_system_login_log l
+            LEFT JOIN {$prefix}system_login_log l
                 ON DATE(l.login_time) = d.date
             GROUP BY d.date
             ORDER BY d.date ASC;
@@ -58,6 +60,8 @@ class SystemLoginLogLogic extends BaseLogic
      */
     public function loginBarChart(): array
     {
+        $prefix = config('database.connections.mysql.prefix');
+        
         $sql = "
             SELECT
                 -- 拼接成 YYYY-MM 格式，例如 2023-01
@@ -69,7 +73,7 @@ class SystemLoginLogLogic extends BaseLogic
                  UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
                  UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
                  UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12) m
-            LEFT JOIN sa_system_login_log l
+            LEFT JOIN {$prefix}system_login_log l
                 -- 关联条件：年份等于今年 且 月份等于生成的数字
                 ON YEAR(l.login_time) = YEAR(CURDATE())
                 AND MONTH(l.login_time) = m.month_num

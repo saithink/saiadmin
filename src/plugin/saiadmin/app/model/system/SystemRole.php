@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\think\BaseModel;
 /**
  * 角色模型
  *
- * sa_system_role 角色表
+ * system_role 角色表
  *
  * @property  $id 
  * @property  $name 角色名称
@@ -39,7 +39,7 @@ class SystemRole extends BaseModel
      * 数据表完整名称
      * @var string
      */
-    protected $table = 'sa_system_role';
+    protected $name = 'system_role';
 
     /**
      * 权限范围

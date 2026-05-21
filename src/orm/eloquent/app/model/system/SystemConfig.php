@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
 /**
  * 参数配置模型
  *
- * sa_system_config 参数配置信息表
+ * system_config 参数配置信息表
  *
  * @property  $id 编号
  * @property  $group_id 组id
@@ -35,7 +35,7 @@ class SystemConfig extends BaseModel
      */
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_config';
+    protected $table = 'system_config';
 
     protected function casts(): array
     {

@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\think\BaseModel;
 /**
  * 字典数据模型
  *
- * sa_system_dict_data 字典数据表
+ * system_dict_data 字典数据表
  *
  * @property  $id 主键
  * @property  $type_id 字典类型ID
@@ -35,7 +35,7 @@ class SystemDictData extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_dict_data';
+    protected $name = 'system_dict_data';
 
     /**
      * 关键字搜索

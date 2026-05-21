@@ -6,10 +6,7 @@
 // +----------------------------------------------------------------------
 namespace plugin\saiadmin\app\controller;
 
-use Throwable;
 use support\Request;
-use support\Response;
-use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\basic\OpenController;
 
 /**
@@ -71,6 +68,7 @@ class InstallController extends OpenController
         $database = $request->post('database');
         $host = $request->post('host');
         $port = (int) $request->post('port') ?: 3306;
+        $prefix = $request->post('prefix', '');
         $dataType = $request->post('dataType', 'demo');
 
         try {
@@ -95,7 +93,9 @@ class InstallController extends OpenController
 
         $db->exec("use `$database`");
 
-        $smt = $db->query("show tables like 'sa_system_menu';");
+        // 检查表是否存在时，使用自定义前缀
+        $checkTable = $prefix ? $prefix . 'system_menu' : 'sa_system_menu';
+        $smt = $db->query("show tables like '$checkTable';");
         $tables = $smt->fetchAll();
         if (count($tables) > 0) {
             return $this->fail('数据库已经安装，请勿重复安装');
@@ -113,6 +113,11 @@ class InstallController extends OpenController
 
         $sql_query = file_get_contents($sql_file);
 
+        // 如果传了前缀，替换 SQL 文件中的 sa_ 为自定义前缀
+        if (!empty($prefix)) {
+            $sql_query = str_replace('sa_', $prefix, $sql_query);
+        }
+
         $db->exec($sql_query);
 
         $this->generateConfig();
@@ -125,7 +130,7 @@ DB_PORT = $port
 DB_NAME = $database
 DB_USER = $user
 DB_PASSWORD = $password
-DB_PREFIX = 
+DB_PREFIX = $prefix
 
 # 缓存方式
 CACHE_MODE = file
@@ -353,8 +358,8 @@ EOF;
             $dsn .= "dbname=$database";
         }
         $params = [
-            \PDO::MYSQL_ATTR_INIT_COMMAND => "set names utf8mb4",
-            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+            \PDO\Mysql::ATTR_INIT_COMMAND => "set names utf8mb4",
+            \PDO\Mysql::ATTR_USE_BUFFERED_QUERY => true,
             \PDO::ATTR_EMULATE_PREPARES => false,
             \PDO::ATTR_TIMEOUT => 5,
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
