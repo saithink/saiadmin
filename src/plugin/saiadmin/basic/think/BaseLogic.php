@@ -118,7 +118,10 @@ class BaseLogic extends AbstractLogic
             return $query->select()->toArray();
         }
 
-        return $query->paginate($limit, false, ['page' => $page])->toArray();
+        return $query->paginate([
+            'page' => $page,
+            'list_rows' => $limit,
+        ])->toArray();
     }
 
     /**
