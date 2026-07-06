@@ -127,7 +127,7 @@ class DatabaseLogic extends BaseLogic
     {
         foreach ($tables as $table) {
             if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
-                Db::execute('OPTIMIZE TABLE `' . $table . '`');
+                Db::execute('ANALYZE TABLE `' . $table . '`');
             }
         }
     }
@@ -139,7 +139,7 @@ class DatabaseLogic extends BaseLogic
     {
         foreach ($tables as $table) {
             if (preg_match("/^[a-zA-Z0-9_]+$/", $table)) {
-                Db::execute('ANALYZE TABLE `' . $table . '`');
+                Db::execute('OPTIMIZE TABLE `' . $table . '`');
             }
         }
     }
