@@ -86,7 +86,7 @@ class SystemUser
      */
     protected function filterParams($params): string
     {
-        $blackList = ['password', 'oldPassword', 'newPassword'];
+        $blackList = ['password', 'oldPassword', 'newPassword', 'confirmPassword'];
         foreach ($params as $key => $value) {
             if (in_array($key, $blackList)) {
                 $params[$key] = '******';
