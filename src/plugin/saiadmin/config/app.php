@@ -6,5 +6,5 @@ return [
     'debug' => true,
     'controller_suffix' => 'Controller',
     'controller_reuse' => false,
-    'version' => '6.0.10'
+    'version' => '6.0.11'
 ];
