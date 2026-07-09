@@ -12,7 +12,7 @@ use plugin\saiadmin\basic\think\BaseModel;
 /**
  * 登录日志模型
  *
- * sa_system_login_log 登录日志表
+ * system_login_log 登录日志表
  *
  * @property  $id 主键
  * @property  $username 用户名
@@ -37,7 +37,7 @@ class SystemLoginLog extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_login_log';
+    protected $name = 'system_login_log';
 
     /**
      * 时间范围搜索

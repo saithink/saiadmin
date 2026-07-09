@@ -19,7 +19,7 @@ class GenerateTables extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_tool_generate_tables';
+    protected $name = 'tool_generate_tables';
 
     public function getOptionsAttr($value)
     {

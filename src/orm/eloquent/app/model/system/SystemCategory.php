@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
 /**
  * 附件分类模型
  *
- * sa_system_category 附件分类表
+ * system_category 附件分类表
  *
  * @property  $id 分类ID
  * @property  $parent_id 父id
@@ -33,7 +33,7 @@ class SystemCategory extends BaseModel
      */
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_category';
+    protected $table = 'system_category';
 
     /**
      * 分类名称搜索

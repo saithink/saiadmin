@@ -11,7 +11,7 @@ use think\model\Pivot;
 /**
  * 用户角色关联模型
  *
- * sa_system_user_role 用户角色关联
+ * system_user_role 用户角色关联
  *
  * @property  $id 
  * @property  $user_id 
@@ -21,7 +21,7 @@ class SystemUserRole extends Pivot
 {
     protected $pk = 'id';
 
-    protected $table = 'sa_system_user_role';
+    protected $name = 'system_user_role';
 
     /**
      * 获取角色id

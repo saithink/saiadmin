@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\think\BaseModel;
 /**
  * 邮件记录模型
  *
- * sa_system_mail 邮件记录
+ * system_mail 邮件记录
  *
  * @property  $id 编号
  * @property  $gateway 网关
@@ -32,7 +32,7 @@ class SystemMail extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_mail';
+    protected $name = 'system_mail';
 
     /**
      * 发送人搜索

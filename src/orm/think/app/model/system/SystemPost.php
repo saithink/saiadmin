@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\think\BaseModel;
 /**
  * 岗位模型
  *
- * sa_system_post 岗位信息表
+ * system_post 岗位信息表
  *
  * @property  $id 主键
  * @property  $name 岗位名称
@@ -32,6 +32,6 @@ class SystemPost extends BaseModel
      */
     protected $pk = 'id';
 
-    protected $table = 'sa_system_post';
+    protected $name = 'system_post';
 
 }

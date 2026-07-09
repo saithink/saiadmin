@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * 角色部门关联模型
  *
- * sa_system_role_dept 角色-自定义数据权限关联
+ * system_role_dept 角色-自定义数据权限关联
  *
  * @property  $id 
  * @property  $role_id 
@@ -21,5 +21,5 @@ class SystemRoleDept extends Pivot
 {
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_role_dept';
+    protected $table = 'system_role_dept';
 }

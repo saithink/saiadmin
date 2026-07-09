@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
 /**
  * 参数配置分组模型
  * 
- * sa_system_config_group 参数配置分组表
+ * system_config_group 参数配置分组表
  *
  * @property  $id 主键
  * @property  $name 字典名称
@@ -30,7 +30,7 @@ class SystemConfigGroup extends BaseModel
      */
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_config_group';
+    protected $table = 'system_config_group';
 
     /**
      * 关联配置列表

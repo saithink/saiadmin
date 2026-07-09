@@ -11,7 +11,7 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
 /**
  * 用户信息模型
  *
- * sa_system_user 用户表
+ * system_user 用户表
  *
  * @property  $id 
  * @property  $username 登录账号
@@ -47,7 +47,7 @@ class SystemUser extends BaseModel
      * 数据表完整名称
      * @var string
      */
-    protected $table = 'sa_system_user';
+    protected $table = 'system_user';
 
     /**
      * 关键字搜索

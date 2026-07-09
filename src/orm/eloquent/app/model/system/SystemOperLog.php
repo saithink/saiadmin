@@ -12,7 +12,7 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
 /**
  * 操作日志模型
  *
- * sa_system_oper_log 操作日志表
+ * system_oper_log 操作日志表
  *
  * @property  $id 主键
  * @property  $username 用户名
@@ -37,6 +37,6 @@ class SystemOperLog extends BaseModel
      */
     protected $primaryKey = 'id';
 
-    protected $table = 'sa_system_oper_log';
+    protected $table = 'system_oper_log';
 
 }

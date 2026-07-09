@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * 用户角色关联模型
  *
- * sa_system_user_role 用户角色关联
+ * system_user_role 用户角色关联
  *
  * @property  $id 
  * @property  $user_id 
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class SystemUserRole extends Pivot
 {
     protected $primaryKey = 'id';
-    protected $table = 'sa_system_user_role';
+    protected $table = 'system_user_role';
 
     /**
      * 获取角色id
