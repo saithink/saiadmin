@@ -133,6 +133,7 @@ CACHE_MODE = file
 # Redis配置
 REDIS_HOST = 127.0.0.1
 REDIS_PORT = 6379
+REDIS_USERNAME = ''
 REDIS_PASSWORD = ''
 REDIS_DB = 0
 DB_CHARSET = utf8mb4
@@ -268,6 +269,8 @@ return [
             'host' => env('REDIS_HOST', '127.0.0.1'),
             // 服务器端口
             'port' => env('REDIS_PORT', 6379),
+            // 服务器用户名
+            'username' => env('REDIS_USERNAME', ''),
             // 服务器密码
             'password' => env('REDIS_PASSWORD', ''),
             // 数据库
