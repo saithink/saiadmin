@@ -81,7 +81,7 @@ class UserAuthCache
         }
 
         // 保存到缓存
-        Cache::tag($tag)->set($cache['prefix'] . $uid, $data, $cache['expire']);
+        CacheTag::set($tag, $cache['prefix'] . $uid, $data, $cache['expire']);
         return $data;
     }
 
@@ -100,7 +100,7 @@ class UserAuthCache
         $all = (new SystemMenuLogic())->getAllAuth();
 
         // 设置权限并返回
-        Cache::tag($cache['tag'])->set($cache['all'], $all, $cache['expire']);
+        CacheTag::set($cache['tag'], $cache['all'], $all, $cache['expire']);
 
         return $all;
     }
