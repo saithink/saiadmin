@@ -463,8 +463,14 @@ EOF;
             if ($database) {
                 $dsn .= "dbname=$database";
             }
-            $params[\PDO::MYSQL_ATTR_INIT_COMMAND] = 'set names utf8mb4';
-            $params[\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
+            $initCommand = class_exists(\Pdo\Mysql::class)
+                ? \Pdo\Mysql::ATTR_INIT_COMMAND
+                : \PDO::MYSQL_ATTR_INIT_COMMAND;
+            $bufferedQuery = class_exists(\Pdo\Mysql::class)
+                ? \Pdo\Mysql::ATTR_USE_BUFFERED_QUERY
+                : \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY;
+            $params[$initCommand] = 'set names utf8mb4';
+            $params[$bufferedQuery] = true;
         }
         return new \PDO($dsn, $username, $password, $params);
     }
