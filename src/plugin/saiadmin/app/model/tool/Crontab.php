@@ -13,19 +13,19 @@ use plugin\saiadmin\basic\think\BaseModel;
  *
  * sa_tool_crontab 定时任务信息表
  *
- * @property  $id 主键
- * @property  $name 任务名称
- * @property  $type 任务类型
- * @property  $target 调用任务字符串
- * @property  $parameter 调用任务参数
- * @property  $task_style 执行类型
- * @property  $rule 任务执行表达式
- * @property  $status 状态
- * @property  $remark 备注
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 主键
+ * @property string $name 任务名称
+ * @property string $type 任务类型
+ * @property string $target 调用任务字符串
+ * @property string $parameter 调用任务参数
+ * @property string $task_style 执行类型
+ * @property string $rule 任务执行表达式
+ * @property int $status 状态
+ * @property string $remark 备注
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class Crontab extends BaseModel
 {

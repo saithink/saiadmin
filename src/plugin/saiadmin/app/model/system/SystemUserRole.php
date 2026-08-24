@@ -13,9 +13,9 @@ use think\model\Pivot;
  *
  * sa_system_user_role 用户角色关联
  *
- * @property  $id 
- * @property  $user_id 
- * @property  $role_id 
+ * @property int $id 
+ * @property int $user_id 
+ * @property int $role_id 
  */
 class SystemUserRole extends Pivot
 {
