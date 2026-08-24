@@ -13,6 +13,7 @@ use plugin\saiadmin\app\model\tool\GenerateTables;
 use plugin\saiadmin\app\model\tool\GenerateColumns;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\basic\eloquent\BaseLogic;
+use plugin\saiadmin\utils\DbType;
 use plugin\saiadmin\utils\Helper;
 use plugin\saiadmin\utils\code\CodeZip;
 use plugin\saiadmin\utils\code\CodeEngine;
@@ -318,6 +319,9 @@ class GenerateTablesLogic extends BaseLogic
         $data['tables'] = [$data];
         $data['columns'] = $columns;
         $data['db_source'] = $config['default'] ?? 'mysql';
+        // db_source 是连接名（模型要不要写 $connection 看它），db_type 才是驱动类型，
+        // sql.stub 按 db_type 决定菜单 SQL 用 LAST_INSERT_ID() 还是 PG 的 RETURNING
+        $data['db_type'] = DbType::get();
 
         $data['options'] = $data['options'] ? json_decode($data['options'], true) : [];
 

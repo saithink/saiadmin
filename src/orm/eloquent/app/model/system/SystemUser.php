@@ -13,26 +13,26 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
  *
  * sa_system_user 用户表
  *
- * @property  $id 
- * @property  $username 登录账号
- * @property  $password 加密密码
- * @property  $realname 真实姓名
- * @property  $gender 性别
- * @property  $avatar 头像
- * @property  $email 邮箱
- * @property  $phone 手机号
- * @property  $signed 个性签名
- * @property  $dashboard 工作台
- * @property  $dept_id 主归属部门
- * @property  $is_super 是否超级管理员: 1是
- * @property  $status 状态: 1启用, 2禁用
- * @property  $remark 备注
- * @property  $login_time 最后登录时间
- * @property  $login_ip 最后登录IP
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 
+ * @property string $username 登录账号
+ * @property string $password 加密密码
+ * @property string $realname 真实姓名
+ * @property int $gender 性别
+ * @property string $avatar 头像
+ * @property string $email 邮箱
+ * @property string $phone 手机号
+ * @property string $signed 个性签名
+ * @property string $dashboard 工作台
+ * @property int $dept_id 主归属部门
+ * @property int $is_super 是否超级管理员: 1是
+ * @property int $status 状态: 1启用, 2禁用
+ * @property string $remark 备注
+ * @property string $login_time 最后登录时间
+ * @property string $login_ip 最后登录IP
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemUser extends BaseModel
 {
@@ -55,7 +55,11 @@ class SystemUser extends BaseModel
     public function searchKeywordAttr($query, $value)
     {
         if ($value) {
-            $query->whereAny(['username', 'realname', 'phone'], 'like', '%' . $value . '%');
+            $query->where(function ($sub) use ($value) {
+                $sub->whereLike('username', '%' . $value . '%')
+                    ->orWhereLike('realname', '%' . $value . '%')
+                    ->orWhereLike('phone', '%' . $value . '%');
+            });
         }
     }
 

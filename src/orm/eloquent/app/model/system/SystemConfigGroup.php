@@ -13,14 +13,14 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
  * 
  * sa_system_config_group 参数配置分组表
  *
- * @property  $id 主键
- * @property  $name 字典名称
- * @property  $code 字典标示
- * @property  $remark 备注
- * @property  $created_by 创建人
- * @property  $updated_by 更新人
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 主键
+ * @property string $name 字典名称
+ * @property string $code 字典标示
+ * @property string $remark 备注
+ * @property int $created_by 创建人
+ * @property int $updated_by 更新人
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemConfigGroup extends BaseModel
 {
@@ -45,7 +45,7 @@ class SystemConfigGroup extends BaseModel
      */
     public function searchNameAttr($query, $value)
     {
-        return $query->where('name', 'like', '%' . $value . '%');
+        return $query->whereLike('name', '%' . $value . '%');
     }
 
     /**
@@ -53,7 +53,7 @@ class SystemConfigGroup extends BaseModel
      */
     public function searchCodeAttr($query, $value)
     {
-        return $query->where('code', 'like', '%' . $value . '%');
+        return $query->whereLike('code', '%' . $value . '%');
     }
 
 }

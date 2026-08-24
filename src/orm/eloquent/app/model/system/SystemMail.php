@@ -13,16 +13,16 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
  *
  * sa_system_mail 邮件记录
  *
- * @property  $id 编号
- * @property  $gateway 网关
- * @property  $from 发送人
- * @property  $email 接收人
- * @property  $code 验证码
- * @property  $content 邮箱内容
- * @property  $status 发送状态
- * @property  $response 返回结果
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 编号
+ * @property string $gateway 网关
+ * @property string $from 发送人
+ * @property string $email 接收人
+ * @property string $code 验证码
+ * @property string $content 邮箱内容
+ * @property int $status 发送状态
+ * @property string $response 返回结果
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemMail extends BaseModel
 {
@@ -39,7 +39,7 @@ class SystemMail extends BaseModel
      */
     public function searchFromAttr($query, $value)
     {
-        $query->where('from', 'like', '%' . $value . '%');
+        $query->whereLike('from', '%' . $value . '%');
     }
 
     /**
@@ -47,6 +47,6 @@ class SystemMail extends BaseModel
      */
     public function searchEmailAttr($query, $value)
     {
-        $query->where('email', 'like', '%' . $value . '%');
+        $query->whereLike('email', '%' . $value . '%');
     }
 }

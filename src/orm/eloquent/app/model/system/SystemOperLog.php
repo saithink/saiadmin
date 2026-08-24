@@ -14,20 +14,20 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
  *
  * sa_system_oper_log 操作日志表
  *
- * @property  $id 主键
- * @property  $username 用户名
- * @property  $app 应用名称
- * @property  $method 请求方式
- * @property  $router 请求路由
- * @property  $service_name 业务名称
- * @property  $ip 请求IP地址
- * @property  $ip_location IP所属地
- * @property  $request_data 请求数据
- * @property  $remark 备注
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 更新时间
+ * @property int $id 主键
+ * @property string $username 用户名
+ * @property string $app 应用名称
+ * @property string $method 请求方式
+ * @property string $router 请求路由
+ * @property string $service_name 业务名称
+ * @property string $ip 请求IP地址
+ * @property string $ip_location IP所属地
+ * @property string $request_data 请求数据
+ * @property string $remark 备注
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 更新时间
  */
 class SystemOperLog extends BaseModel
 {

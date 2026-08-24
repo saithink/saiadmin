@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  *
  * sa_system_role_dept 角色-自定义数据权限关联
  *
- * @property  $id 
- * @property  $role_id 
- * @property  $dept_id 
+ * @property int $id 
+ * @property int $role_id 
+ * @property int $dept_id 
  */
 class SystemRoleDept extends Pivot
 {

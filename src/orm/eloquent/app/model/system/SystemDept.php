@@ -13,19 +13,19 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
  *
  * sa_system_dept 部门表
  *
- * @property  $id 编号
- * @property  $parent_id 父级ID，0为根节点
- * @property  $name 部门名称
- * @property  $code 部门编码
- * @property  $leader_id 部门负责人ID
- * @property  $level 祖级列表，格式: 0,1,5,
- * @property  $sort 排序，数字越小越靠前
- * @property  $status 状态: 1启用, 0禁用
- * @property  $remark 备注
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 编号
+ * @property int $parent_id 父级ID，0为根节点
+ * @property string $name 部门名称
+ * @property string $code 部门编码
+ * @property int $leader_id 部门负责人ID
+ * @property string $level 祖级列表，格式: 0,1,5,
+ * @property int $sort 排序，数字越小越靠前
+ * @property int $status 状态: 1启用, 0禁用
+ * @property string $remark 备注
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemDept extends BaseModel
 {

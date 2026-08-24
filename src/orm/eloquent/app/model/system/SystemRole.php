@@ -13,18 +13,18 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
  *
  * sa_system_role 角色表
  *
- * @property  $id 
- * @property  $name 角色名称
- * @property  $code 角色标识，如: hr_manager
- * @property  $level 角色级别：用于行政控制，不可操作级别大于自己的角色
- * @property  $data_scope 数据范围: 1全部, 2本部门及下属, 3本部门, 4仅本人, 5自定义
- * @property  $remark 备注
- * @property  $sort 
- * @property  $status 状态: 1启用, 0禁用
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 
+ * @property string $name 角色名称
+ * @property string $code 角色标识，如: hr_manager
+ * @property int $level 角色级别：用于行政控制，不可操作级别大于自己的角色
+ * @property int $data_scope 数据范围: 1全部, 2本部门及下属, 3本部门, 4仅本人, 5自定义
+ * @property string $remark 备注
+ * @property int $sort 
+ * @property int $status 状态: 1启用, 0禁用
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemRole extends BaseModel
 {
@@ -52,10 +52,14 @@ class SystemRole extends BaseModel
             $ids = [];
             foreach ($roles as $item) {
                 $ids[] = $item['id'];
-                $temp = static::whereRaw('FIND_IN_SET("' . $item['id'] . '", level) > 0')->pluck('id')->toArray();
+                // FIND_IN_SET 是 MySQL 专有函数，改用两种数据库通用的 CONCAT + LIKE 判断
+                // level 这一列存的是逗号分隔的祖先 id，前后各补一个逗号避免匹配到 12 这类前缀
+                $temp = static::whereRaw("CONCAT(',', level, ',') LIKE ?", ['%,' . $item['id'] . ',%'])
+                    ->pluck('id')
+                    ->toArray();
                 $ids = array_merge($ids, $temp);
             }
-            $query->where('id', 'in', array_unique($ids));
+            $query->whereIn('id', array_unique($ids));
         }
     }
 

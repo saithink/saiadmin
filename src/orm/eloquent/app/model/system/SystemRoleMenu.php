@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  *
  * sa_system_role_menu 角色权限关联
  *
- * @property  $id 
- * @property  $role_id 
- * @property  $menu_id 
+ * @property int $id 
+ * @property int $role_id 
+ * @property int $menu_id 
  */
 class SystemRoleMenu extends Pivot
 {

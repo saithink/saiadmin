@@ -13,17 +13,17 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
  *
  * sa_system_category 附件分类表
  *
- * @property  $id 分类ID
- * @property  $parent_id 父id
- * @property  $level 组集关系
- * @property  $category_name 分类名称
- * @property  $sort 排序
- * @property  $status 状态
- * @property  $remark 备注
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 分类ID
+ * @property int $parent_id 父id
+ * @property string $level 组集关系
+ * @property string $category_name 分类名称
+ * @property int $sort 排序
+ * @property int $status 状态
+ * @property string $remark 备注
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemCategory extends BaseModel
 {
@@ -40,7 +40,7 @@ class SystemCategory extends BaseModel
      */
     public function searchCategoryNameAttr($query, $value)
     {
-        $query->where('category_name', 'like', '%' . $value . '%');
+        $query->whereLike('category_name', '%' . $value . '%');
     }
 
 }

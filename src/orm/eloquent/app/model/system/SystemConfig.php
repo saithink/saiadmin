@@ -13,19 +13,19 @@ use plugin\saiadmin\basic\eloquent\BaseModel;
  *
  * sa_system_config 参数配置信息表
  *
- * @property  $id 编号
- * @property  $group_id 组id
- * @property  $key 配置键名
- * @property  $value 配置值
- * @property  $name 配置名称
- * @property  $input_type 数据输入类型
- * @property  $config_select_data 配置选项数据
- * @property  $sort 排序
- * @property  $remark 备注
- * @property  $created_by 创建人
- * @property  $updated_by 更新人
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int  $id 编号
+ * @property int  $group_id 组id
+ * @property string  $key 配置键名
+ * @property string  $value 配置值
+ * @property string  $name 配置名称
+ * @property string  $input_type 数据输入类型
+ * @property string $config_select_data 配置选项数据
+ * @property int  $sort 排序
+ * @property string  $remark 备注
+ * @property int  $created_by 创建人
+ * @property int  $updated_by 更新人
+ * @property string  $create_time 创建时间
+ * @property string  $update_time 修改时间
  */
 class SystemConfig extends BaseModel
 {
