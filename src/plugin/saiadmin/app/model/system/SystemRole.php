@@ -52,7 +52,12 @@ class SystemRole extends BaseModel
             $ids = [];
             foreach ($roles as $item) {
                 $ids[] = $item['id'];
-                $temp = static::whereRaw('FIND_IN_SET("' . $item['id'] . '", level) > 0')->column('id');
+                // FIND_IN_SET 是 MySQL 专有函数，改成两种数据库通用的写法：
+                // 给 level 两端补逗号后做 LIKE，语义与 FIND_IN_SET(id, level) > 0 一致
+                $temp = static::whereRaw(
+                    "CONCAT(',', level, ',') LIKE :level",
+                    ['level' => '%,' . $item['id'] . ',%']
+                )->column('id');
                 $ids = array_merge($ids, $temp);
             }
             $query->where('id', 'in', array_unique($ids));

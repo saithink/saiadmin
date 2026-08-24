@@ -708,6 +708,25 @@
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label class="form-label">数据库类型</label>
+                                        <div class="radio-group" style="display: flex; gap: 20px;">
+                                            <label class="radio-label" style="display: flex; align-items: center; cursor: pointer; padding: 10px 15px; border: 2px solid #F5F3FF; border-radius: 10px; background: #F8FAFC; transition: all 0.3s ease;">
+                                                <input type="radio" name="dbType" id="dbTypeMysql" value="mysql" checked style="width: 18px; height: 18px; margin-right: 10px; accent-color: #7166f0;">
+                                                <span style="display: flex; flex-direction: column;">
+                                                    <strong style="color: #1e293b; font-size: 14px;">MySQL</strong>
+                                                </span>
+                                            </label>
+                                            <label class="radio-label" style="display: flex; align-items: center; cursor: pointer; padding: 10px 15px; border: 2px solid #F5F3FF; border-radius: 10px; background: #F8FAFC; transition: all 0.3s ease;">
+                                                <input type="radio" name="dbType" id="dbTypePgsql" value="pgsql" style="width: 18px; height: 18px; margin-right: 10px; accent-color: #7166f0;">
+                                                <span style="display: flex; flex-direction: column;">
+                                                    <strong style="color: #1e293b; font-size: 14px;">PostgreSQL</strong>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label class="form-label">数据库数据</label>
                                         <div class="radio-group" style="display: flex; gap: 20px;">
                                             <label class="radio-label" style="display: flex; align-items: center; cursor: pointer; padding: 10px 15px; border: 2px solid #F5F3FF; border-radius: 10px; background: #F8FAFC; transition: all 0.3s ease;">
@@ -928,9 +947,25 @@
             return true;
         }
 
+        // 数据库类型默认端口
+        const dbDefaultPort = { mysql: '3306', pgsql: '5432' };
+        const dbDefaultUser = { mysql: 'root', pgsql: 'postgres' };
+
+        // 切换数据库类型时联动端口与用户名占位符（用户自定义过的端口不覆盖）
+        $(function () {
+            $('input[name="dbType"]').on('change', function () {
+                const port = $('#dbPort').val();
+                if (!port || port === dbDefaultPort.mysql || port === dbDefaultPort.pgsql) {
+                    $('#dbPort').val(dbDefaultPort[this.value]);
+                }
+                $('#dbUser').attr('placeholder', dbDefaultUser[this.value]);
+            });
+        });
+
         // 开始安装过程
         function startInstallation() {
             const dbConfig = {
+                dbType: $('input[name="dbType"]:checked').val(),
                 host: $('#dbHost').val(),
                 port: $('#dbPort').val(),
                 database: $('#dbName').val(),

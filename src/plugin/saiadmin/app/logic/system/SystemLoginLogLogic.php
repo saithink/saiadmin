@@ -25,63 +25,77 @@ class SystemLoginLogLogic extends BaseLogic
     }
 
     /**
-     * 登录统计图表
+     * 登录统计图表（近 10 天每日登录次数）
      * @return array
      */
     public function loginChart(): array
     {
-        $sql = "
-            SELECT
-                d.date AS login_date,
-                COUNT(l.login_time) AS login_count
-            FROM
-                (SELECT CURDATE() - INTERVAL (a.N) DAY AS date
-                 FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3
-                       UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
-                       UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
-                 ) d
-            LEFT JOIN sa_system_login_log l
-                ON DATE(l.login_time) = d.date
-            GROUP BY d.date
-            ORDER BY d.date ASC;
-        ";
-        $data = Db::query($sql);
+        $days = 10;
+        $table = $this->model->getTableName();
+        // CAST(x AS DATE) 是 MySQL / PostgreSQL 通用写法，取代 MySQL 专有的 CURDATE()、DATE()、INTERVAL N DAY
+        $sql = "SELECT CAST(login_time AS DATE) AS login_date, COUNT(*) AS login_count
+                FROM {$table}
+                WHERE login_time >= :start AND login_time < :end
+                GROUP BY CAST(login_time AS DATE)";
+        $data = Db::query($sql, [
+            'start' => date('Y-m-d 00:00:00', strtotime('-' . ($days - 1) . ' day')),
+            'end' => date('Y-m-d 00:00:00', strtotime('+1 day')),
+        ]);
+
+        // 没有登录记录的日期数据库不会返回，日期轴与补 0 都在 PHP 侧完成
+        $counts = [];
+        foreach ($data as $row) {
+            $counts[substr((string) $row['login_date'], 0, 10)] = (int) $row['login_count'];
+        }
+
+        $dates = [];
+        $values = [];
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date = date('Y-m-d', strtotime("-{$i} day"));
+            $dates[] = $date;
+            $values[] = $counts[$date] ?? 0;
+        }
+
         return [
-            'login_count' => array_column($data, 'login_count'),
-            'login_date' => array_column($data, 'login_date'),
+            'login_count' => $values,
+            'login_date' => $dates,
         ];
     }
 
     /**
-     * 登录统计图表
+     * 登录统计图表（本年度每月登录次数）
      * @return array
      */
     public function loginBarChart(): array
     {
-        $sql = "
-            SELECT
-                -- 拼接成 YYYY-MM 格式，例如 2023-01
-                CONCAT(LPAD(m.month_num, 2, '0'), '月') AS login_month,
-                COUNT(l.login_time) AS login_count
-            FROM
-                -- 生成 1 到 12 的月份数字
-                (SELECT 1 AS month_num UNION ALL SELECT 2 UNION ALL SELECT 3
-                 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
-                 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
-                 UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12) m
-            LEFT JOIN sa_system_login_log l
-                -- 关联条件：年份等于今年 且 月份等于生成的数字
-                ON YEAR(l.login_time) = YEAR(CURDATE())
-                AND MONTH(l.login_time) = m.month_num
-            GROUP BY
-                m.month_num
-            ORDER BY
-                m.month_num ASC;
-        ";
-        $data = Db::query($sql);
+        $year = (int) date('Y');
+        $table = $this->model->getTableName();
+        // EXTRACT(MONTH FROM x) 两种数据库通用，取代 MySQL 专有的 YEAR()、MONTH()、CURDATE()、LPAD()
+        $sql = "SELECT EXTRACT(MONTH FROM login_time) AS login_month, COUNT(*) AS login_count
+                FROM {$table}
+                WHERE login_time >= :start AND login_time < :end
+                GROUP BY EXTRACT(MONTH FROM login_time)";
+        $data = Db::query($sql, [
+            'start' => $year . '-01-01 00:00:00',
+            'end' => ($year + 1) . '-01-01 00:00:00',
+        ]);
+
+        // 12 个月的标签固定输出，没有记录的月份补 0
+        $counts = [];
+        foreach ($data as $row) {
+            $counts[(int) $row['login_month']] = (int) $row['login_count'];
+        }
+
+        $months = [];
+        $values = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $months[] = sprintf('%02d月', $month);
+            $values[] = $counts[$month] ?? 0;
+        }
+
         return [
-            'login_count' => array_column($data, 'login_count'),
-            'login_month' => array_column($data, 'login_month'),
+            'login_count' => $values,
+            'login_month' => $months,
         ];
     }
 
