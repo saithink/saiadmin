@@ -13,19 +13,19 @@ use plugin\saiadmin\basic\think\BaseModel;
  *
  * sa_system_dict_data 字典数据表
  *
- * @property  $id 主键
- * @property  $type_id 字典类型ID
- * @property  $label 字典标签
- * @property  $value 字典值
- * @property  $color 字典颜色
- * @property  $code 字典标示
- * @property  $sort 排序
- * @property  $status 状态
- * @property  $remark 备注
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 主键
+ * @property int $type_id 字典类型ID
+ * @property string $label 字典标签
+ * @property string $value 字典值
+ * @property string $color 字典颜色
+ * @property string $code 字典标示
+ * @property int $sort 排序
+ * @property int $status 状态
+ * @property string $remark 备注
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemDictData extends BaseModel
 {

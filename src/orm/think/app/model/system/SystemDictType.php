@@ -13,15 +13,15 @@ use plugin\saiadmin\basic\think\BaseModel;
  *
  * sa_system_dict_type 字典类型表
  *
- * @property  $id 主键
- * @property  $name 字典名称
- * @property  $code 字典标示
- * @property  $status 状态
- * @property  $remark 备注
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 主键
+ * @property string $name 字典名称
+ * @property string $code 字典标示
+ * @property int $status 状态
+ * @property string $remark 备注
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemDictType extends BaseModel
 {

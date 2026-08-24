@@ -13,18 +13,18 @@ use plugin\saiadmin\basic\think\BaseModel;
  *
  * sa_system_role 角色表
  *
- * @property  $id 
- * @property  $name 角色名称
- * @property  $code 角色标识，如: hr_manager
- * @property  $level 角色级别：用于行政控制，不可操作级别大于自己的角色
- * @property  $data_scope 数据范围: 1全部, 2本部门及下属, 3本部门, 4仅本人, 5自定义
- * @property  $remark 备注
- * @property  $sort 
- * @property  $status 状态: 1启用, 0禁用
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 
+ * @property string $name 角色名称
+ * @property string $code 角色标识，如: hr_manager
+ * @property int $level 角色级别：用于行政控制，不可操作级别大于自己的角色
+ * @property int $data_scope 数据范围: 1全部, 2本部门及下属, 3本部门, 4仅本人, 5自定义
+ * @property string $remark 备注
+ * @property int $sort 
+ * @property int $status 状态: 1启用, 0禁用
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemRole extends BaseModel
 {

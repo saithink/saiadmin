@@ -13,31 +13,31 @@ use plugin\saiadmin\basic\think\BaseModel;
  *
  * sa_system_menu 菜单权限表
  *
- * @property  $id 
- * @property  $parent_id 父级ID
- * @property  $name 菜单名称
- * @property  $code 组件名称
- * @property  $slug 权限标识，如 user:list, user:add
- * @property  $type 类型: 1目录, 2菜单, 3按钮/API
- * @property  $path 路由地址或API路径
- * @property  $component 前端组件路径，如 layout/User
- * @property  $method 请求方式
- * @property  $icon 图标
- * @property  $sort 排序
- * @property  $link_url 外部链接
- * @property  $is_iframe 是否iframe
- * @property  $is_keep_alive 是否缓存
- * @property  $is_hidden 是否隐藏
- * @property  $is_fixed_tab 是否固定标签页
- * @property  $is_full_page 是否全屏
- * @property  $generate_id 生成id
- * @property  $generate_key 生成key
- * @property  $status 状态
- * @property  $remark 
- * @property  $created_by 创建者
- * @property  $updated_by 更新者
- * @property  $create_time 创建时间
- * @property  $update_time 修改时间
+ * @property int $id 
+ * @property int $parent_id 父级ID
+ * @property string $name 菜单名称
+ * @property string $code 组件名称
+ * @property string $slug 权限标识，如 user:list, user:add
+ * @property int $type 类型: 1目录, 2菜单, 3按钮/API
+ * @property string $path 路由地址或API路径
+ * @property string $component 前端组件路径，如 layout/User
+ * @property string $method 请求方式
+ * @property string $icon 图标
+ * @property int $sort 排序
+ * @property string $link_url 外部链接
+ * @property int $is_iframe 是否iframe
+ * @property int $is_keep_alive 是否缓存
+ * @property int $is_hidden 是否隐藏
+ * @property int $is_fixed_tab 是否固定标签页
+ * @property int $is_full_page 是否全屏
+ * @property int $generate_id 生成id
+ * @property int $generate_key 生成key
+ * @property int $status 状态
+ * @property string $remark 
+ * @property int $created_by 创建者
+ * @property int $updated_by 更新者
+ * @property string $create_time 创建时间
+ * @property string $update_time 修改时间
  */
 class SystemMenu extends BaseModel
 {
