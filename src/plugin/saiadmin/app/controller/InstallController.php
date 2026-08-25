@@ -124,7 +124,7 @@ class InstallController extends OpenController
             return $this->fail('数据库已经安装，请勿重复安装');
         }
 
-        // 将连接参数写入环境变量，供根目录 phinx.php 读取（此时 .env 尚未生成）
+        // 将连接参数写入环境变量，供 plugin/saiadmin/db/phinx.php 读取（此时 .env 尚未生成）
         $_ENV['DB_TYPE'] = $dbType;
         $_ENV['DB_HOST'] = $host;
         $_ENV['DB_PORT'] = (string)$port;

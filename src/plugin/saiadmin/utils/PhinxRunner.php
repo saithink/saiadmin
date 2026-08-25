@@ -39,7 +39,8 @@ class PhinxRunner
 
         $input = new ArrayInput(array_merge([
             'command' => $command,
-            '--configuration' => base_path() . DIRECTORY_SEPARATOR . 'phinx.php',
+            // 配置随插件走：plugin/saiadmin/utils → plugin/saiadmin/db/phinx.php
+            '--configuration' => dirname(__DIR__) . DIRECTORY_SEPARATOR . 'db' . DIRECTORY_SEPARATOR . 'phinx.php',
             '--environment' => 'db',
         ], $args));
         $input->setInteractive(false);
