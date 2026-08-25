@@ -387,6 +387,13 @@
             transform: translateY(0);
         }
 
+        .btn-primary:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+            box-shadow: none;
+        }
+
         .btn-outline-primary {
             color: var(--primary);
             border-color: var(--primary);
@@ -801,9 +808,9 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="button" class="btn btn-primary" onclick="nextStep(1)">
-                                    <span>下一步</span>
-                                    <i class="fas fa-arrow-right"></i>
+                                <button type="button" class="btn btn-primary" id="nextStepButton" onclick="nextStep(1)">
+                                    <span class="button-label">下一步</span>
+                                    <i class="fas fa-arrow-right button-icon"></i>
                                 </button>
                             </div>
                         </form>
@@ -964,6 +971,8 @@
 
         // 开始安装过程
         function startInstallation() {
+            setInstallSubmitting(true);
+
             const dbConfig = {
                 dbType: $('input[name="dbType"]:checked').val(),
                 host: $('#dbHost').val(),
@@ -1049,9 +1058,23 @@
                 },
                 error: function() {
                     showNotification('error', '请求失败，请检查网络连接');
+                },
+                complete: function() {
+                    setInstallSubmitting(false);
                 }
             });
            
+        }
+
+        // 控制数据库配置提交按钮的请求中状态，防止重复提交。
+        function setInstallSubmitting(isSubmitting) {
+            const button = $('#nextStepButton');
+            button.prop('disabled', isSubmitting);
+            button.toggleClass('is-loading', isSubmitting);
+            button.find('.button-label').text(isSubmitting ? '执行中' : '下一步');
+            button.find('.button-icon').attr('class', isSubmitting
+                ? 'fas fa-spinner fa-spin button-icon'
+                : 'fas fa-arrow-right button-icon');
         }
     </script>
 </body>
