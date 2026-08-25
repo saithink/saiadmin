@@ -9,7 +9,7 @@ SaiAdmin 的数据库结构由 [Phinx](https://book.cakephp.org/phinx/3/zh-cn/mi
 - `seeds/` — 初始数据。`PureSeeder` 为纯净基础数据；`DemoSeeder` 额外包含文章模块演示数据
 - `data/` — 种子数据的纯 PHP 数组（`pure.php` / `demo.php`），由 Seeder 用预处理语句写入，天然跨库
 - `support/` — 迁移与 Seeder 共用的助手（`SaiSchema` 统一建表选项与 `isPgsql()` 判断，`SaiSeed` 负责批量写入与序列/自增值重置）。放在 `migrations/`、`seeds/` 之外，Phinx 不会把它们当作迁移类扫描
-- `../../../phinx.php` — 配置文件，位于 server 根目录（`vendor/bin/phinx` 默认从 cwd 找它），`paths` 指向本目录下的 `migrations/` 与 `seeds/`；读取顺序为 `$_ENV` → `getenv()` → 默认值
+- `phinx.php` — Phinx 配置文件，`paths` 与 `.env` 路径都按 `__DIR__` 解析，所以整套迁移体系随插件走、放到哪个项目都不用改。读取顺序为 `$_ENV` → `getenv()` → `server/.env` → 默认值（webman 入口已经载入 `.env`，直接跑 `vendor/bin/phinx` 时由它自己兜底加载）
 
 网页安装向导（`/core/install`）会自动执行 migrate + seed，无需手动操作；向导里可以选择数据库类型。
 
@@ -22,15 +22,15 @@ php webman sai:migrate                        # 执行待运行的迁移
 php webman sai:migrate seed --seed PureSeeder # 执行指定 Seeder
 php webman sai:migrate rollback -t 0          # 回退全部迁移（危险！会删表）
 
-# 或直接使用 Phinx CLI（在 server 目录下）
-vendor/bin/phinx.bat status -c phinx.php   # Windows CMD
-vendor/bin/phinx status -c phinx.php       # Linux / Git Bash
+# 或直接使用 Phinx CLI（在 server 目录下，必须用 -c 指定配置，它默认只在 cwd 找 phinx.php）
+vendor/bin/phinx.bat status -c plugin/saiadmin/db/phinx.php   # Windows CMD
+vendor/bin/phinx status -c plugin/saiadmin/db/phinx.php       # Linux / Git Bash
 ```
 
 ## 新增迁移
 
 ```bash
-vendor/bin/phinx.bat create NewFeatureTables -c phinx.php
+vendor/bin/phinx.bat create NewFeatureTables -c plugin/saiadmin/db/phinx.php
 # 在生成的文件中编写 change()/up() 后执行 php webman sai:migrate
 ```
 
@@ -55,11 +55,19 @@ vendor/bin/phinx.bat create NewFeatureTables -c phinx.php
 
 迁移之外，业务代码里也有绕不开数据库方言的地方，约定如下：
 
-- 优先写两种数据库通用的 SQL，不要分支。`SystemLoginLogLogic` 的两个统计图表就是这么处理的：只用 `CAST(x AS DATE)`、`EXTRACT(MONTH FROM x)` 做聚合，日期/月份轴与补 0 都放在 PHP 侧；`SystemRole::scopeAuth` 用 `CONCAT(',', level, ',') LIKE :level` 取代 MySQL 专有的 `FIND_IN_SET`。
+- 优先写两种数据库通用的 SQL，不要分支。`SystemLoginLogLogic` 的两个统计图表就是这么处理的：只用 `CAST(x AS DATE)`、`EXTRACT(MONTH FROM x)` 做聚合，日期/月份轴与补 0 都放在 PHP 侧；`SystemRole::scopeAuth` 用 `whereRaw("CONCAT(',', level, ',') LIKE ?")` 取代 MySQL 专有的 `FIND_IN_SET`。
 - 元数据查询与表维护语句没有通用写法，用 `plugin\saiadmin\utils\DbType`（`get()` / `isPgsql($source)`）判断连接类型后分方言实现。`DatabaseLogic` 里表状态（`show table status` ↔ `pg_class` 等系统表）、字段信息（`SHOW FULL COLUMNS` ↔ `pg_attribute` 等系统表）、优化表（`ANALYZE TABLE` ↔ `ANALYZE`）、清理碎片（`OPTIMIZE TABLE` ↔ `VACUUM FULL`）都是这样分开的。
 - **PG 的字段信息要归一成 MySQL 的词汇**：代码生成器与前端模板是按 `varchar` / `int` / `datetime` 这套类型名、以及 `PRI` / `UNI` / `MUL`、`extra = auto_increment` 判断的，所以 `DatabaseLogic::pgsqlColumnList()` 会把 `character varying` → `varchar`、`timestamp without time zone` → `datetime` 等做映射，并剥掉默认值上的 `::类型` 标注。新增依赖字段信息的功能时按这套键名取值即可，不必再判断数据库类型。
-- 判断表有没有某个字段用 `Db::getTableFields($table)`（连接器按方言实现），不要写 `SHOW COLUMNS`。
+- 判断表有没有某个字段用 schema 构造器 `Db::getSchemaBuilder()->hasColumn($table, $field)`（方言由连接器处理），不要写 `SHOW COLUMNS`。`DatabaseLogic::recycleData()` 就是用它判断 `delete_time` 是否存在。
+- **模糊搜索一律用 `whereLike()`，不要写 `where($f, 'like', "%$v%")`**：MySQL 默认排序规则不区分大小写，PG 的 `LIKE` 区分大小写，同一套代码在 PG 下会漏数据（例如邮件记录按 `sai` 搜不到 `Sai@QQ.com`）。Eloquent 的 `whereLike($field, $pattern)` 第三参 `$caseSensitive` 默认 `false`，由 grammar 自己编译成 PG 的 `ilike` / MySQL 的 `like`，不需要 `DbType` 分支；多字段 OR 用 `where(function ($sub) { $sub->whereLike(...)->orWhereLike(...); })`（`whereAny()` 只能传死的 `like` 操作符，不要用）。已按此改造 `SystemMail`（from/email）、`SystemMenu`（name/path）、`SystemUser`（keyword）、`SystemAttachment`（origin_name/mime_type）、`SystemCategory`、`SystemConfigGroup`、`SystemDictType` 与代码生成器的 `php/model.stub`。注意 `level LIKE '1,2,%'` 这类结构化前缀匹配只有数字和逗号，不涉及大小写，保持 `like` 即可。
 - 代码生成器输出的菜单 SQL 是给人执行的文本，按 `db_type` 分两套模板（见 `utils/code/stub/saiadmin/sql/sql.stub`）：MySQL 用 `SET @id := LAST_INSERT_ID()`，PG 用 `WITH ... RETURNING id` 把父菜单 id 带给按钮菜单。模板变量里 `db_source` 是**连接名**（用于判断模型要不要写 `$connection`），`db_type` 才是驱动类型，别混用。
+
+### 切换 ORM 时要重做这一层
+
+方言处理散落在业务代码里，**换 ORM 会把它整层带回上游的 MySQL 写法**（2026-08-24 从 think-orm 换到 Eloquent 时，`DbType`、`DatabaseLogic`、`SystemRole::scopeAuth`、`GenerateTablesLogic` 的 `db_type` 全部回退过一次）。换 ORM 后按上面几条逐个复查，另外注意两类**不报错的静默失败**：
+
+- `DbType::get()` 以 **`server/.env` 的 `DB_TYPE`** 为准——`config/database.php`（Eloquent）和 `config/think-orm.php`（think-orm）本来就都是按它生成的，它才是当前框架实际在用的类型，所以不依赖任何一套 ORM 的配置结构，换 ORM 不用改它。两条退路：`.env` 里没配 `DB_TYPE` 时读配置默认连接（两套结构都认，`driver` / `type`），调用方显式传了连接名（比如生成器的数据源选择）时按连接名去配置里查、查不到再按连接名判断。`postgres` / `postgresql` 都归一成 `pgsql`，全都取不到时按 `mysql` 处理。
+- think-orm 的操作符字符串在 Eloquent 里不成立，且**不抛异常**：`where($f, 'in', $arr)` 被当成 `where($f, '=', 'in')`（查不到数据），`whereTime($f, 'between', $range)` 会把字段 `CAST` 成 `time`（PG 直接报 `time` 与 `timestamp` 无法比较，MySQL 则是静默算错）。分别改成 `whereIn()` / `whereBetween()`。
 
 ## 注意事项
 
@@ -74,5 +82,5 @@ vendor/bin/phinx.bat create NewFeatureTables -c phinx.php
          (20260822000002, 'CreatePgsqlHelpers', NOW(), NOW(), 0);
   ```
 
-  PostgreSQL 的存量库不要补第三条，让它真正执行一次，否则缺少 `table_msg()` 等函数。
+  第三条 `CreatePgsqlHelpers` 建的 `table_msg()` 等函数只有 **think-orm 的 Pgsql 连接器**会调用，当前 Eloquent 下的元数据查询直接查 `pg_catalog`，不依赖它。所以 PostgreSQL 存量库补不补第三条都能跑；只有回退到 think-orm 时才必须让它真正执行一次。
 - `plugin/saiadmin/db/*.sql` 仅作为手动建库的参考转储保留（只有 MySQL 版本），安装流程不再读取。
