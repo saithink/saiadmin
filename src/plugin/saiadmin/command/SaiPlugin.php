@@ -76,9 +76,68 @@ class SaiPlugin extends Command
         $this->mkdir("$base_path/plugin/$name/app/model", 0777, true);
         $this->mkdir("$base_path/plugin/$name/app/middleware", 0777, true);
         $this->mkdir("$base_path/plugin/$name/config", 0777, true);
+        $this->mkdir("$base_path/plugin/$name/db/migrations", 0777, true);
+        $this->mkdir("$base_path/plugin/$name/db/seeds", 0777, true);
         $this->createControllerFile("$base_path/plugin/$name/app/api/controller/IndexController.php", $name);
         $this->createFunctionsFile("$base_path/plugin/$name/app/functions.php");
         $this->createConfigFiles("$base_path/plugin/$name/config", $name);
+        $this->createMigrationFile("$base_path/plugin/$name/db/migrations", $name);
+    }
+
+    /**
+     * 生成一份示例迁移
+     *
+     * 插件安装器按 db/migrations 里有没有文件来决定装法：有就跑 Phinx 迁移（MySQL / PG 通用），
+     * 没有就退回老版 MySQL 专用的 install.sql。所以脚手架默认就把新插件做成迁移版。
+     * 命名空间必须是 plugin\{name}\db\migrations —— 迁移类不带命名空间时，
+     * 与核心或别的插件重名会在 require 阶段 fatal，直接打死进程。
+     *
+     * @param $path
+     * @param $name
+     * @return void
+     */
+    protected function createMigrationFile($path, $name)
+    {
+        $class = 'Create' . str_replace(' ', '', ucwords(str_replace('_', ' ', $name))) . 'Tables';
+        $file = $path . '/' . date('YmdHis') . '_create_' . $name . '_tables.php';
+        $content = <<<EOF
+<?php
+
+namespace plugin\\$name\\db\\migrations;
+
+use Phinx\\Migration\\AbstractMigration;
+
+// 复用核心的可移植建表助手（pkType / tableOptions / dropTables）。
+// 只能 require 核心这一份，插件自带副本会重复声明 trait 而 fatal
+require_once base_path() . '/plugin/saiadmin/db/support/SaiSchema.php';
+
+final class $class extends AbstractMigration
+{
+    use \\SaiSchema;
+
+    public function up(): void
+    {
+        // 写法约定见 plugin/saiadmin/db/README.md：
+        // 只用可移植的 Phinx API、索引不命名、自增列用 identity + generated => null、
+        // 时间列带 precision => 0，表名自带 sa_ 前缀（Phinx 不处理 DB_PREFIX）
+        //
+        // \$table = \$this->table('{$name}_demo', \$this->tableOptions('示例表'));
+        // \$table->addColumn('id', \$this->pkType(), ['identity' => true, 'generated' => null, 'comment' => '主键'])
+        //     ->addColumn('title', 'string', ['limit' => 100, 'default' => '', 'comment' => '标题'])
+        //     ->addColumn('create_time', 'datetime', ['null' => true, 'precision' => 0, 'comment' => '创建时间'])
+        //     ->addIndex(['title'])
+        //     ->create();
+    }
+
+    public function down(): void
+    {
+        // 卸载插件时会 rollback 到 0，这里必须把 up() 建的表和写入的菜单都清干净
+        // \$this->dropTables(['{$name}_demo']);
+    }
+}
+
+EOF;
+        file_put_contents($file, $content);
     }
 
     /**

@@ -84,3 +84,23 @@ vendor/bin/phinx.bat create NewFeatureTables -c plugin/saiadmin/db/phinx.php
 
   第三条 `CreatePgsqlHelpers` 建的 `table_msg()` 等函数只有 **think-orm 的 Pgsql 连接器**会调用，当前 Eloquent 下的元数据查询直接查 `pg_catalog`，不依赖它。所以 PostgreSQL 存量库补不补第三条都能跑；只有回退到 think-orm 时才必须让它真正执行一次。
 - `plugin/saiadmin/db/*.sql` 仅作为手动建库的参考转储保留（只有 MySQL 版本），安装流程不再读取。
+
+## 插件包的迁移
+
+插件安装器（`plugin/saipackage`）也走这套体系：包里有 `plugin/{app}/db/migrations/*.php` 就跑迁移（MySQL / PostgreSQL 通用），只有 `install.sql` 的老包仍走 `Server::importSql()`，且**只能装在 MySQL 上** —— PostgreSQL 下会在复制任何文件之前拒绝安装。完整的包格式与范例见仓库根目录的 `docs/plugin-package-format.md`。
+
+与核心迁移的差别只有这几点，写法约定完全一样：
+
+- **版本表按插件隔离**：每个插件用 `phinxlog_{app}`（`PluginMigrator::migrationTable()`），与核心的 `phinxlog` 互不干扰，卸载后整张删掉。
+- **迁移类必须带命名空间** `plugin\{app}\db\migrations`（seeds 为 `plugin\{app}\db\seeds`）。Phinx 的 `paths` 写成「命名空间 => 目录」，`Manager::getMigrations()` 是 `require_once` + `class_exists`，**不带命名空间的迁移一旦与核心或其它插件重名就是不可捕获的 fatal，会打死 worker**，所以安装前有一道 `PluginMigrator::validate()` 预检。
+- **`SaiSchema` 只能 `require_once` 核心这一份**（`plugin/saiadmin/db/support/SaiSchema.php`）。它是全局 trait，插件自带副本会重复声明，同样是 fatal。
+- **卸载 = `rollback --target 0 --force`**，每个迁移的 `down()` 都会执行，表和菜单真删（与老版 `uninstall.sql` 语义一致）。所以插件迁移的 `down()` 必须能把 `up()` 的动作全部撤销。Phinx 的 rollback 即使什么都没干也返回 0，因此版本表只在确认为空时才 drop。
+- **Phinx 不处理 `DB_PREFIX`**，插件往 `sa_system_menu` 写菜单时直接写全名，和核心迁移一样。
+
+排障命令（不影响核心的 `phinxlog`）：
+
+```bash
+php webman sai:plugin-migrate saicode status
+php webman sai:plugin-migrate saicode migrate
+php webman sai:plugin-migrate saicode rollback -t 0    # 危险！等于卸载时的动作
+```
