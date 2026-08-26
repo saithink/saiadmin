@@ -13,7 +13,6 @@ use plugin\saiadmin\app\model\tool\GenerateTables;
 use plugin\saiadmin\app\model\tool\GenerateColumns;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\basic\think\BaseLogic;
-use plugin\saiadmin\utils\DbType;
 use plugin\saiadmin\utils\Helper;
 use plugin\saiadmin\utils\code\CodeZip;
 use plugin\saiadmin\utils\code\CodeEngine;
@@ -130,6 +129,7 @@ class GenerateTablesLogic extends BaseLogic
                         $array = [
                             'column_comment',
                             'column_type',
+                            'default_value',
                             'is_pk',
                             'is_required',
                             'is_insert',
@@ -274,6 +274,7 @@ class GenerateTablesLogic extends BaseLogic
             ->toArray();
         $pk = 'id';
         foreach ($columns as &$column) {
+            $column['php_type'] = $this->phpType($column);
             if ($column['is_pk'] == 2) {
                 $pk = $column['column_name'];
             }
@@ -309,11 +310,32 @@ class GenerateTablesLogic extends BaseLogic
         $data['tables'] = [$data];
         $data['columns'] = $columns;
         $data['db_source'] = $config['default'] ?? 'mysql';
-        // db_source 是连接名（模板里用来判断要不要写 $connection），db_type 是驱动类型，
-        // 菜单 SQL 这类要分方言输出的模板按 db_type 判断
-        $data['db_type'] = DbType::get();
 
         return $data;
+    }
+
+    /**
+     * 获取字段对应的 PHP 类型
+     * @param array $column
+     * @return string
+     */
+    protected function phpType(array $column): string
+    {
+        $viewType = $column['view_type'] ?? '';
+        $limit = (int)($column['options']['limit'] ?? 0);
+        if (in_array($viewType, ['inputTag', 'checkbox'], true)) {
+            return 'array';
+        }
+        if (in_array($viewType, ['uploadImage', 'imagePicker', 'uploadFile', 'chunkUpload'], true) && $limit > 1) {
+            return 'array';
+        }
+
+        return match (strtolower($column['column_type'] ?? '')) {
+            'tinyint', 'smallint', 'mediumint', 'int', 'integer', 'bigint', 'year', 'bit' => 'int',
+            'float', 'double', 'real' => 'float',
+            'bool', 'boolean' => 'bool',
+            default => 'string',
+        };
     }
 
     /**
@@ -417,9 +439,7 @@ class GenerateTablesLogic extends BaseLogic
                 'is_full_page' => 2,
                 'generate_key' => $node['key']
             ];
-            // 这里必须用 isEmpty() 判断：findOrEmpty() 返回的是模型对象，empty() 恒为 false，
-            // 会把新增当成更新走，带上 id => null 去 insert（MySQL 自增列容忍，PG 直接报非空约束）
-            if (!$nodeData->isEmpty()) {
+            if (!empty($nodeData)) {
                 $childNodeData['id'] = $nodeData['id'];
                 $nodeData->save($childNodeData);
             } else {

@@ -290,6 +290,8 @@ class GenerateTablesLogic extends BaseLogic
                 unset($column['column_name']);
             }
             $column['options'] = json_decode($column['options'], true);
+            // model.stub 的 @property 注释要用 PHP 类型，库里只存了数据库类型
+            $column['php_type'] = $this->phpType($column);
         }
 
         // 处理特殊变量
@@ -326,6 +328,35 @@ class GenerateTablesLogic extends BaseLogic
         $data['options'] = $data['options'] ? json_decode($data['options'], true) : [];
 
         return $data;
+    }
+
+    /**
+     * 字段的 PHP 类型（供 model.stub 的 @property 注释使用）
+     *
+     * 取值要和模型实际读出来的类型一致：多值控件在 model.stub 里有数组转换，
+     * 所以先按控件判数组，再按数据库类型映射（column_type 已由 DatabaseLogic 归一成
+     * MySQL 那套词汇，PG 也走同一份映射）。decimal/numeric 经 PDO 读出来是
+     * 字符串，不写成 float。
+     *
+     * @param array $column
+     * @return string
+     */
+    protected function phpType(array $column): string
+    {
+        $viewType = $column['view_type'] ?? '';
+        $limit = (int) ($column['options']['limit'] ?? 0);
+        if (in_array($viewType, ['inputTag', 'checkbox'], true)) {
+            return 'array';
+        }
+        if (in_array($viewType, ['uploadImage', 'imagePicker', 'uploadFile', 'chunkUpload'], true) && $limit > 1) {
+            return 'array';
+        }
+        return match (strtolower($column['column_type'] ?? '')) {
+            'tinyint', 'smallint', 'mediumint', 'int', 'integer', 'bigint', 'year', 'bit' => 'int',
+            'float', 'double', 'real' => 'float',
+            'bool', 'boolean' => 'bool',
+            default => 'string',
+        };
     }
 
     /**
