@@ -141,7 +141,7 @@ class CodeEngine
             $rootPath = base_path() . DS . 'plugin' . DS . $this->value['namespace'] . DS . 'app';
             $adminPath = DS . 'admin';
         }
-        $subPath = DS . $this->value['package_name'];
+        $subPath = !empty($this->value['package_name']) ? DS . $this->value['package_name'] : '';
         switch ($action) {
             case 'controller':
                 $outPath = $rootPath . $adminPath . DS . 'controller' . $subPath . DS . $this->value['class_name'] . 'Controller.php';
@@ -180,7 +180,7 @@ class CodeEngine
         }
 
         $rootPath = $rootPath . DS . 'src' . DS . 'views' . DS . 'plugin' . DS . $this->value['namespace'];
-        $subPath = DS . $this->value['package_name'];
+        $subPath = !empty($this->value['package_name']) ? DS . $this->value['package_name'] : '';
         switch ($action) {
             case 'index':
                 $outPath = $rootPath . $subPath . DS . $this->value['business_name'] . DS . 'index.vue';
@@ -226,7 +226,7 @@ class CodeEngine
             $phpPath = $phpPath . DS . 'plugin' . DS . $this->value['namespace'] . DS . 'app';
             $adminPath = DS . 'admin';
         }
-        $subPath = DS . $this->value['package_name'];
+        $subPath = !empty($this->value['package_name']) ? DS . $this->value['package_name'] : '';
 
         $indexOutPath = $vuePath . $subPath . DS . $this->value['business_name'] . DS . 'index.vue';
         $this->checkPath($indexOutPath);
