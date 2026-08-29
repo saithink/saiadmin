@@ -224,7 +224,7 @@ class {{class_name}} extends BaseModel
      */
     public function search{{column.column_name | camel}}Attr($query, $value)
     {
-        $query->where('{{column.column_name}}', 'like', '%'.$value.'%');
+        $query->whereLike('{{column.column_name}}', '%'.$value.'%');
     }
 
 {% endif %}

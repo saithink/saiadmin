@@ -13,7 +13,6 @@ use plugin\saiadmin\app\model\tool\GenerateTables;
 use plugin\saiadmin\app\model\tool\GenerateColumns;
 use plugin\saiadmin\exception\ApiException;
 use plugin\saiadmin\basic\eloquent\BaseLogic;
-use plugin\saiadmin\utils\DbType;
 use plugin\saiadmin\utils\Helper;
 use plugin\saiadmin\utils\code\CodeZip;
 use plugin\saiadmin\utils\code\CodeEngine;
@@ -290,22 +289,21 @@ class GenerateTablesLogic extends BaseLogic
                 unset($column['column_name']);
             }
             $column['options'] = json_decode($column['options'], true);
-            // model.stub 的 @property 注释要用 PHP 类型，库里只存了数据库类型
-            $column['php_type'] = $this->phpType($column);
         }
 
         // 处理特殊变量
+        $package = $table['package_name'] ?? '';
         if ($table['template'] == 'plugin') {
             $namespace_start = "plugin\\" . $table['namespace'] . "\\app\\admin\\";
             $namespace_start_model = "plugin\\" . $table['namespace'] . "\\app\\";
-            $namespace_end = "\\" . $table['package_name'];
-            $url_path = 'app/' . $table['namespace'] . '/admin/' . $table['package_name'] . '/' . $table['class_name'];
+            $namespace_end = $package !== '' ? "\\" . $package : '';
+            $url_path = 'app/' . $table['namespace'] . '/admin/' . ($package !== '' ? $package . '/' : '') . $table['class_name'];
             $route = 'app/';
         } else {
             $namespace_start = "app\\" . $table['namespace'] . "\\";
             $namespace_start_model = "app\\" . $table['namespace'] . "\\";
-            $namespace_end = "\\" . $table['package_name'];
-            $url_path = $table['namespace'] . '/' . $table['package_name'] . '/' . $table['class_name'];
+            $namespace_end = $package !== '' ? "\\" . $package : '';
+            $url_path = $table['namespace'] . '/' . ($package !== '' ? $package . '/' : '') . $table['class_name'];
             $route = '';
         }
 
@@ -321,42 +319,10 @@ class GenerateTablesLogic extends BaseLogic
         $data['tables'] = [$data];
         $data['columns'] = $columns;
         $data['db_source'] = $config['default'] ?? 'mysql';
-        // db_source 是连接名（模型要不要写 $connection 看它），db_type 才是驱动类型，
-        // sql.stub 按 db_type 决定菜单 SQL 用 LAST_INSERT_ID() 还是 PG 的 RETURNING
-        $data['db_type'] = DbType::get();
 
         $data['options'] = $data['options'] ? json_decode($data['options'], true) : [];
 
         return $data;
-    }
-
-    /**
-     * 字段的 PHP 类型（供 model.stub 的 @property 注释使用）
-     *
-     * 取值要和模型实际读出来的类型一致：多值控件在 model.stub 里有数组转换，
-     * 所以先按控件判数组，再按数据库类型映射（column_type 已由 DatabaseLogic 归一成
-     * MySQL 那套词汇，PG 也走同一份映射）。decimal/numeric 经 PDO 读出来是
-     * 字符串，不写成 float。
-     *
-     * @param array $column
-     * @return string
-     */
-    protected function phpType(array $column): string
-    {
-        $viewType = $column['view_type'] ?? '';
-        $limit = (int) ($column['options']['limit'] ?? 0);
-        if (in_array($viewType, ['inputTag', 'checkbox'], true)) {
-            return 'array';
-        }
-        if (in_array($viewType, ['uploadImage', 'imagePicker', 'uploadFile', 'chunkUpload'], true) && $limit > 1) {
-            return 'array';
-        }
-        return match (strtolower($column['column_type'] ?? '')) {
-            'tinyint', 'smallint', 'mediumint', 'int', 'integer', 'bigint', 'year', 'bit' => 'int',
-            'float', 'double', 'real' => 'float',
-            'bool', 'boolean' => 'bool',
-            default => 'string',
-        };
     }
 
     /**
@@ -404,10 +370,13 @@ class GenerateTablesLogic extends BaseLogic
     public function updateMenu($tables)
     {
         /*不存在的情况下进行新建操作*/
-        $url_path = $tables['namespace'] . ":" . $tables['package_name'] . ':' . $tables['business_name'];
-        $code = $tables['namespace'] . "/" . $tables['package_name'] . '/' . $tables['business_name'];
-        $path = $tables['package_name'] . '/' . $tables['business_name'];
-        $component = $tables['namespace'] . "/" . $tables['package_name'] . '/' . $tables['business_name'];
+        $package = $tables['package_name'] ?? '';
+        $package_seg = $package !== '' ? $package . '/' : '';
+        $package_ns = $package !== '' ? $package . ':' : '';
+        $url_path = $tables['namespace'] . ":" . $package_ns . $tables['business_name'];
+        $code = $tables['namespace'] . "/" . $package_seg . $tables['business_name'];
+        $path = $package_seg . $tables['business_name'];
+        $component = $tables['namespace'] . "/" . $package_seg . $tables['business_name'];
 
         /*先获取一下已有的路由中是否包含当前ID的路由的核心信息*/
         $model = new SystemMenu();

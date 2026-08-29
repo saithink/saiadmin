@@ -162,7 +162,7 @@
 </template>
 
 <script setup lang="ts">
-  import api from '../../../api/{{package_name}}/{{business_name}}'
+  import api from '../../../api/{{ package_name ? (package_name ~ '/') : '' }}{{business_name}}'
   import { ElMessage } from 'element-plus'
   import type { FormInstance, FormRules } from 'element-plus'
 

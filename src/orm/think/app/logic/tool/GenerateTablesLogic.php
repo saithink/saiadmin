@@ -274,7 +274,6 @@ class GenerateTablesLogic extends BaseLogic
             ->toArray();
         $pk = 'id';
         foreach ($columns as &$column) {
-            $column['php_type'] = $this->phpType($column);
             if ($column['is_pk'] == 2) {
                 $pk = $column['column_name'];
             }
@@ -284,17 +283,18 @@ class GenerateTablesLogic extends BaseLogic
         }
 
         // 处理特殊变量
+        $package = $table['package_name'] ?? '';
         if ($table['template'] == 'plugin') {
             $namespace_start = "plugin\\" . $table['namespace'] . "\\app\\admin\\";
             $namespace_start_model = "plugin\\" . $table['namespace'] . "\\app\\";
-            $namespace_end = "\\" . $table['package_name'];
-            $url_path = 'app/' . $table['namespace'] . '/admin/' . $table['package_name'] . '/' . $table['class_name'];
+            $namespace_end = $package !== '' ? "\\" . $package : '';
+            $url_path = 'app/' . $table['namespace'] . '/admin/' . ($package !== '' ? $package . '/' : '') . $table['class_name'];
             $route = 'app/';
         } else {
             $namespace_start = "app\\" . $table['namespace'] . "\\";
             $namespace_start_model = "app\\" . $table['namespace'] . "\\";
-            $namespace_end = "\\" . $table['package_name'];
-            $url_path = $table['namespace'] . '/' . $table['package_name'] . '/' . $table['class_name'];
+            $namespace_end = $package !== '' ? "\\" . $package : '';
+            $url_path = $table['namespace'] . '/' . ($package !== '' ? $package . '/' : '') . $table['class_name'];
             $route = '';
         }
 
@@ -312,30 +312,6 @@ class GenerateTablesLogic extends BaseLogic
         $data['db_source'] = $config['default'] ?? 'mysql';
 
         return $data;
-    }
-
-    /**
-     * 获取字段对应的 PHP 类型
-     * @param array $column
-     * @return string
-     */
-    protected function phpType(array $column): string
-    {
-        $viewType = $column['view_type'] ?? '';
-        $limit = (int)($column['options']['limit'] ?? 0);
-        if (in_array($viewType, ['inputTag', 'checkbox'], true)) {
-            return 'array';
-        }
-        if (in_array($viewType, ['uploadImage', 'imagePicker', 'uploadFile', 'chunkUpload'], true) && $limit > 1) {
-            return 'array';
-        }
-
-        return match (strtolower($column['column_type'] ?? '')) {
-            'tinyint', 'smallint', 'mediumint', 'int', 'integer', 'bigint', 'year', 'bit' => 'int',
-            'float', 'double', 'real' => 'float',
-            'bool', 'boolean' => 'bool',
-            default => 'string',
-        };
     }
 
     /**
@@ -383,10 +359,13 @@ class GenerateTablesLogic extends BaseLogic
     public function updateMenu($tables)
     {
         /*不存在的情况下进行新建操作*/
-        $url_path = $tables['namespace'] . ":" . $tables['package_name'] . ':' . $tables['business_name'];
-        $code = $tables['namespace'] . "/" . $tables['package_name'] . '/' . $tables['business_name'];
-        $path = $tables['package_name'] . '/' . $tables['business_name'];
-        $component = $tables['namespace'] . "/" . $tables['package_name'] . '/' . $tables['business_name'];
+        $package = $tables['package_name'] ?? '';
+        $package_seg = $package !== '' ? $package . '/' : '';
+        $package_ns = $package !== '' ? $package . ':' : '';
+        $url_path = $tables['namespace'] . ":" . $package_ns . $tables['business_name'];
+        $code = $tables['namespace'] . "/" . $package_seg . $tables['business_name'];
+        $path = $package_seg . $tables['business_name'];
+        $component = $tables['namespace'] . "/" . $package_seg . $tables['business_name'];
 
         /*先获取一下已有的路由中是否包含当前ID的路由的核心信息*/
         $model = new SystemMenu();

@@ -5,27 +5,27 @@
 {% if db_type == 'pgsql' %}
 -- PostgreSQL 没有 LAST_INSERT_ID()，用 CTE 把父菜单的 id 直接带给下面的按钮菜单
 WITH menu AS (
-INSERT INTO "sa_system_menu"("parent_id", "name", "code", "slug", "type", "path", "component", "icon", "sort", "is_iframe", "is_keep_alive", "is_hidden", "is_fixed_tab", "is_full_page", "create_time", "update_time") VALUES ({{column.belong_menu_id}}, '{{column.menu_name}}', '{{column.namespace}}/{{column.package_name}}/{{column.business_name}}', '', 2, '{{column.package_name}}/{{column.business_name}}', '/plugin/{{column.namespace}}/{{column.package_name}}/{{column.business_name}}/index', 'ri:home-2-line', 100, 2, 2, 2, 2, 2, now(), now())
+INSERT INTO "sa_system_menu"("parent_id", "name", "code", "slug", "type", "path", "component", "icon", "sort", "is_iframe", "is_keep_alive", "is_hidden", "is_fixed_tab", "is_full_page", "create_time", "update_time") VALUES ({{column.belong_menu_id}}, '{{column.menu_name}}', '{{column.namespace}}/{{ column.package_name ? (column.package_name ~ '/') : '' }}{{column.business_name}}', '', 2, '{{ column.package_name ? (column.package_name ~ '/') : '' }}{{column.business_name}}', '/plugin/{{column.namespace}}/{{ column.package_name ? (column.package_name ~ '/') : '' }}{{column.business_name}}/index', 'ri:home-2-line', 100, 2, 2, 2, 2, 2, now(), now())
 RETURNING "id"
 )
 INSERT INTO "sa_system_menu"("parent_id", "name", "slug", "type", "sort", "is_iframe", "is_keep_alive", "is_hidden", "is_fixed_tab", "is_full_page", "create_time", "update_time")
 SELECT menu."id", btn."name", btn."slug", 3, 100, 2, 2, 2, 2, 2, now(), now()
 FROM menu, (VALUES
-    ('列表', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:index'),
-    ('保存', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:save'),
-    ('更新', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:update'),
-    ('读取', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:read'),
-    ('删除', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:destroy')
+    ('列表', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:index'),
+    ('保存', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:save'),
+    ('更新', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:update'),
+    ('读取', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:read'),
+    ('删除', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:destroy')
 ) AS btn("name", "slug");
 {% else %}
-INSERT INTO `sa_system_menu`(`parent_id`, `name`, `code`, `slug`, `type`, `path`, `component`, `icon`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES ({{column.belong_menu_id}}, '{{column.menu_name}}', '{{column.namespace}}/{{column.package_name}}/{{column.business_name}}', '', 2, '{{column.package_name}}/{{column.business_name}}', '/plugin/{{column.namespace}}/{{column.package_name}}/{{column.business_name}}/index', 'ri:home-2-line', 100, 2, 2, 2, 2, 2, now(), now());
+INSERT INTO `sa_system_menu`(`parent_id`, `name`, `code`, `slug`, `type`, `path`, `component`, `icon`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES ({{column.belong_menu_id}}, '{{column.menu_name}}', '{{column.namespace}}/{{ column.package_name ? (column.package_name ~ '/') : '' }}{{column.business_name}}', '', 2, '{{ column.package_name ? (column.package_name ~ '/') : '' }}{{column.business_name}}', '/plugin/{{column.namespace}}/{{ column.package_name ? (column.package_name ~ '/') : '' }}{{column.business_name}}/index', 'ri:home-2-line', 100, 2, 2, 2, 2, 2, now(), now());
 
 SET @id := LAST_INSERT_ID();
 
-INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '列表', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:index', 3, 100, 2, 2, 2, 2, 2, now(), now());
-INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '保存', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:save', 3, 100, 2, 2, 2, 2, 2, now(), now());
-INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '更新', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:update', 3, 100, 2, 2, 2, 2, 2, now(), now());
-INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '读取', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:read', 3, 100, 2, 2, 2, 2, 2, now(), now());
-INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '删除', '{{column.namespace}}:{{column.package_name}}:{{column.business_name}}:destroy', 3, 100, 2, 2, 2, 2, 2, now(), now());
+INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '列表', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:index', 3, 100, 2, 2, 2, 2, 2, now(), now());
+INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '保存', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:save', 3, 100, 2, 2, 2, 2, 2, now(), now());
+INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '更新', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:update', 3, 100, 2, 2, 2, 2, 2, now(), now());
+INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '读取', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:read', 3, 100, 2, 2, 2, 2, 2, now(), now());
+INSERT INTO `sa_system_menu`(`parent_id`, `name`, `slug`, `type`, `sort`, `is_iframe`, `is_keep_alive`, `is_hidden`, `is_fixed_tab`, `is_full_page`, `create_time`, `update_time`) VALUES (@id, '删除', '{{column.namespace}}:{{ column.package_name ? (column.package_name ~ ':') : '' }}{{column.business_name}}:destroy', 3, 100, 2, 2, 2, 2, 2, now(), now());
 {% endif %}
 {% endfor %}

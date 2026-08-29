@@ -33,7 +33,7 @@ class {{class_name}}Controller extends BaseController
      * @param Request $request
      * @return Response
      */
-    #[Permission('{{menu_name}}列表', '{{namespace}}:{{package_name}}:{{business_name}}:index')]
+    #[Permission('{{menu_name}}列表', '{{namespace}}:{{ package_name ? (package_name ~ ':') : '' }}{{business_name}}:index')]
     public function index(Request $request): Response
     {
         $where = $request->more([
@@ -65,7 +65,7 @@ class {{class_name}}Controller extends BaseController
      * @param Request $request
      * @return Response
      */
-    #[Permission('{{menu_name}}读取', '{{namespace}}:{{package_name}}:{{business_name}}:read')]
+    #[Permission('{{menu_name}}读取', '{{namespace}}:{{ package_name ? (package_name ~ ':') : '' }}{{business_name}}:read')]
     public function read(Request $request): Response
     {
         $id = $request->input('id', '');
@@ -83,7 +83,7 @@ class {{class_name}}Controller extends BaseController
      * @param Request $request
      * @return Response
      */
-    #[Permission('{{menu_name}}添加', '{{namespace}}:{{package_name}}:{{business_name}}:save')]
+    #[Permission('{{menu_name}}添加', '{{namespace}}:{{ package_name ? (package_name ~ ':') : '' }}{{business_name}}:save')]
     public function save(Request $request): Response
     {
         $data = $request->post();
@@ -101,7 +101,7 @@ class {{class_name}}Controller extends BaseController
      * @param Request $request
      * @return Response
      */
-    #[Permission('{{menu_name}}修改', '{{namespace}}:{{package_name}}:{{business_name}}:update')]
+    #[Permission('{{menu_name}}修改', '{{namespace}}:{{ package_name ? (package_name ~ ':') : '' }}{{business_name}}:update')]
     public function update(Request $request): Response
     {
         $data = $request->post();
@@ -119,7 +119,7 @@ class {{class_name}}Controller extends BaseController
      * @param Request $request
      * @return Response
      */
-    #[Permission('{{menu_name}}删除', '{{namespace}}:{{package_name}}:{{business_name}}:destroy')]
+    #[Permission('{{menu_name}}删除', '{{namespace}}:{{ package_name ? (package_name ~ ':') : '' }}{{business_name}}:destroy')]
     public function destroy(Request $request): Response
     {
         $ids = $request->post('ids', '');
