@@ -69,7 +69,7 @@ class ConfigCache
         $tag[] = $cache['tag'];
 
         // 保存到缓存
-        Cache::tag($tag)->set($cache['prefix'] . md5($code), $data, $cache['expire']);
+        CacheTag::set($tag, $cache['prefix'] . md5($code), $data, $cache['expire']);
         return $data;
     }
 

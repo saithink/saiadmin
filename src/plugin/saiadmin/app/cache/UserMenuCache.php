@@ -74,7 +74,7 @@ class UserMenuCache
         }
 
         // 保存到缓存
-        Cache::tag($tag)->set($cache['prefix'] . $uid, $data, $cache['expire']);
+        CacheTag::set($tag, $cache['prefix'] . $uid, $data, $cache['expire']);
         return $data;
     }
 

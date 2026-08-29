@@ -78,7 +78,7 @@ class UserInfoCache
                 $tags[] = $cache['post'] . $post['id'];
             }
         }
-        Cache::tag($tags)->set($cache['prefix'] . $uid, $data, $cache['expire']);
+        CacheTag::set($tags, $cache['prefix'] . $uid, $data, $cache['expire']);
         return $data;
     }
 

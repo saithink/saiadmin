@@ -55,7 +55,7 @@ class ReflectionCache
             $data = [];
         }
 
-        Cache::tag($tag)->set($key, $data, $cache['expire']);
+        CacheTag::set($tag, $key, $data, $cache['expire']);
         return $data;
     }
 
@@ -87,7 +87,7 @@ class ReflectionCache
             }
         }
 
-        Cache::tag($tag)->set($key, $data, $cache['expire']);
+        CacheTag::set($tag, $key, $data, $cache['expire']);
         return $data;
     }
 
