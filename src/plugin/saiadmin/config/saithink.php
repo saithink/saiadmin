@@ -11,7 +11,7 @@ return [
 	// 验证码存储模式
     'captcha' => [
         // 验证码存储模式 session或者cache
-        'mode' => getenv('CAPTCHA_MODE'),
+        'mode' => env('CAPTCHA_MODE', 'cache'),
         // 验证码过期时间 (秒)
         'expire' => 300,
     ],
