@@ -82,7 +82,7 @@
 <script setup lang="ts">
   import { useTable } from '@/hooks/core/useTable'
   import { useSaiAdmin } from '@/composables/useSaiAdmin'
-  import api from '../../api/{{ package_name ? (package_name ~ '/') : '' }}{{business_name}}'
+  import api from '{{ package_name ? ('../../api/' ~ package_name ~ '/') : '../api/' }}{{business_name}}'
   import TableSearch from './modules/table-search.vue'
   import EditDialog from './modules/edit-dialog.vue'
 
